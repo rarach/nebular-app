@@ -53,7 +53,7 @@ IF NOT DEFINED KUDU_SYNC_CMD (
 :: Install NPM dependencies if need be.
 IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
   pushd "%DEPLOYMENT_SOURCE%"
-  call npm install --save
+  call npm install --production
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
