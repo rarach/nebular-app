@@ -50,11 +50,11 @@ IF NOT DEFINED KUDU_SYNC_CMD (
 
 
 
-:: Install NPM dependencies if need be.
+:: Install NPM dependencies including DEV dependencies (not valid for production environment).
 IF EXIST "%DEPLOYMENT_SOURCE%\package.json" (
   echo Ensuring dependencies (from %DEPLOYMENT_SOURCE%\package.json)
   pushd "%DEPLOYMENT_SOURCE%"
-  call npm install --production
+  call npm install --save
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
@@ -63,7 +63,7 @@ IF EXIST "%DEPLOYMENT_SOURCE%\angular.json" (
   echo Building App in %DEPLOYMENT_SOURCE%...
   pushd "%DEPLOYMENT_SOURCE%"
   :: NOTE - this assumes that the build machine has the Angular compiler installed, ideally in the same version as used for development
-  call :ExecuteCmd ng build --progress false --prod
+  call :ExecuteCmd ng build --progress false --dev
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
