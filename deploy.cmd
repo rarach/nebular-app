@@ -63,7 +63,7 @@ IF EXIST "%DEPLOYMENT_SOURCE%\angular.json" (
   echo Building App in %DEPLOYMENT_SOURCE%...
   pushd "%DEPLOYMENT_SOURCE%"
   :: NOTE - this assumes that the build machine has the Angular compiler installed, ideally in the same version as used for development
-  call :ExecuteCmd ng build --progress false --dev
+  call :ExecuteCmd ng build
   IF !ERRORLEVEL! NEQ 0 goto error
   popd
 )
