@@ -1,0 +1,69 @@
+footer#footer {
+    position: absolute;
+    bottom: 0;
+    height: 30px;
+    width: 100%;
+}
+
+footer#footer > div {
+    font-size: .75em;
+    color: #AAAAAA;
+    text-align: center;
+}
+
+@font-face {
+    font-family: "Truly Madly Dpad";
+    src: url('../assets/fonts/Truly_Madly_Dpad.otf');
+}
+
+.green {
+    color: #46B446;
+}
+.red {
+    color: #ED8117;
+}
+
+a.link {
+    font-family: "Truly Madly Dpad";
+    font-size: 1.4em;
+    text-decoration: none;
+    color:#355572;
+}
+a.link:hover, a.link:focus {
+    color: #4d81b0;
+}
+a.link.selected {
+    font-weight: bold;
+    color: #4d81b0;
+}
+
+a#logo {
+    background-image: url('../assets/images/my-lame-logo.png');
+    background-repeat: no-repeat;
+    background-size: 50px 50px;
+    display: inline-block;
+    height: 50px;
+    width: 50px;
+    line-height:50px;
+    padding-left: 58px;
+}
+a#logo > span.homeLink {
+    font-size:32px;
+}
+
+div.headerLinks {
+    line-height: 50px;
+    padding-right: 40px;
+}
+
+.error {
+    color: red;
+}
+
+div.chartWarning {
+    height: 300px;
+    line-height: 300px;
+    background-color: white;
+    text-align: center;
+    font-size: 25px;
+}
