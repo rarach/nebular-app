@@ -7,17 +7,18 @@
 </div>
 
 <div class="row exchanges-frame">
-  <!-- TODO: needless to say, all this copy-pasta is eager to be refactored. -->
-  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+  <div *ngFor="let exchange of exchangeList" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
       <div class="exchange-link">
           <div class="assetsDescription">
               <div class="lastPrice">0.00</div>
               <div class="baseAssetDesc">
-                  <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
+                  <span class="baseAssetCode">{{exchange.baseAsset.code}}</span><br/>
+                  <span class="baseAssetIssuer">{{exchange.baseAsset.issuer.domain}}</span>
               </div>
               <span class="slash">/</span>
               <div class="counterAssetDesc">
-                  <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
+                  <span class="counterAssetCode">{{exchange.counterAsset.code}}</span><br/>
+                  <span class="counterAssetIssuer">{{exchange.counterAsset.issuer.domain}}</span>
               </div>
               <div class="dailyChangePercent green">+0.00%</div>
           </div>
@@ -35,68 +36,8 @@
       </div>
   </div>
 
-
-
-  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-    <div class="exchange-link">
-        <div class="assetsDescription">
-            <div class="lastPrice">0.00</div>
-            <div class="baseAssetDesc">
-                <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
-            </div>
-            <span class="slash">/</span>
-            <div class="counterAssetDesc">
-                <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
-            </div>
-            <div class="dailyChangePercent green">+0.00%</div>
-        </div>
-        <div id="asdfChart" class="exchange-link-chart">
-            <div class="chartWarning">Loading data...</div>
-        </div>
-        <script type="text/javascript">
-            //TODO: make a WS call to figure out what assets should be used
-            var adsfChartUi;
-            $(function() {
-                var asset1 = KnownAssets.XLM;
-                var asset2 = KnownAssets["USD-AnchorUsd"];
-                asdfChartUi = new ExchangeThumbnail(asset1, asset2);
-                asdfChartUi.Initialize("asdfChart");
-            });
-        </script>
-    </div>
-  </div>
-
-  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
-      <div class="exchange-link">
-          <div class="assetsDescription">
-              <div class="lastPrice">0.00</div>
-              <div class="baseAssetDesc">
-                  <span class="baseAssetCode">ASDF</span><br/><span class="baseAssetIssuer">example.com</span>
-              </div>
-              <span class="slash">/</span>
-              <div class="counterAssetDesc">
-                  <span class="counterAssetCode">XYZ</span><br/><span class="counterAssetIssuer">example.org</span>
-              </div>
-              <div class="dailyChangePercent green">+0.00%</div>
-          </div>
-          <div id="xrpChart" class="exchange-link-chart">
-              <div class="chartWarning">Loading data...</div>
-          </div>
-          <script type="text/javascript">
-              //TODO: make a WS call to figure out what assets should be used
-              var xrpChartUi;
-              $(function() {
-                  var asset1 = KnownAssets.XLM;
-                  var asset2 = KnownAssets.ABDT;
-                  asdfChartUi = new ExchangeThumbnail(asset1, asset2);
-                  asdfChartUi.Initialize("xrpChart");
-              });
-          </script>
-      </div>
-  </div>
-
   <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid green; color: red; font-weight: bold;">
       TODO: unfortunately I'll need backend because evaluating the statistics in client
-      script would kill the browser (and user).
+      script would kill the browser (and the user).
   </div>
 </div>

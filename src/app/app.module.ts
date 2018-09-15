@@ -8,6 +8,7 @@ import { MyExchangesComponent } from './my-exchanges/my-exchanges.component';
 import { ExchangeComponent } from './exchange/exchange.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { PageNotFoundComponent } from './not-found.component';
+import { AssetService } from './asset.service';
 
 
 @NgModule({
@@ -23,7 +24,7 @@ import { PageNotFoundComponent } from './not-found.component';
     BrowserModule,
     AppRoutingModule
   ],
-  providers: [Title],
+  providers: [Title, AssetService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
