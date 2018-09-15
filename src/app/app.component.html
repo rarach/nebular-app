@@ -2,7 +2,8 @@
   <div class="row" style="margin: 5px;">
     <div class="col-lg-3 col-md-3 col-sm-3 col-12">
         <a routerLink="/overview" id="logo" class="link" title="Nebular">
-            <span class="homeLink">Nebular</span>
+            <div class="homeLink">Nebular</div>
+            <span id="logoSubtitle" style="font-size: .8em">Stellar charts</span>
         </a>
     </div>
     <div class="col-lg-9 col-md-9 col-sm-9 col-12 headerLinks">
@@ -10,10 +11,12 @@
         <a routerLink="/myExchanges" class="link" id="myExchangesLink" style="float: right;">My Exchanges</a>
     </div>
   </div>
+
+  <router-outlet></router-outlet>
+
 </div>
 
-<router-outlet></router-outlet>
-
+<br/><br/>
 <footer id="footer">
   <div class="container">
       <span>Only for information. Accuracy of data is not guaranteed. No investment or trading decision should be made based on this page.<br/>

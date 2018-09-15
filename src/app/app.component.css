@@ -43,12 +43,11 @@ a#logo {
     background-size: 50px 50px;
     display: inline-block;
     height: 50px;
-    width: 50px;
-    line-height:50px;
     padding-left: 58px;
 }
-a#logo > span.homeLink {
-    font-size:32px;
+a#logo > div.homeLink {
+    font-size: 2em;
+    margin-bottom: -12px;
 }
 
 div.headerLinks {
