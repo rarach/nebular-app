@@ -1,3 +1,12 @@
+#configurationLink {
+    float: right;
+    padding-left: 15px;
+}
+
+#myExchangesLink {
+    float: right;
+}
+
 footer#footer {
     position: absolute;
     bottom: 0;
@@ -57,12 +66,4 @@ div.headerLinks {
 
 .error {
     color: red;
-}
-
-div.chartWarning {
-    height: 300px;
-    line-height: 300px;
-    background-color: white;
-    text-align: center;
-    font-size: 25px;
 }

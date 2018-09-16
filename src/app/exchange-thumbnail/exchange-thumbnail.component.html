@@ -1,4 +1,4 @@
-<div class="exchange-link">
+<div class="exchange-link" (click)="onClick();">
   <div class="assetsDescription">
       <div class="lastPrice">0.00</div>
       <div class="baseAssetDesc">
@@ -12,15 +12,7 @@
       </div>
       <div class="dailyChangePercent green">+0.00%</div>
   </div>
-  <div id="highestXlmVolumeChart1" class="exchange-link-chart">
+  <div id="{{_placeHolderId}}" class="exchange-link-chart">
       <div class="chartWarning">Loading data...</div>
   </div>
-  <script type="text/javascript">
-      //TODO: make a WS call to figure out what assets should be used
-      var highestXlmVolumeChart1Ui;
-      $(function() {
-          highestXlmVolumeChart1Ui = new ExchangeThumbnail(KnownAssets.XLM, KnownAssets.MOBI);
-          highestXlmVolumeChart1Ui.Initialize("highestXlmVolumeChart1");
-      });
-  </script>
 </div>
