@@ -19,9 +19,13 @@ import { DataStatus } from '../model/data-status.enum';
 export class ExchangeThumbnailComponent implements OnInit {
   @Input() exchange: ExchangePair;
 
-  placeHolderId: string = null;
+  //View-model properties to be rendered on the UI
+  lastPrice = "0.00";
+  dailyChangeDesc: string = "0.00%";
+  chartPlaceholderId: string = null;
   DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.NoData;
   userMessage: string = "Loading data...";
+
   private _lineChart: LineChartData = null;
 
   constructor(private horizonService: HorizonRestService, private router: Router) { }
@@ -32,7 +36,7 @@ export class ExchangeThumbnailComponent implements OnInit {
 
   /** Setup and render the exchange chart */
   ngOnInit() {
-    this.placeHolderId = "exch_" + this.exchange.id;
+    this.chartPlaceholderId = "exch_" + this.exchange.id;
     this._lineChart = new LineChartData();
 
     this._lineChart.ContextMenuLink(this.getUrl());
@@ -45,15 +49,10 @@ export class ExchangeThumbnailComponent implements OnInit {
 
   private renderLineChart() {
     //We always request 15min candles because with smaller interval we couldn't get 1 day worth of data in single request
-    const dataRange = "&resolution=900000&limit=96";
-    const url = Constants.API_URL + "/trade_aggregations?" + this.exchange.baseAsset.ToUrlParameters("base") + "&" +
-                this.exchange.counterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
-    const that = this;
-
     this.horizonService.getTradeAggregations(this.exchange, 900000).subscribe(
       success => {
         const data = success as any;
-        $("#"+that.placeHolderId).empty();
+        $("#"+this.chartPlaceholderId).empty();   //TODO: DYOR. Maybe Angular has some smart means
         if (data._embedded.records.length == 0) {
           this.dataStatus = DataStatus.NoData;
           this.userMessage = "No trades in last 24 hours";
@@ -71,17 +70,18 @@ export class ExchangeThumbnailComponent implements OnInit {
             return;
         }
 
-        that._lineChart.ClearData();
+        this._lineChart.ClearData();
 
-        $("#"+that.placeHolderId).empty();
+        $("#"+this.chartPlaceholderId).empty();     //TODO: Angular way?
         let minPrice = Number.MAX_VALUE;
         let maxPrice = -1.0;
         let lastPrice = -999999;
         let startPrice;
 
-        $.each(data._embedded.records, function(i, record) {    //TODO: for sure TypeScript has better foreach
+        const that = this;
+        for(let record of data._embedded.records) {
             if (record.timestamp < yesterday) {
-                return false;    //'break' at first value older than 24hrs
+              break;    //Break at first value older than 24hrs
             }
 
             //Collect value for a single point in the chart as average
@@ -101,21 +101,21 @@ export class ExchangeThumbnailComponent implements OnInit {
             const point = [record.timestamp, avgValue];
             that._lineChart.AddPointData(point);
             that._lineChart.SetStartTime(record.timestamp);
-        });
+        }
 
         //Special case: if we have only one point in the chart, use trick and add artificial starting point
         //              with value equal to the existing point
-        if (that._lineChart.DataPointCount() === 1) {
+        if (this._lineChart.DataPointCount() === 1) {
             const artifPoint = [yesterday, startPrice];
-            that._lineChart.AddPointData(artifPoint);
-            that._lineChart.SetStartTime(yesterday);
+            this._lineChart.AddPointData(artifPoint);
+            this._lineChart.SetStartTime(yesterday);
         }
 
-        that.setPriceStatistics(startPrice, lastPrice);
-        that._lineChart.SetPriceScale(minPrice, maxPrice);
+        this.setPriceStatistics(startPrice, lastPrice);
+        this._lineChart.SetPriceScale(minPrice, maxPrice);
         zingchart.render({
-          id : that.placeHolderId,
-          data : that._lineChart.getChartConfigData(),
+          id : this.chartPlaceholderId,
+          data : this._lineChart.getChartConfigData(),
           height: "100%",
           width: "100%"
       });
@@ -130,30 +130,24 @@ export class ExchangeThumbnailComponent implements OnInit {
   }
 
   /** Show some basic statistics in the header */
-  private setPriceStatistics(startPrice: number, lastPrice: number) {
+  private setPriceStatistics(startPrice: number, price: number) {
     //Set last price
-    const decimals = Utils.getPrecisionDecimals(lastPrice);
-    const priceAsString = lastPrice.toFixed(decimals);
-    const assetsDescDIV = $("#"+this.placeHolderId).siblings(".assetsDescription");
-    $(assetsDescDIV).find(".lastPrice").text(priceAsString);
+    const decimals = Utils.getPrecisionDecimals(price);
+    this.lastPrice = price.toFixed(decimals);
 
     //Set daily change as percentage
-    let dailyChange = lastPrice / startPrice -1.0;
+    let dailyChange = price / startPrice -1.0;
     dailyChange *= 100.0;
-    const changeAsString = (dailyChange <= 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
-    const cssClass = dailyChange < 0.0 ? "red" : "green";
+    this.dailyChangeDesc = (dailyChange <= 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
     this._lineChart.SetLineColor(dailyChange < 0.0 ? Constants.Style.RED : Constants.Style.GREEN);
     this._lineChart.SetBackgroundColor(dailyChange < 0.0 ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN);
-
-    const aDiv = $(assetsDescDIV).find(".dailyChangePercent");
-    $(aDiv).removeClass("red").removeClass("green").addClass(cssClass).text(changeAsString);
   }
 
   /** Reload the chart every 8 minutes */
   private initChartStream() {
     this.renderLineChart();
 
-    setTimeout(function() {
+    setTimeout(() => {
       this.initChartStream();
     }, Constants.CHART_INTERVAL);
   };

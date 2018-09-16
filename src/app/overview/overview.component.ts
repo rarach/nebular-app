@@ -15,7 +15,6 @@ export class OverviewComponent implements OnInit {
     //Dummies for now
     new ExchangePair("highVolume01", KnownAssets.XLM, KnownAssets.MOBI),
     new ExchangePair("highVolume02", KnownAssets.XLM, KnownAssets["BTC-Stronghold"]),
-new ExchangePair("debug", KnownAssets["BTC-Papaya"], new Asset("NO_SUCH", "this is test", null, new Account("GGG", "ggg", "example.com"))),
     new ExchangePair("featured", KnownAssets.XLM, KnownAssets.REPO),
     new ExchangePair("highVolume03", KnownAssets.XCN, KnownAssets.HKDT),
     new ExchangePair("highVolume04", KnownAssets.XLM, KnownAssets.RMT),

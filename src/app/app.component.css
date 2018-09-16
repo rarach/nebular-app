@@ -25,13 +25,6 @@ footer#footer > div {
     src: url('../assets/fonts/Truly_Madly_Dpad.otf');
 }
 
-.green {
-    color: #46B446;
-}
-.red {
-    color: #ED8117;
-}
-
 a.link {
     font-family: "Truly Madly Dpad";
     font-size: 1.4em;

@@ -24,6 +24,13 @@ html, body {
     color: red;
 }
 
+.green {
+    color: #46B446;
+}
+.red {
+    color: #ED8117;
+}
+
 /* For pages Overview and My Exchanges */
 div.exchanges-frame {
     padding-left:40px;
