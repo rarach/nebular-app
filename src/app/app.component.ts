@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
 import { Title }     from '@angular/platform-browser';
 import { AssetService } from './asset.service';
+import * as $ from "jquery";
 
 
 @Component({

@@ -9,6 +9,7 @@ import { ExchangeComponent } from './exchange/exchange.component';
 import { ConfigurationComponent } from './configuration/configuration.component';
 import { PageNotFoundComponent } from './not-found.component';
 import { AssetService } from './asset.service';
+import { ExchangeThumbnailComponent } from './exchange-thumbnail/exchange-thumbnail.component';
 
 
 @NgModule({
@@ -18,7 +19,8 @@ import { AssetService } from './asset.service';
     MyExchangesComponent,
     ExchangeComponent,
     ConfigurationComponent,
-    PageNotFoundComponent
+    PageNotFoundComponent,
+    ExchangeThumbnailComponent
   ],
   imports: [
     BrowserModule,

@@ -6,7 +6,7 @@ import { KnownAssets } from '../model/asset.model';
 @Component({
   selector: 'app-overview',
   templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css', '../../assets/styles/exchange_thumbnail.css']
+  styleUrls: ['./overview.component.css']
 })
 export class OverviewComponent implements OnInit {
   exchangeList: ExchangePair[] = [
