@@ -1,10 +1,13 @@
 import { Component, Input, OnInit } from '@angular/core';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
+import zingchart from "zingchart";
 
 import { Constants } from "../model/constants";
 import { ExchangePair } from '../model/exchange-pair.model';
 import { LineChartData } from '../model/line-chart-data.model';
 import { Utils } from 'src/app/utils';
+import { HorizonRestService } from '../horizon-rest.service';
 
 
 @Component({
@@ -18,7 +21,7 @@ export class ExchangeThumbnailComponent implements OnInit {
   _placeHolderId: string = null;
   private _lineChart: LineChartData = null;
 
-  constructor(private router: Router) { }
+  constructor(private horizonService: HorizonRestService, private router: Router) { }
 
   getUrl() {
     return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
@@ -44,7 +47,9 @@ export class ExchangeThumbnailComponent implements OnInit {
                 this.exchange.counterAsset.ToUrlParameters("counter") + "&order=desc" + dataRange;
     const that = this;
 
-    $.getJSON(url, function(data) {       //TODO: Angular, DI
+    this.horizonService.getTradeAggregations(this.exchange, 900000).subscribe(
+      success => {
+        const data = success as any;
         $("#"+that._placeHolderId).empty();
         if (data._embedded.records.length == 0) {
             that._lineChart.ShowWarning("No trades in last 24 hours");
@@ -103,11 +108,19 @@ export class ExchangeThumbnailComponent implements OnInit {
 
         that.setPriceStatistics(startPrice, lastPrice);
         that._lineChart.SetPriceScale(minPrice, maxPrice);
-        that._lineChart.Render();   //TODO: that should be here, not in the data class
-    })
-    .fail(function(xhr, textStatus, error) {
-      that._lineChart.ShowError(textStatus + " - " + xhr.statusText + " (" + xhr.status + ") " + xhr.responseText);
-    });
+        zingchart.render({
+          id : that._placeHolderId,
+          data : that._lineChart.getChartConfigData(),
+          height: "100%",
+          width: "100%"
+      });
+      },
+      error => {
+        const errorResponse = error as HttpErrorResponse;
+        const userMessage = errorResponse.error.detail + " - " + errorResponse.statusText + " (" + errorResponse.status + ") ";
+        that._lineChart.ShowError(userMessage);
+      }
+    );
   }
 
   /** Show some basic statistics in the header */

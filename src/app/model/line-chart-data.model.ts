@@ -1,4 +1,3 @@
-import zingchart from "zingchart";
 import { Constants } from "./constants";
 
 
@@ -18,6 +17,10 @@ export class LineChartData {
     ClearData() {
         this._chartConfig.series[0].values = [];
     };
+
+    getChartConfigData() {
+        return this._chartConfig;
+    }
 
     /** @public Add data for one point in the chart, i.e. timestamp and price */
     AddPointData(point: Array<number>) {
@@ -71,22 +74,12 @@ export class LineChartData {
         this._chartConfig.series[0]["line-color"] = color;
     };
 
-    ShowError(errorMessage: string) {
+    ShowError(errorMessage: string) {       //TODO: this is generally bad thing to do in a data container. Move it up (to the caller)
         $("#" + this.placeholderId).html("<div class='error'>" + errorMessage + "</div>");      //TODO: do it the Angular way
     };
 
     ShowWarning = function(message: string) {
         $("#" + this.placeholderId).html("<div class='chartWarning'>" + message + "</div>");    //TODO: do it the Angular way
-    };
-
-    /** @public Render the line chart. */
-    Render() {                          //TODO: THIS DOESN'T BELONG HERE! This is just a passive data container
-        zingchart.render({
-            id : this.placeholderId,
-            data : this._chartConfig,
-            height: "100%",
-            width: "100%"
-        });
     };
 
     /** URL to be opened when user clicks the context menu item "Open in new tab" */

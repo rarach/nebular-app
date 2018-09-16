@@ -1,7 +1,9 @@
 import { Component, OnInit } from '@angular/core';
 
 import { ExchangePair } from "../model/exchange-pair.model";
-import { KnownAssets } from '../model/asset.model';
+import { KnownAssets, Asset } from '../model/asset.model';
+import { Account } from '../model/account.model';
+
 
 @Component({
   selector: 'app-overview',
@@ -13,8 +15,14 @@ export class OverviewComponent implements OnInit {
     //Dummies for now
     new ExchangePair("highVolume01", KnownAssets.XLM, KnownAssets.MOBI),
     new ExchangePair("highVolume02", KnownAssets.XLM, KnownAssets["BTC-Stronghold"]),
+new ExchangePair("debug", KnownAssets["BTC-Papaya"], new Asset("NO_SUCH", "this is test", null, new Account("GGG", "ggg", "example.com"))),
     new ExchangePair("featured", KnownAssets.XLM, KnownAssets.REPO),
-    new ExchangePair("highVolume03", KnownAssets.XCN, KnownAssets.HKDT)
+    new ExchangePair("highVolume03", KnownAssets.XCN, KnownAssets.HKDT),
+    new ExchangePair("highVolume04", KnownAssets.XLM, KnownAssets.RMT),
+    new ExchangePair("highVolume05", KnownAssets["CNY-RippleFox"], KnownAssets.XCN),
+    new ExchangePair("highTradeCount01", KnownAssets.XLM, KnownAssets.EURT),
+    new ExchangePair("highTradeCount02", KnownAssets.XLM, KnownAssets["USD-AnchorUsd"]),
+    new ExchangePair("highTradeCount03", KnownAssets.XLM, KnownAssets.ABDT)
   ];
 
   constructor() { }
