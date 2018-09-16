@@ -12,7 +12,10 @@
       </div>
       <div class="dailyChangePercent green">+0.00%</div>
   </div>
-  <div id="{{_placeHolderId}}" class="exchange-link-chart">
-      <div class="chartWarning">Loading data...</div>
+  <div id="{{placeHolderId}}" class="exchange-link-chart">
+      <div [ngClass]="{
+          'chartWarning': dataStatus === DataStatus.NoData,
+          'error': dataStatus === DataStatus.Error
+        }">{{userMessage}}</div>
   </div>
 </div>

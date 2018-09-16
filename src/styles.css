@@ -20,6 +20,10 @@ html, body {
     color: #5B6A72;
 }
 
+.error {
+    color: red;
+}
+
 /* For pages Overview and My Exchanges */
 div.exchanges-frame {
     padding-left:40px;

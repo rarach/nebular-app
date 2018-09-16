@@ -8,6 +8,7 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { LineChartData } from '../model/line-chart-data.model';
 import { Utils } from 'src/app/utils';
 import { HorizonRestService } from '../horizon-rest.service';
+import { DataStatus } from '../model/data-status.enum';
 
 
 @Component({
@@ -18,7 +19,9 @@ import { HorizonRestService } from '../horizon-rest.service';
 export class ExchangeThumbnailComponent implements OnInit {
   @Input() exchange: ExchangePair;
 
-  _placeHolderId: string = null;
+  placeHolderId: string = null;
+  DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.NoData;
+  userMessage: string = "Loading data...";
   private _lineChart: LineChartData = null;
 
   constructor(private horizonService: HorizonRestService, private router: Router) { }
@@ -29,8 +32,8 @@ export class ExchangeThumbnailComponent implements OnInit {
 
   /** Setup and render the exchange chart */
   ngOnInit() {
-    this._placeHolderId = "exch_" + this.exchange.id;
-    this._lineChart = new LineChartData(this._placeHolderId);
+    this.placeHolderId = "exch_" + this.exchange.id;
+    this._lineChart = new LineChartData();
 
     this._lineChart.ContextMenuLink(this.getUrl());
     this.initChartStream();
@@ -50,10 +53,11 @@ export class ExchangeThumbnailComponent implements OnInit {
     this.horizonService.getTradeAggregations(this.exchange, 900000).subscribe(
       success => {
         const data = success as any;
-        $("#"+that._placeHolderId).empty();
+        $("#"+that.placeHolderId).empty();
         if (data._embedded.records.length == 0) {
-            that._lineChart.ShowWarning("No trades in last 24 hours");
-            return;
+          this.dataStatus = DataStatus.NoData;
+          this.userMessage = "No trades in last 24 hours";
+          return;
         }
         //Check age of last trade
         const minDate = new Date();
@@ -62,13 +66,14 @@ export class ExchangeThumbnailComponent implements OnInit {
         const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
         if (firstTimestamp < yesterday) {
             //Last trade is older than 24hrs => we have no data
-            that._lineChart.ShowWarning("No trades in last 24 hours");
+            this.dataStatus = DataStatus.NoData;
+            this.userMessage = "No trades in last 24 hours";
             return;
         }
 
         that._lineChart.ClearData();
 
-        $("#"+that._placeHolderId).empty();
+        $("#"+that.placeHolderId).empty();
         let minPrice = Number.MAX_VALUE;
         let maxPrice = -1.0;
         let lastPrice = -999999;
@@ -109,7 +114,7 @@ export class ExchangeThumbnailComponent implements OnInit {
         that.setPriceStatistics(startPrice, lastPrice);
         that._lineChart.SetPriceScale(minPrice, maxPrice);
         zingchart.render({
-          id : that._placeHolderId,
+          id : that.placeHolderId,
           data : that._lineChart.getChartConfigData(),
           height: "100%",
           width: "100%"
@@ -117,8 +122,9 @@ export class ExchangeThumbnailComponent implements OnInit {
       },
       error => {
         const errorResponse = error as HttpErrorResponse;
-        const userMessage = errorResponse.error.detail + " - " + errorResponse.statusText + " (" + errorResponse.status + ") ";
-        that._lineChart.ShowError(userMessage);
+        this.userMessage = "Couldn't load data for this exchange (server: " +
+                           errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+        this.dataStatus = DataStatus.Error;
       }
     );
   }
@@ -128,7 +134,7 @@ export class ExchangeThumbnailComponent implements OnInit {
     //Set last price
     const decimals = Utils.getPrecisionDecimals(lastPrice);
     const priceAsString = lastPrice.toFixed(decimals);
-    const assetsDescDIV = $("#"+this._placeHolderId).siblings(".assetsDescription");
+    const assetsDescDIV = $("#"+this.placeHolderId).siblings(".assetsDescription");
     $(assetsDescDIV).find(".lastPrice").text(priceAsString);
 
     //Set daily change as percentage

@@ -5,12 +5,7 @@ import { Constants } from "./constants";
  * View-model to simple line chart of historical trades for past 24 hours. Uses ZingChart to draw SVG.
  */
 export class LineChartData {
-    /**
-     * Create new data object to keep visual properties and actual data for ZingChart chart
-     * @param placeholderId an element to put the chart into
-     */
-    constructor(public readonly placeholderId: string){}
-
+    constructor(){}
 
 
     /** @public Delete all data of this chart. Should be called before updating with new data. */
@@ -18,7 +13,8 @@ export class LineChartData {
         this._chartConfig.series[0].values = [];
     };
 
-    getChartConfigData() {
+    /** Returns the object to be used as ZingChart configuration and data */
+    getChartConfigData(): Object {
         return this._chartConfig;
     }
 
@@ -72,14 +68,6 @@ export class LineChartData {
      */
     SetLineColor(color: string) {
         this._chartConfig.series[0]["line-color"] = color;
-    };
-
-    ShowError(errorMessage: string) {       //TODO: this is generally bad thing to do in a data container. Move it up (to the caller)
-        $("#" + this.placeholderId).html("<div class='error'>" + errorMessage + "</div>");      //TODO: do it the Angular way
-    };
-
-    ShowWarning = function(message: string) {
-        $("#" + this.placeholderId).html("<div class='chartWarning'>" + message + "</div>");    //TODO: do it the Angular way
     };
 
     /** URL to be opened when user clicks the context menu item "Open in new tab" */
