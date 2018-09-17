@@ -10,7 +10,7 @@ import { PageNotFoundComponent } from "./not-found.component";
 
 const appRoutes: Routes = [
   { path: 'overview', component: OverviewComponent },
-  { path: 'exchange', component: ExchangeComponent },
+  { path: 'exchange/:baseAssetId/:counterAssetId', component: ExchangeComponent },
   { path: 'myExchanges', component: MyExchangesComponent },
   { path: "configuration", component: ConfigurationComponent },
   { path: '', redirectTo: '/overview', pathMatch: 'full' },

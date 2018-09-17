@@ -1,0 +1,75 @@
+div#baseAssetCodeDropDown-dd-placeholder,
+div#counterAssetCodeDropDown-dd-placeholder {
+    float: left;
+}
+div#baseAssetAnchorDropDown-dd-placeholder,
+div#counterAssetAnchorDropDown-dd-placeholder {
+    float: left;
+    margin-left:4px;
+}
+
+div.chartButton {
+    float: left;
+    font-size: 2em;
+    /*Lots of hard-code here :-( */
+    line-height: 38px;
+}
+
+div.swapButton {
+    font-weight: bold;
+    width: 45px;
+    text-align: center;
+}
+div.swapButton>a {
+    color: #355572;
+    text-decoration: none;
+}
+
+div.intervalButtons {
+    font-size: 1.1em;
+    width: 220px;
+    padding-left: 8px;
+}
+
+thead> tr {
+    border-bottom: 1px solid #5B6A72;
+}
+
+#tradeHistoryTable {
+    border-right: 1px solid #5B6A72;
+    border-left: 1px solid #5B6A72;
+    border-spacing: 0px;
+}
+
+#tradeHistoryData td.buy {
+    color: #46B446;
+}
+#tradeHistoryData td.sell {
+    color: #ED8117;
+}
+#tradeHistoryData td {
+    border-bottom: 1px solid #5B6A72;
+    padding-left: 5px;
+    padding-right: 15px;
+}
+
+#orderBookBids td, #orderBookAsks td {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+#orderBookBids tr.linked, #orderBookAsks tr.linked {
+    font-style: italic;
+    color: #8396a0;
+}
+
+div#currentPrice {
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 14px;
+}
+div#currentPrice > span.buy {
+    color: #46b446; /*#3aba3a; rgb(184, 233, 134); */
+}
+div#currentPrice > span.sell {
+    color: #ED8117;
+}

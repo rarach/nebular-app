@@ -28,7 +28,7 @@ export class ExchangeThumbnailComponent implements OnInit {
 
   private _lineChart: LineChartData = null;
 
-  constructor(private horizonService: HorizonRestService, private router: Router) { }
+  constructor(private router: Router, private horizonService: HorizonRestService) { }
 
   getUrl() {
     return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
@@ -118,7 +118,7 @@ export class ExchangeThumbnailComponent implements OnInit {
           data : this._lineChart.getChartConfigData(),
           height: "100%",
           width: "100%"
-      });
+        });
       },
       error => {
         const errorResponse = error as HttpErrorResponse;
