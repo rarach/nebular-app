@@ -14,7 +14,7 @@ export class CandlestickChartData {
      * @param candle candle data in form [timestamp_as_millis, [open, high, low, close]]
      * @param volume volume data in form [timestamp_as_millis, ]
      */
-    AddCandleData(candle: Array<object>, volume: Array<number>) {
+    addCandleData(candle: Array<object>, volume: Array<number>) {
         this._configCandleSticks.series[0].values.push(candle);
         this._configCandleSticks.series[1].values.push(volume);
     };
@@ -31,7 +31,7 @@ export class CandlestickChartData {
      * Set resolution of X axis in milliseconds, i.e. how much time does one candle represent.
      * @param millisInCandle number of miliseconds in one candle
      */
-    SetCandleSize(millisInCandle: number) {
+    setCandleSize(millisInCandle: number) {
         this._configCandleSticks["scale-x"]["step"] = millisInCandle.toString();
     };
 
@@ -64,25 +64,15 @@ export class CandlestickChartData {
      * Set precision of volume tooltips
      * @param decimals number of digits to be shown after decimal separator
      */
-    SetVolumeDecimals(decimals: number) {
+    setVolumeDecimals(decimals: number) {
         this._configCandleSticks.series[1]["guide-label"].decimals = decimals;
     };
 
     /** Set range of lower part of X axis (i.e. volume) by giving upper bound. */
-    SetVolumeScale(maxVolume: number) {
+    setVolumeScale(maxVolume: number) {
         const step = maxVolume / 3.0;
         this._configCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
     };
-
-    //TODO: no reason for this in a data container
-/*    ShowError = function(errorMessage) {
-        $("#" + _placeholderId).html("<div class='error'>" + errorMessage + "</div>");
-    };
-
-    this.ShowWarning = function(message) {
-        $("#" + _placeholderId).html("<div class='chartWarning'>" + message + "</div>");
-    };
-*/
 
     /** Get the chart data ready to be used by ZingChart */
     getData() {

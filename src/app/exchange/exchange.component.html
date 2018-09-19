@@ -50,7 +50,11 @@
       </table>
   </div>
   <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
-      <div id="marketChart" style="min-height: 500px; height: 100%;">
+      <div id="marketChart" style="min-height: 500px; height: 100%; line-height: 70px;"
+           [ngClass]="{
+                'chartWarning': dataStatus === DataStatus.NoData,
+                'error': dataStatus === DataStatus.Error
+           }">
           <br/><br/>{{chartMessage}}
       </div>
   </div>

@@ -4,13 +4,17 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import zingchart from "zingchart";
 
-import { Asset } from '../model/asset.model';
+import { Account } from "../model/account.model";
+import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../asset.service';
 import { CandlestickChartData } from '../model/candlestick-chart-data';
+import { Constants, GETParams } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../horizon-rest.service';
 import { Utils } from '../utils';
+
+declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 
 
 @Component({
@@ -30,7 +34,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   //View-model properties
   exchange: ExchangePair = null;
   DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.NoData;
-  chartMessage: string = "Loading chart...";
+  chartMessage: string = "Loading data...";
 
 
   constructor(private route: ActivatedRoute, private router: Router, private assetService: AssetService, private horizonService: HorizonRestService) {
@@ -57,24 +61,32 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     });
     //Handle GET parameter 'interval'
     this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-      const intParam = params.get('interval');
+      const intParam = params.get(GETParams.INTERVAL);
       this._chartInterval = Utils.intervalAsMilliseconds(intParam);
     });
 
     //TODO: order books, past trades, drop-downs...
+    this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
+    this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
+    this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
+    this.setupAnchorDropDown(this._counterAnchorDdId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
+
+
+
+
     this.renderCandlestickChart();
   }
 
   ngOnDestroy() {
     this._routeSubscriber.unsubscribe();
+    this._getParamsSubscriber.unsubscribe();
   }
 
   swapAssets() {
     const url = "exchange/" + this.exchange.counterAsset.ToExchangeUrlParameter() + "/" +
-                this.exchange.baseAsset.ToExchangeUrlParameter() + "?interval=" + this._chartInterval;
+                this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this._chartInterval;
     this.router.navigateByUrl(url);
   }
-
 
 
   private renderCandlestickChart() {
@@ -83,12 +95,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     this.horizonService.getTradeAggregations(this.exchange, 900000, 70).subscribe(
       success => {
         const data = success as any;
-        $("#marketChart").empty();      //TODO: Angular way
         if (data._embedded.records.length == 0) {
+          this.dataStatus = DataStatus.NoData;
           this.chartMessage = "No data";    //TODO: "No trades in last XYZ days"
           return;
         }
 
+        $("#marketChart").empty();    //TODO: Angular way
         let minPrice = Number.MAX_VALUE;
         let maxPrice = -1.0;
         let maxVolume = -1.0;
@@ -121,15 +134,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
           }
           volumeSum += volume;
           const volumeBar = [record.timestamp, volume];
-          chartData.AddCandleData(candle, volumeBar);
+          chartData.addCandleData(candle, volumeBar);
           chartData.setStartTime(record.timestamp);
         }
 
-        chartData.SetCandleSize(this._chartInterval);
-        chartData.SetVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but works*/);
+        chartData.setCandleSize(this._chartInterval);
+        chartData.setVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but works*/);
         chartData.setPriceScale(minPrice, maxPrice);
         //Set volume chart range
-        chartData.SetVolumeScale(maxVolume);
+        chartData.setVolumeScale(maxVolume);
 
         zingchart.render({
           id : "marketChart",
@@ -155,4 +168,137 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + close);
     $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
   }
+
+  private setupAssetCodesDropDown(dropDownId: string, selectedAssetCode: string) {
+    //In case this is re-init, destroy previous instance
+    jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
+
+    const assetList: object[] = new Array();
+    let found: boolean = false;
+    this.assetService.getAssetCodesForExchange().forEach(function(assetCode){
+        //Search for asset full name among know assets
+        let assetFullName: string = assetCode + " (custom)";
+        for (let asset in KnownAssets) {
+            if (KnownAssets[asset].AssetCode === assetCode) {
+                assetFullName = KnownAssets[asset].FullName;
+                break;
+            }
+        }
+        if (assetCode === selectedAssetCode) {
+            found = true;
+        }
+
+        assetList.push({
+            text: assetCode,
+            value: assetCode,
+            selected: assetCode === selectedAssetCode,
+            description: assetFullName,
+            imageSrc: "./assets/images/asset_icons/" + assetCode + ".png"
+        });
+    });
+
+    //Some unknown code
+    if (!found) {
+        assetList.splice(0, 0, {    //Insert at beginning
+            text: selectedAssetCode,
+            value: selectedAssetCode,
+            selected: true,
+            description: selectedAssetCode + " (custom)",
+            imageSrc: "./assets/images/asset_icons/" + selectedAssetCode + ".png"   //In case we don't have it, web serice is configured to return unknown.png as 404
+        });
+    }
+
+    assetList.push({
+        text: "[+] Add",
+        value: "ADD_CUSTOM",
+        description: "Add asset manually"
+    });
+
+    const that = this;
+    jQuery("#" + dropDownId).ddslick({
+        data: assetList,
+        width: 150,
+        onSelected: function (data) {
+            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                window.location.href = Constants.CONFIGURATION_URL;
+            }
+            else {
+                that.changeAssets(false);
+            }
+        }
+    });
+  };
+
+
+  private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
+    //In case this is re-init, destroy previous instance
+    jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
+    const issuersArray = this.assetService.GetIssuersByAssetCode(assetCode);
+    const issuerAccount = this.assetService.GetIssuerByAddress(assetIssuer.address);
+    const assetIssuersDdData = new Array();
+    let found = assetIssuer.IsNativeIssuer();
+    for (let i=0; i<issuersArray.length; i++) {
+        assetIssuersDdData.push({
+            text: issuersArray[i].shortName,
+            description: issuersArray[i].domain,
+            value: issuersArray[i].address,
+            selected: null != issuerAccount && issuersArray[i].address === issuerAccount.address
+        });
+        if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+            found = true;
+        }
+    }
+
+    //Some unknown address, probably from manual URL
+    if (!found) {
+        assetIssuersDdData.splice(0, 0, {    //Insert at beginning
+            text: assetIssuer.shortName,
+            description: "unknown (" + assetIssuer.address + ")",
+            value: assetIssuer.address,
+            selected: true
+        });
+    }
+
+    assetIssuersDdData.push({
+        text: "[+] Manage",
+        value: "ADD_CUSTOM",
+        description: "Add anchor manually"
+    });
+
+    const that = this;
+    jQuery("#" + dropDownId).ddslick({
+        data: assetIssuersDdData,
+        width: 250,
+        onSelected: function (data) {
+            if ("ADD_CUSTOM"  === data.selectedData.value) {
+                const url = Constants.CONFIGURATION_URL + "?" + GETParams.ASSET_TYPE + "=" + assetCode;
+            }
+            else {
+              that.changeAssets(true);
+            }
+        }
+    });
+  };
+
+  /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
+  private changeAssets(selectingAnchor) {
+    let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
+    if (selectingAnchor) {
+        const baseIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+        if (baseIssuer != null) {
+            urlAssets += "-" + baseIssuer;
+        }
+    }
+
+    urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
+    if (selectingAnchor) {
+        const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+        if (counterIssuer != null) {
+            urlAssets += "-" + counterIssuer;
+        }
+    }
+
+    let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this._chartInterval;
+    this.router.navigateByUrl(newUrl);
+  };
 }

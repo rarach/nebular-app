@@ -28,9 +28,11 @@
               "src/styles.css"
             ],
             "scripts": [
+              "src/assets/scripts/page.js",
               "node_modules/jquery/dist/jquery.min.js",
               "src/assets/scripts/3rdParty/bootstrap.min.js",
-              "node_modules/zingchart/client/zingchart.min.js"
+              "node_modules/zingchart/client/zingchart.min.js",
+              "src/assets/scripts/3rdParty/jquery.ddslick.js"
             ]
           },
           "configurations": {
@@ -81,9 +83,11 @@
               "src/styles.css"
              ],
             "scripts": [
+              "src/assets/scripts/page.js",
               "node_modules/jquery/dist/jquery.min.js",
               "src/assets/scripts/3rdParty/bootstrap.min.js",
-              "node_modules/zingchart/client/zingchart.min.js"
+              "node_modules/zingchart/client/zingchart.min.js",
+              "src/assets/scripts/3rdParty/jquery.ddslick.js"
             ],
             "assets": [
               "src/favicon.ico",
