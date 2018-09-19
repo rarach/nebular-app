@@ -4,16 +4,16 @@
   </div>
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div style="width:450px; float: left;">
-          <div id="baseAssetCodeDropDown">Asset code drop-down here</div>
-          <div id="baseAssetAnchorDropDown">Anchor drop-down here</div>
+          <div id="baseAssetCodeDd">Asset code drop-down here</div>
+          <div id="baseIssuerDd">Anchor drop-down here</div>
           <div class="chartButton swapButton">
               <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
           </div>
       </div>
 
       <div style="width: 425px; float: left;">
-          <div id="counterAssetCodeDropDown">Asset code drop-down here</div>
-          <div id="counterAssetAnchorDropDown">Anchor drop-down here</div>
+          <div id="counterAssetCodeDd">Asset code drop-down here</div>
+          <div id="counterIssuerDd">Anchor drop-down here</div>
       </div>
       <div class="chartButton intervalButtons">
           <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
@@ -51,7 +51,7 @@
   </div>
   <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
       <div id="marketChart" style="min-height: 500px; height: 100%;">
-          <br/><br/>Loading chart...
+          <br/><br/>{{chartMessage}}
       </div>
   </div>
   <div class="col-lg-3 col-md-4 col-sm-4">
