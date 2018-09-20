@@ -25,7 +25,7 @@ declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 export class ExchangeComponent implements OnInit, OnDestroy {
   private _routeSubscriber: Subscription;
   private _getParamsSubscriber: Subscription;
-  private _chartInterval: number = 900000;    //15min candles by default
+  chartInterval: number = 900000;    //15min candles by default
   private readonly _baseAssetDdId = "baseAssetCodeDd";
   private readonly _baseAnchorDdId = "baseIssuerDd";
   private readonly _counterAssetDdId = "counterAssetCodeDd";
@@ -33,7 +33,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
   //View-model properties
   exchange: ExchangePair = null;
-  DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.NoData;
+  DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
   chartMessage: string = "Loading data...";
 
 
@@ -62,7 +62,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     //Handle GET parameter 'interval'
     this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
       const intParam = params.get(GETParams.INTERVAL);
-      this._chartInterval = Utils.intervalAsMilliseconds(intParam);
+      this.chartInterval = Utils.intervalAsMilliseconds(intParam);
     });
 
     //TODO: order books, past trades, drop-downs...
@@ -84,10 +84,17 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
   swapAssets() {
     const url = "exchange/" + this.exchange.counterAsset.ToExchangeUrlParameter() + "/" +
-                this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this._chartInterval;
+                this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
     this.router.navigateByUrl(url);
   }
 
+  setChartInterval(intervalDesc: string) {
+    this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
+    this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
+
+    const url = this.router.createUrlTree([{interval: this.chartInterval}], {relativeTo: this.route}).toString();
+    this.router.navigateByUrl(url);
+  };
 
   private renderCandlestickChart() {
     const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
@@ -138,7 +145,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
           chartData.setStartTime(record.timestamp);
         }
 
-        chartData.setCandleSize(this._chartInterval);
+        chartData.setCandleSize(this.chartInterval);
         chartData.setVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but works*/);
         chartData.setPriceScale(minPrice, maxPrice);
         //Set volume chart range
@@ -298,7 +305,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
     }
 
-    let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this._chartInterval;
+    let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
     this.router.navigateByUrl(newUrl);
   };
 }

@@ -25,16 +25,17 @@ footer#footer > div {
     src: url('../assets/fonts/Truly_Madly_Dpad.otf');
 }
 
-a.link {
+:host ::ng-deep a.link {
     font-family: "Truly Madly Dpad";
     font-size: 1.4em;
+    cursor: pointer;
     text-decoration: none;
     color:#355572;
 }
-a.link:hover, a.link:focus {
+:host ::ng-deep a.link:hover, :host ::ng-deep a.link:focus {
     color: #4d81b0;
 }
-a.link.selected {
+:host ::ng-deep a.link.selected {
     font-weight: bold;
     color: #4d81b0;
 }

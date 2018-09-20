@@ -16,11 +16,11 @@
           <div id="counterIssuerDd">Anchor drop-down here</div>
       </div>
       <div class="chartButton intervalButtons">
-          <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
-          <a id="interval900000" class="link" href="#" onclick="exchangeUi.SetChartInterval('15min'); return false;">15min</a>
-          <a id="interval3600000" class="link" href="#" onclick="exchangeUi.SetChartInterval('1hour'); return false;">hour</a>
-          <a id="interval86400000" class="link" href="#" onclick="exchangeUi.SetChartInterval('1day'); return false;">day</a>
-          <a id="interval604800000" class="link" href="#" onclick="exchangeUi.SetChartInterval('1week'); return false;">week</a>
+        <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
+        <a class="link" [class.selected]="chartInterval === 900000" (click)="setChartInterval('15min');">15min</a>&nbsp;
+        <a class="link" [class.selected]="chartInterval === 3600000" (click)="setChartInterval('1hour');">hour</a>&nbsp;
+        <a class="link" [class.selected]="chartInterval === 86400000" (click)="setChartInterval('1day');">day</a>&nbsp;
+        <a class="link" [class.selected]="chartInterval === 604800000" (click)="setChartInterval('1week');">week</a>
       </div>
   </div>
 

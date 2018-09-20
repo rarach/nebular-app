@@ -1,9 +1,9 @@
-div#baseAssetCodeDd-dd-placeholder,
-div#counterAssetCodeDd-dd-placeholder {
+:host ::ng-deep div#baseAssetCodeDd-dd-placeholder,
+:host ::ng-deep div#counterAssetCodeDd-dd-placeholder {
     float: left;
 }
-div#baseIssuerDd-dd-placeholder,
-div#counterIssuerDd-dd-placeholder {
+:host ::ng-deep div#baseIssuerDd-dd-placeholder,
+:host ::ng-deep div#counterIssuerDd-dd-placeholder {
     float: left;
     margin-left:4px;
 }

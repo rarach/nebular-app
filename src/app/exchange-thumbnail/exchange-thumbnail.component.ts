@@ -52,7 +52,6 @@ export class ExchangeThumbnailComponent implements OnInit {
     this.horizonService.getTradeAggregations(this.exchange, 900000).subscribe(
       success => {
         const data = success as any;
-        $("#"+this.chartPlaceholderId).empty();   //TODO: DYOR. Maybe Angular has some smart means
         if (data._embedded.records.length == 0) {
           this.dataStatus = DataStatus.NoData;
           this.userMessage = "No trades in last 24 hours";
