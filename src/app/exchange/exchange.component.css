@@ -8,6 +8,10 @@
     margin-left:4px;
 }
 
+:host ::ng-deep thead> tr {
+    border-bottom: 1px solid #5B6A72;
+}
+
 #swapAssetsLink {
     cursor: pointer;
 }
@@ -40,10 +44,6 @@ div.chartWarning {
     line-height: 70px;
     text-align: center;
     font-size: 25px;
-}
-
-thead> tr {
-    border-bottom: 1px solid #5B6A72;
 }
 
 #orderBookBids td, #orderBookAsks td {

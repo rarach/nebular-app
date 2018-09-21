@@ -36,4 +36,23 @@ export class Utils {
         //Default to 15 minutes
         return 900000;
     }
+
+    static formatPrice(price) {        //TODO: I smell this will be reused elsewhere
+        const decimals = Utils.getPrecisionDecimals(price);
+        return Utils.formatNumber(price, decimals);
+    }
+    
+    private static formatNumber(value, decimals) {
+        value = parseFloat(value.toString());     //Ensure number
+        const numString = decimals ? value.toFixed(decimals) : value.toString();
+        return Utils.trimZeros(numString);
+    }
+
+    private static trimZeros(str: string) {
+        if (str.indexOf('.') <= -1) {
+            return str;
+        }
+        str = str.replace(/0{1,99}$/, '');  //Trim trailing zeros
+        return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
+    }
 }

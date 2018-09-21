@@ -2,6 +2,7 @@ import { Component, OnInit, Input } from '@angular/core';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../horizon-rest.service';
 import { ExecutedTrade } from '../model/executed-trade.model';
+import { Utils } from '../utils';
 
 
 @Component({
@@ -12,14 +13,11 @@ import { ExecutedTrade } from '../model/executed-trade.model';
 export class TradeHistoryComponent implements OnInit {
   @Input() readonly exchange: ExchangePair;
   @Input() readonly recentTrades: ExecutedTrade[];
-  message: string = "Loading data...";
+  Utils = Utils;  //template accessibility
 
 
   constructor(private readonly horizonService: HorizonRestService){}
 
   ngOnInit() {
-    if (this.recentTrades.length === 0) {
-      this.message = "No recent trades on this exchange";
-    }
   }
 }

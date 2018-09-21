@@ -73,6 +73,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       const intParam = params.get(GETParams.INTERVAL);
       this.chartInterval = Utils.intervalAsMilliseconds(intParam);
     });
+
+    this.initPastTradesStream();
   }
 
   ngOnDestroy() {
@@ -187,25 +189,27 @@ this.debug += "setInterval(); "
       $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
   }
 
+  /****************************** Trade history (right side panel) */
   private updateTradeHistory() {
       
     this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
         success => {
             const data = success as any;
     
-            $("#tradeHistoryData").empty();     //TODO: properly
+//???            $("#tradeHistoryData").empty();     //TODO: properly
             this.tradeHistory = new Array<ExecutedTrade>();
             if (data._embedded.records.length === 0) {
                 document.title = this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code;
                 this.lastPrice = 0.0;
             }
             else {
-                document.title = this.currentPriceTitle(data._embedded.records[0]);
+                document.title = this.currentPriceTitle(data._embedded.records[0]);     //TODO: there must be a nicer way
 //todo                $("#currentPrice").html(/*TODO: ehm...Angular?*/currentPriceSpan(data._embedded.records[0]));
                 for(let record of data._embedded.records) {
                     const sellPrice = record.price.n / record.price.d;
                     const time = new Date(record.ledger_close_time);
-                    this.tradeHistory.push(new ExecutedTrade(time, sellPrice, record.base_amount, record.base_account, record.counter_account));
+                    const tradeType = record.base_is_seller ? "buy" : "sell";
+                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, record.base_amount, record.base_account, record.counter_account));
                 };
             }
         },
@@ -214,30 +218,22 @@ this.debug += "setInterval(); "
         });
   }
 
+    private initPastTradesStream() {
+        if (this.exchange.baseAsset != null && this.exchange.counterAsset != null) {    //We might not be done initializing
+            this.updateTradeHistory();
+        }
+        setTimeout(() => {
+            this.initPastTradesStream();
+        }, Constants.PAST_TRADES_INTERVAL);
+    };
+
   /***********************************************************************************************/
   private currentPriceTitle(record) {
     const sellPrice = record.price.n / record.price.d;
-    return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + ExchangeComponent.formatPrice(sellPrice);
+    return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
   }
 
-  private static formatPrice(price) {        //TODO: I smell this will be reused elsewhere
-    const decimals = Utils.getPrecisionDecimals(price);
-    return ExchangeComponent.formatNumber(price, decimals);
-  }
 
-  private static formatNumber(value, decimals) {
-    value = parseFloat(value.toString());     //Ensure number
-    const numString = decimals ? value.toFixed(decimals) : value.toString();
-    return ExchangeComponent.trimZeros(numString);
-  }
-
-  private static trimZeros(str: string) {
-    if (str.indexOf('.') <= -1) {
-        return str;
-    }
-    str = str.replace(/0{1,99}$/, '');  //Trim trailing zeros
-    return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
-  }
   /***********************************************************************************************/
 
   private setupAssetCodesDropDown(dropDownId: string, selectedAssetCode: string) {
