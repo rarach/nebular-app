@@ -36,12 +36,4 @@ div.exchanges-frame {
     padding-left:40px;
     padding-right:40px;
 }
-
-div.chartWarning {
-    height: 300px;
-    line-height: 300px;
-    background-color: white;
-    text-align: center;
-    font-size: 25px;
-}
 /**************************************/

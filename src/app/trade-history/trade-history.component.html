@@ -1,0 +1,35 @@
+<table id="tradeHistoryTable">
+  <thead>
+  <tr>
+      <th>Time</th>
+      <th>Price</th>
+      <th>Amount ({{exchange.baseAsset.code}})</th>
+  </tr>
+  </thead>
+  <tbody id="tradeHistoryData">
+  <tr></tr>
+  <ng-container *ngIf="this.recentTrades.length === 0">
+    <tr>
+      <td colspan='3'></td>
+    </tr>
+    <tr>
+      <td colspan='3'>No recent trades in this market</td>
+    </tr>
+  </ng-container>
+  <tr>
+      <td>&nbsp;</td>
+      <td colspan="2">{{message}}</td>
+  </tr>
+
+  <tr *ngFor="let trade of recentTrades" title="seller: {{trade.sellingAccount.substring(0, 8)}} ... {{trade.sellingAccount.substring(48)}}">
+<!--
+      var toolTipText = "seller:" + sellAccount.substring(0, 8) + "..." + sellAccount.substring(48) + " " +
+      "&#13;&#10;buyer:" + record.counter_account.substring(0, 8) + "..." + record.counter_account.substring(48);
+var templateText = "<tr title='" + toolTipText + "'>" +
+            "<td>" + new Date(record.ledger_close_time).toLocaleTimeString() + "</td>" +
+            "<td class='" + (record.base_is_seller ? "buy" : "sell") + "'>" + formatPrice(sellPrice) + "</td>" +
+-->          <td>{{trade.amount}}</td>
+
+  </tr>
+  </tbody>
+</table>

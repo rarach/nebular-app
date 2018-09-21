@@ -1,6 +1,7 @@
 <div class="row">
   <div class="col-lg-2 col-md-12 col-sm-12">
       <!--TODO: maybe some content here? -->
+      DEBUG: {{chartInterval}}; {{debug}}
   </div>
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div style="width:450px; float: left;">
@@ -40,7 +41,7 @@
           </tbody>
       </table>
       <div id="currentPrice">
-          <span>0.0</span>
+          <span>{{lastPrice}}</span>
       </div>
       <table>
           <tbody id="orderBookBids">
@@ -50,7 +51,7 @@
       </table>
   </div>
   <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
-      <div id="marketChart" style="min-height: 500px; height: 100%; line-height: 70px;"
+      <div id="marketChart" style="min-height: 500px; height: 100%;"
            [ngClass]="{
                 'chartWarning': dataStatus === DataStatus.NoData,
                 'error': dataStatus === DataStatus.Error
@@ -60,21 +61,6 @@
   </div>
   <div class="col-lg-3 col-md-4 col-sm-4">
       <br/>
-      <table id="tradeHistoryTable">
-          <thead>
-          <tr>
-              <th>Time</th>
-              <th>Price</th>
-              <th>Amount (<span class="baseAssetCode"></span>)</th>
-          </tr>
-          </thead>
-          <tbody id="tradeHistoryData">
-          <tr></tr>
-          <tr>
-              <td>&nbsp;</td>
-              <td colspan="2">Loading data...</td>
-          </tr>
-          </tbody>
-      </table>
+      <app-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></app-trade-history>
   </div>
 </div>

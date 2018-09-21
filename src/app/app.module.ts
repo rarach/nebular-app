@@ -12,6 +12,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { ExchangeThumbnailComponent } from './exchange-thumbnail/exchange-thumbnail.component';
 import { AssetService } from './asset.service';
 import { HorizonRestService } from "./horizon-rest.service";
+import { TradeHistoryComponent } from './trade-history/trade-history.component';
 
 
 @NgModule({
@@ -22,7 +23,8 @@ import { HorizonRestService } from "./horizon-rest.service";
     ExchangeComponent,
     ConfigurationComponent,
     PageNotFoundComponent,
-    ExchangeThumbnailComponent
+    ExchangeThumbnailComponent,
+    TradeHistoryComponent
   ],
   imports: [
     BrowserModule,

@@ -1,0 +1,17 @@
+#tradeHistoryTable {
+    border-right: 1px solid #5B6A72;
+    border-left: 1px solid #5B6A72;
+    border-spacing: 0px;
+}
+
+#tradeHistoryData td.buy {
+    color: #46B446;
+}
+#tradeHistoryData td.sell {
+    color: #ED8117;
+}
+#tradeHistoryData td {
+    border-bottom: 1px solid #5B6A72;
+    padding-left: 5px;
+    padding-right: 15px;
+}

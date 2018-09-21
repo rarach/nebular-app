@@ -13,6 +13,7 @@ import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../horizon-rest.service';
 import { Utils } from '../utils';
+import { ExecutedTrade } from '../model/executed-trade.model';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 
@@ -33,8 +34,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
   //View-model properties
   exchange: ExchangePair = null;
+  tradeHistory: ExecutedTrade[] = new Array<ExecutedTrade>();
   DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
+  lastPrice: number = 0.0;
   chartMessage: string = "Loading data...";
+
+
+  debug: string = "@@init; ";
 
 
   constructor(private route: ActivatedRoute, private router: Router, private assetService: AssetService, private horizonService: HorizonRestService) {
@@ -58,28 +64,30 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
       const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
       this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
+
+      this.debug += "router.paramMap; ";
+      this.setupUi();
     });
     //Handle GET parameter 'interval'
     this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
       const intParam = params.get(GETParams.INTERVAL);
       this.chartInterval = Utils.intervalAsMilliseconds(intParam);
     });
-
-    //TODO: order books, past trades, drop-downs...
-    this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
-    this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
-    this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
-    this.setupAnchorDropDown(this._counterAnchorDdId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
-
-
-
-
-    this.renderCandlestickChart();
   }
 
   ngOnDestroy() {
     this._routeSubscriber.unsubscribe();
     this._getParamsSubscriber.unsubscribe();
+  }
+
+  private setupUi() {
+    //TODO: order books, past trades
+    this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
+    this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
+    this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
+    this.setupAnchorDropDown(this._counterAnchorDdId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
+    this.updateTradeHistory();
+    this.renderCandlestickChart();
   }
 
   swapAssets() {
@@ -89,6 +97,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
 
   setChartInterval(intervalDesc: string) {
+
+this.debug += "setInterval(); "
+
     this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
     this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
 
@@ -152,10 +163,10 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         chartData.setVolumeScale(maxVolume);
 
         zingchart.render({
-          id : "marketChart",
-          data : chartData.getData(),
-          height: "100%",
-          width: "100%"
+            id : "marketChart",
+            data : chartData.getData(),
+            height: "100%",
+            width: "100%"
         });
         this.showGlobalOhlcData(globalOpen, maxPrice, minPrice, globalClose, volumeSum);
       },
@@ -168,13 +179,66 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   };
 
   private showGlobalOhlcData(open: number, high: number, low: number, close: number, volume: number) {
-    //Dirty hack to show global OHLC numbers in the top labels before user starts moving cursor over the chart
-    $("text[id^='marketChart-graph-id0-label-lbl_0_']").find("tspan").text("open: " + open);
-    $("text[id^='marketChart-graph-id0-label-lbl_1_']").find("tspan").text("high: " + high);
-    $("text[id^='marketChart-graph-id0-label-lbl_2_']").find("tspan").text("low: " + low);
-    $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + close);
-    $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
+      //Dirty hack to show global OHLC numbers in the top labels before user starts moving cursor over the chart
+      $("text[id^='marketChart-graph-id0-label-lbl_0_']").find("tspan").text("open: " + open);
+      $("text[id^='marketChart-graph-id0-label-lbl_1_']").find("tspan").text("high: " + high);
+      $("text[id^='marketChart-graph-id0-label-lbl_2_']").find("tspan").text("low: " + low);
+      $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + close);
+      $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
   }
+
+  private updateTradeHistory() {
+      
+    this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
+        success => {
+            const data = success as any;
+    
+            $("#tradeHistoryData").empty();     //TODO: properly
+            this.tradeHistory = new Array<ExecutedTrade>();
+            if (data._embedded.records.length === 0) {
+                document.title = this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code;
+                this.lastPrice = 0.0;
+            }
+            else {
+                document.title = this.currentPriceTitle(data._embedded.records[0]);
+//todo                $("#currentPrice").html(/*TODO: ehm...Angular?*/currentPriceSpan(data._embedded.records[0]));
+                for(let record of data._embedded.records) {
+                    const sellPrice = record.price.n / record.price.d;
+                    const time = new Date(record.ledger_close_time);
+                    this.tradeHistory.push(new ExecutedTrade(time, sellPrice, record.base_amount, record.base_account, record.counter_account));
+                };
+            }
+        },
+        error => {
+  
+        });
+  }
+
+  /***********************************************************************************************/
+  private currentPriceTitle(record) {
+    const sellPrice = record.price.n / record.price.d;
+    return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + ExchangeComponent.formatPrice(sellPrice);
+  }
+
+  private static formatPrice(price) {        //TODO: I smell this will be reused elsewhere
+    const decimals = Utils.getPrecisionDecimals(price);
+    return ExchangeComponent.formatNumber(price, decimals);
+  }
+
+  private static formatNumber(value, decimals) {
+    value = parseFloat(value.toString());     //Ensure number
+    const numString = decimals ? value.toFixed(decimals) : value.toString();
+    return ExchangeComponent.trimZeros(numString);
+  }
+
+  private static trimZeros(str: string) {
+    if (str.indexOf('.') <= -1) {
+        return str;
+    }
+    str = str.replace(/0{1,99}$/, '');  //Trim trailing zeros
+    return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
+  }
+  /***********************************************************************************************/
 
   private setupAssetCodesDropDown(dropDownId: string, selectedAssetCode: string) {
     //In case this is re-init, destroy previous instance
@@ -227,14 +291,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         width: 150,
         onSelected: function (data) {
             if ("ADD_CUSTOM"  === data.selectedData.value) {
-                window.location.href = Constants.CONFIGURATION_URL;
+                that.router.navigateByUrl(Constants.CONFIGURATION_URL);
             }
             else {
                 that.changeAssets(false);
             }
         }
     });
-  };
+  }
 
 
   private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
@@ -279,13 +343,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         onSelected: function (data) {
             if ("ADD_CUSTOM"  === data.selectedData.value) {
                 const url = Constants.CONFIGURATION_URL + "?" + GETParams.ASSET_TYPE + "=" + assetCode;
+                that.router.navigateByUrl(url);
             }
             else {
-              that.changeAssets(true);
+                that.changeAssets(true);
             }
         }
     });
-  };
+  }
 
   /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
   private changeAssets(selectingAnchor) {
@@ -307,5 +372,5 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
     let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
     this.router.navigateByUrl(newUrl);
-  };
+  }
 }
