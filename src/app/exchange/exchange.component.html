@@ -1,7 +1,7 @@
 <div class="row">
   <div class="col-lg-2 col-md-12 col-sm-12">
       <!--TODO: maybe some content here? -->
-      DEBUG: {{chartInterval}}; {{debug}}
+      DEBUG: {{chartInterval}};
   </div>
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div style="width:450px; float: left;">
@@ -28,28 +28,10 @@
 </div>
 
 <div class="row">
-  <div class="col-lg-2 col-md-12 col-sm-12">
-      <br/><br/>
-      <table>
-          <thead>
-              <th>Price</th>
-              <th>Amount <span class="baseAssetCode"></span></th>
-          </thead>
-          <tbody id="orderBookAsks">
-              <tr></tr>
-              <tr><td>Loading data...</td></tr>
-          </tbody>
-      </table>
-      <div id="currentPrice">
-          <span>{{lastPrice}}</span>
-      </div>
-      <table>
-          <tbody id="orderBookBids">
-              <tr></tr>
-              <tr><td>Loading data...</td></tr>
-          </tbody>
-      </table>
-  </div>
+    <div class="col-lg-2 col-md-12 col-sm-12">
+        <br/><br/>
+        <app-orderbook [exchange]="exchange" [lastPrice]="lastPrice" [lastTradeType]="lastTradeType"></app-orderbook>
+    </div>
   <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
       <div id="marketChart" style="min-height: 500px; height: 100%;"
            [ngClass]="{

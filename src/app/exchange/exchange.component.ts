@@ -11,9 +11,9 @@ import { CandlestickChartData } from '../model/candlestick-chart-data';
 import { Constants, GETParams } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
+import { ExecutedTrade } from '../model/executed-trade.model';
 import { HorizonRestService } from '../horizon-rest.service';
 import { Utils } from '../utils';
-import { ExecutedTrade } from '../model/executed-trade.model';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 
@@ -37,10 +37,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   tradeHistory: ExecutedTrade[] = new Array<ExecutedTrade>();
   DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
   lastPrice: number = 0.0;
+  lastTradeType: string = "";
   chartMessage: string = "Loading data...";
-
-
-  debug: string = "@@init; ";
 
 
   constructor(private route: ActivatedRoute, private router: Router, private assetService: AssetService, private horizonService: HorizonRestService) {
@@ -64,8 +62,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
       const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
       this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
-
-      this.debug += "router.paramMap; ";
       this.setupUi();
     });
     //Handle GET parameter 'interval'
@@ -98,16 +94,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     this.router.navigateByUrl(url);
   }
 
-  setChartInterval(intervalDesc: string) {
+    setChartInterval(intervalDesc: string) {
+        this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
+        this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
 
-this.debug += "setInterval(); "
-
-    this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
-    this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
-
-    const url = this.router.createUrlTree([{interval: this.chartInterval}], {relativeTo: this.route}).toString();
-    this.router.navigateByUrl(url);
-  };
+        const url = this.router.createUrlTree([{interval: this.chartInterval}], {relativeTo: this.route}).toString();
+        this.router.navigateByUrl(url);
+    };
 
   private renderCandlestickChart() {
     const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
@@ -189,34 +182,39 @@ this.debug += "setInterval(); "
       $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
   }
 
-  /****************************** Trade history (right side panel) */
-  private updateTradeHistory() {
-      
-    this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
+    /****************************** Trade history (right side panel) ******************************/
+    private updateTradeHistory() {
+        this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
         success => {
             const data = success as any;
-    
-//???            $("#tradeHistoryData").empty();     //TODO: properly
+
             this.tradeHistory = new Array<ExecutedTrade>();
             if (data._embedded.records.length === 0) {
                 document.title = this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code;
                 this.lastPrice = 0.0;
+                this.lastTradeType = "";
             }
             else {
                 document.title = this.currentPriceTitle(data._embedded.records[0]);     //TODO: there must be a nicer way
-//todo                $("#currentPrice").html(/*TODO: ehm...Angular?*/currentPriceSpan(data._embedded.records[0]));
                 for(let record of data._embedded.records) {
                     const sellPrice = record.price.n / record.price.d;
+                    const amount = parseFloat(record.base_amount);
                     const time = new Date(record.ledger_close_time);
                     const tradeType = record.base_is_seller ? "buy" : "sell";
-                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, record.base_amount, record.base_account, record.counter_account));
+                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account));
                 };
             }
         },
         error => {
-  
+            const errorResponse = error as HttpErrorResponse;
+            const message = "Couldn't load trade history for this exchange (server: " +
+                            errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+            console.log(message);
+            this.dataStatus = DataStatus.Error;
+            this.lastPrice = -1;
+            this.lastTradeType = "error";
         });
-  }
+    }
 
     private initPastTradesStream() {
         if (this.exchange.baseAsset != null && this.exchange.counterAsset != null) {    //We might not be done initializing
@@ -226,15 +224,15 @@ this.debug += "setInterval(); "
             this.initPastTradesStream();
         }, Constants.PAST_TRADES_INTERVAL);
     };
+    /**********************************************************************************************/
 
-  /***********************************************************************************************/
-  private currentPriceTitle(record) {
-    const sellPrice = record.price.n / record.price.d;
-    return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
-  }
+    private currentPriceTitle(record) {
+        const sellPrice = record.price.n / record.price.d;
+        this.lastPrice = sellPrice;
+        this.lastTradeType = record.base_is_seller ? "buy" : "sell"
+        return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
+    }
 
-
-  /***********************************************************************************************/
 
   private setupAssetCodesDropDown(dropDownId: string, selectedAssetCode: string) {
     //In case this is re-init, destroy previous instance

@@ -1,0 +1,20 @@
+#orderBookBids td, #orderBookAsks td {
+    padding-left: 5px;
+    padding-right: 15px;
+}
+#orderBookBids tr.linked, #orderBookAsks tr.linked {
+    font-style: italic;
+    color: #8396a0;
+}
+
+div#currentPrice {
+    font-size: 2rem;
+    font-weight: bold;
+    padding: 14px;
+}
+div#currentPrice > span.buy {
+    color: #46b446; /*#3aba3a; rgb(184, 233, 134); */
+}
+div#currentPrice > span.sell {
+    color: #ED8117;
+}

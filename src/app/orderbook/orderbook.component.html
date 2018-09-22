@@ -1,0 +1,39 @@
+<table>
+    <thead>
+        <tr>
+            <th>Price</th>
+            <th>Amount {{exchange.baseAsset.code}}</th>
+        </tr>
+    </thead>
+    <tbody id="orderBookAsks">
+        <ng-container *ngIf="this.orderbook.asks.length === 0; else askRows">
+            <tr></tr>
+            <tr><td>Loading data...</td></tr>
+        </ng-container>
+        <ng-template #askRows>
+            <tr *ngFor="let ask of orderbook.asks.reverse()" [class.linked]="ask.isCrossLinked" [attr.title]="ask.isCrossLinked ? 'linked thru XLM' : null"
+                [ngStyle]="getRowStyle(ask, 'ask')">
+                <td>{{Utils.formatPrice(ask.price)}}</td>
+                <td>{{Utils.formatAmount(ask.amount)}}</td>
+            </tr>
+        </ng-template>
+    </tbody>
+</table>
+<div id="currentPrice">
+    <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{exchange.counterAsset.code}}">{{Utils.formatPrice(lastPrice)}}</span>
+</div>
+<table>
+    <tbody id="orderBookbIDS">
+        <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
+            <tr></tr>
+            <tr><td>Loading data...</td></tr>
+        </ng-container>
+        <ng-template #bidRows>
+            <tr *ngFor="let bid of orderbook.bids" [class.linked]="bid.isCrossLinked" [attr.title]="bid.isCrossLinked ? 'linked thru XLM' : null"
+            [ngStyle]="getRowStyle(bid, 'bid')">
+                <td>{{Utils.formatPrice(bid.price)}}</td>
+                <td>{{Utils.formatAmount(bid.amount)}}</td>
+            </tr>
+        </ng-template>
+    </tbody>
+</table>

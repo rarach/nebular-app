@@ -37,18 +37,22 @@ export class Utils {
         return 900000;
     }
 
-    static formatPrice(price) {        //TODO: I smell this will be reused elsewhere
-        const decimals = Utils.getPrecisionDecimals(price);
+    static formatAmount(amount: number): string {
+        const decimals: number = Utils.getPrecisionDecimals(amount);
+        return Utils.formatNumber(amount, decimals);
+    }
+
+    static formatPrice(price: number): string {
+        const decimals: number = Utils.getPrecisionDecimals(price);
         return Utils.formatNumber(price, decimals);
     }
     
-    private static formatNumber(value, decimals) {
-        value = parseFloat(value.toString());     //Ensure number
-        const numString = decimals ? value.toFixed(decimals) : value.toString();
+    private static formatNumber(value: number, decimals: number): string {
+        const numString: string = decimals ? value.toFixed(decimals) : value.toString();
         return Utils.trimZeros(numString);
     }
 
-    private static trimZeros(str: string) {
+    private static trimZeros(str: string): string {
         if (str.indexOf('.') <= -1) {
             return str;
         }

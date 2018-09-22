@@ -23,7 +23,7 @@
 buyer: {{trade.buyingAccount.substring(0, 8)}}...{{trade.sellingAccount.substring(48)}}">
       <td>{{trade.time | date:'HH:mm:ss'}}</td> 
       <td class="{{trade.tradeType}}">{{Utils.formatPrice(trade.price)}}</td>         
-      <td>{{trade.amount}}</td>
+      <td>{{Utils.formatAmount(trade.amount)}}</td>
     </tr>
   </ng-template>
   </tbody>
