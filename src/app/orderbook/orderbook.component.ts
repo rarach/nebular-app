@@ -16,7 +16,7 @@ import { KnownAssets } from '../model/asset.model';
     styleUrls: ['./orderbook.component.css']
 })
 export class OrderbookComponent implements OnInit {
-    private _exchange: ExchangePair;
+    _exchange: ExchangePair;
 
     @Input()
     set exchange(exchange: ExchangePair) {
