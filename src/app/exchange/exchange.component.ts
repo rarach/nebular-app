@@ -173,14 +173,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
       });
   };
 
-  private showGlobalOhlcData(open: number, high: number, low: number, close: number, volume: number) {
-      //Dirty hack to show global OHLC numbers in the top labels before user starts moving cursor over the chart
-      $("text[id^='marketChart-graph-id0-label-lbl_0_']").find("tspan").text("open: " + open);
-      $("text[id^='marketChart-graph-id0-label-lbl_1_']").find("tspan").text("high: " + high);
-      $("text[id^='marketChart-graph-id0-label-lbl_2_']").find("tspan").text("low: " + low);
-      $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + close);
-      $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
-  }
+    private showGlobalOhlcData(open: number, high: number, low: number, close: number, volume: number) {
+        //Dirty hack to show global OHLC numbers in the top labels before user starts moving cursor over the chart
+        $("text[id^='marketChart-graph-id0-label-lbl_0_']").find("tspan").text("open: " + open);
+        $("text[id^='marketChart-graph-id0-label-lbl_1_']").find("tspan").text("high: " + high);
+        $("text[id^='marketChart-graph-id0-label-lbl_2_']").find("tspan").text("low: " + low);
+        $("text[id^='marketChart-graph-id0-label-lbl_3_']").find("tspan").text("close: " + close);
+        $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
+    }
 
     /****************************** Trade history (right side panel) ******************************/
     private updateTradeHistory() {
@@ -294,7 +294,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     });
   }
 
-
   private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
     //In case this is re-init, destroy previous instance
     jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
@@ -346,25 +345,25 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     });
   }
 
-  /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
-  private changeAssets(selectingAnchor) {
-    let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
-    if (selectingAnchor) {
-        const baseIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
-        if (baseIssuer != null) {
-            urlAssets += "-" + baseIssuer;
+    /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
+    private changeAssets(selectingAnchor) {
+        let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
+        if (selectingAnchor) {
+            const baseIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+            if (baseIssuer != null) {
+                urlAssets += "-" + baseIssuer;
+            }
         }
-    }
 
-    urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
-    if (selectingAnchor) {
-        const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
-        if (counterIssuer != null) {
-            urlAssets += "-" + counterIssuer;
+        urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
+        if (selectingAnchor) {
+            const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+            if (counterIssuer != null) {
+                urlAssets += "-" + counterIssuer;
+            }
         }
-    }
 
-    let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
-    this.router.navigateByUrl(newUrl);
-  }
+        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+        this.router.navigateByUrl(newUrl);
+    }
 }

@@ -23,7 +23,7 @@
     <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{exchange.counterAsset.code}}">{{Utils.formatPrice(lastPrice)}}</span>
 </div>
 <table>
-    <tbody id="orderBookbIDS">
+    <tbody id="orderBookBids">
         <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
             <tr></tr>
             <tr><td>Loading data...</td></tr>
