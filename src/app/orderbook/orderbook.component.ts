@@ -11,12 +11,18 @@ import { KnownAssets } from '../model/asset.model';
 
 
 @Component({
-  selector: 'app-orderbook',
-  templateUrl: './orderbook.component.html',
-  styleUrls: ['./orderbook.component.css']
+    selector: 'app-orderbook',
+    templateUrl: './orderbook.component.html',
+    styleUrls: ['./orderbook.component.css']
 })
 export class OrderbookComponent implements OnInit {
-    @Input() readonly exchange: ExchangePair;
+    private _exchange: ExchangePair;
+
+    @Input()
+    set exchange(exchange: ExchangePair) {
+        this._exchange = exchange;
+        this.fillOrderBook();
+    }
     @Input() readonly lastPrice: number = 0.0;
     @Input() readonly lastTradeType: string = "";
     orderbook: Orderbook = new Orderbook();
@@ -28,11 +34,9 @@ export class OrderbookComponent implements OnInit {
 
     constructor(private readonly horizonService: HorizonRestService){}
 
-    //TODO: Setup stream. Make this refresh when this.exchange changes
+    //TODO: Setup stream
 
-    ngOnInit() {
-        this.fillOrderBook();
-    }
+    ngOnInit() { }
 
 
     /**
@@ -44,12 +48,12 @@ export class OrderbookComponent implements OnInit {
      *       to get the data in specific order.
      */
     fillOrderBook() {
-        this.horizonService.getOrderbook(this.exchange).subscribe(
+        this.horizonService.getOrderbook(this._exchange).subscribe(
             success => {
                 const data = success as any;
                 this.orderbook = new Orderbook();
 
-                if (this.exchange.baseAsset.IsNative() || this.exchange.counterAsset.IsNative()) {
+                if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
                     this.renderOrderBook(data);
                 }
                 else {
@@ -68,7 +72,7 @@ export class OrderbookComponent implements OnInit {
     /** Fetch the baseAsset/XLM order book for cross-linked offers */
     private addCrossLinkedOffers1(originalOrderBook: any) {
         //Query XLM / baseAsset
-        const xlmBaseExch = new ExchangePair("XLM-ASSET1", KnownAssets.XLM, this.exchange.baseAsset);
+        const xlmBaseExch = new ExchangePair("XLM-ASSET1", KnownAssets.XLM, this._exchange.baseAsset);
         this.horizonService.getOrderbook(xlmBaseExch).subscribe(
             success => {
                 const data = success as any;
@@ -86,7 +90,7 @@ export class OrderbookComponent implements OnInit {
             this.renderOrderBook(originalOrderBook);
         }
         //Query XLM / counterAsset
-        const xlmCounterExch = new ExchangePair("XLM-ASSET2", KnownAssets.XLM, this.exchange.counterAsset);
+        const xlmCounterExch = new ExchangePair("XLM-ASSET2", KnownAssets.XLM, this._exchange.counterAsset);
         this.horizonService.getOrderbook(xlmCounterExch).subscribe(
             success => {
                 const data = success as any;

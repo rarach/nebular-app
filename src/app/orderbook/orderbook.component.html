@@ -2,7 +2,7 @@
     <thead>
         <tr>
             <th>Price</th>
-            <th>Amount {{exchange.baseAsset.code}}</th>
+            <th>Amount {{_exchange.baseAsset.code}}</th>
         </tr>
     </thead>
     <tbody id="orderBookAsks">
@@ -20,7 +20,7 @@
     </tbody>
 </table>
 <div id="currentPrice">
-    <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{exchange.counterAsset.code}}">{{Utils.formatPrice(lastPrice)}}</span>
+    <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{_exchange.counterAsset.code}}">{{Utils.formatPrice(lastPrice)}}</span>
 </div>
 <table>
     <tbody id="orderBookBids">
