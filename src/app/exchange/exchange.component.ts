@@ -2,6 +2,7 @@ import { ActivatedRoute, Router } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
+import { Title } from '@angular/platform-browser';
 import zingchart from "zingchart";
 
 import { Account } from "../model/account.model";
@@ -24,6 +25,7 @@ declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
     styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit, OnDestroy {
+    private _isActive = false;
     private _routeSubscriber: Subscription;
     private _getParamsSubscriber: Subscription;
     chartInterval: number = 900000;    //15min candles by default
@@ -41,7 +43,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     chartMessage: string = "Loading data...";
 
 
-    constructor(private route: ActivatedRoute, private router: Router, private assetService: AssetService, private horizonService: HorizonRestService) {
+    constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
+                private assetService: AssetService, private horizonService: HorizonRestService) {
         //Setup ZingChart
         zingchart.THEME="classic";
     }
@@ -49,31 +52,33 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this._routeSubscriber = this.route.paramMap.subscribe(params => {
-        //'Parse' the route
-        const baseAssetString = params.get('baseAssetId');
-        const counterAssetString = params.get('counterAssetId');
+            //'Parse' the route
+            const baseAssetString = params.get('baseAssetId');
+            const counterAssetString = params.get('counterAssetId');
 
-        if ((baseAssetString || "").length <= 0) {
-            throw new Error("Invalid URL parameters");
-        }
-        if ((counterAssetString || "").length <= 0) {
-            throw new Error("Invalid URL parameters (missing counter asset): ");
-        }
-        const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
-        const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
-        this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
-        this.setupUi();
+            if ((baseAssetString || "").length <= 0) {
+                throw new Error("Invalid URL parameters");
+            }
+            if ((counterAssetString || "").length <= 0) {
+                throw new Error("Invalid URL parameters (missing counter asset): ");
+            }
+            const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
+            const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
+            this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
+            this.setupUi();
         });
         //Handle GET parameter 'interval'
         this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-        const intParam = params.get(GETParams.INTERVAL);
-        this.chartInterval = Utils.intervalAsMilliseconds(intParam);
+            const intParam = params.get(GETParams.INTERVAL);
+            this.chartInterval = Utils.intervalAsMilliseconds(intParam);
         });
 
+        this._isActive = true;
         this.initPastTradesStream();
     }
 
     ngOnDestroy() {
+        this._isActive = false;
         this._routeSubscriber.unsubscribe();
         this._getParamsSubscriber.unsubscribe();
     }
@@ -190,12 +195,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
             this.tradeHistory = new Array<ExecutedTrade>();
             if (data._embedded.records.length === 0) {
-                document.title = this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code;
+                this.titleService.setTitle(this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code);
                 this.lastPrice = 0.0;
                 this.lastTradeType = "";
             }
             else {
-                document.title = this.currentPriceTitle(data._embedded.records[0]);     //TODO: there must be a nicer way
+                this.titleService.setTitle(this.currentPriceTitle(data._embedded.records[0]));
                 for(let record of data._embedded.records) {
                     const sellPrice = record.price.n / record.price.d;
                     const amount = parseFloat(record.base_amount);
@@ -217,9 +222,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private initPastTradesStream() {
-        if (this.exchange.baseAsset != null && this.exchange.counterAsset != null) {    //We might not be done initializing
-            this.updateTradeHistory();
+        if (!this._isActive)
+        {
+            //Cancel the loop if user navigated away
+            return;
         }
+        this.updateTradeHistory();
+
         setTimeout(() => {
             this.initPastTradesStream();
         }, Constants.PAST_TRADES_INTERVAL);
