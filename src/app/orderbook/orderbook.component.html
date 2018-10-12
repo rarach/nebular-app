@@ -11,7 +11,7 @@
             <tr><td>Loading data...</td></tr>
         </ng-container>
         <ng-template #askRows>
-            <tr *ngFor="let ask of orderbook.asks.reverse()" [class.linked]="ask.isCrossLinked" [attr.title]="ask.isCrossLinked ? 'linked thru XLM' : null"
+            <tr *ngFor="let ask of orderbook.asks.slice().reverse()" [class.linked]="ask.isCrossLinked" [attr.title]="ask.isCrossLinked ? 'linked thru XLM' : null"
                 [ngStyle]="getRowStyle(ask, 'ask')">
                 <td>{{Utils.formatPrice(ask.price)}}</td>
                 <td>{{Utils.formatAmount(ask.amount)}}</td>

@@ -1,6 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
+import { CookieModule } from 'ngx-cookie';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -17,23 +18,24 @@ import { OrderbookComponent } from './orderbook/orderbook.component';
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    OverviewComponent,
-    MyExchangesComponent,
-    ExchangeComponent,
-    ConfigurationComponent,
-    PageNotFoundComponent,
-    ExchangeThumbnailComponent,
-    TradeHistoryComponent,
-    OrderbookComponent
-  ],
-  imports: [
-    BrowserModule,
-    HttpClientModule,
-    AppRoutingModule
-  ],
-  providers: [Title, AssetService, HorizonRestService],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        OverviewComponent,
+        MyExchangesComponent,
+        ExchangeComponent,
+        ConfigurationComponent,
+        PageNotFoundComponent,
+        ExchangeThumbnailComponent,
+        TradeHistoryComponent,
+        OrderbookComponent
+    ],
+    imports: [
+        BrowserModule,
+        HttpClientModule,
+        AppRoutingModule,
+        CookieModule.forRoot()
+    ],
+    providers: [Title, AssetService, HorizonRestService],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

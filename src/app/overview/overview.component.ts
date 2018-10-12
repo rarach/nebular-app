@@ -2,7 +2,6 @@ import { Component, OnInit } from '@angular/core';
 
 import { ExchangePair } from "../model/exchange-pair.model";
 import { KnownAssets, Asset } from '../model/asset.model';
-import { Account } from '../model/account.model';
 import { Title } from '@angular/platform-browser';
 
 
@@ -25,10 +24,11 @@ export class OverviewComponent implements OnInit {
         new ExchangePair("highTradeCount03", KnownAssets.XLM, KnownAssets.ABDT)
     ];
 
-    constructor( private titleService: Title) { }
+    constructor(titleService: Title) {
+        titleService.setTitle("Nebular");
+    }
 
     ngOnInit() {
-        this.titleService.setTitle("Nebular")
         //TODO: get the stats from server and assign this.exchangeList by it
     }
 }

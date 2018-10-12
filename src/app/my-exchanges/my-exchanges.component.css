@@ -1,0 +1,16 @@
+#addExchangeButton {
+    height: 372px;
+    line-height: 372px;
+    text-align: center;
+    font-size: 25px;
+}
+#addExchangeButton:hover {
+    font-size: 26px;
+    font-weight: bold;
+}
+
+div.exchange-link {
+    cursor: pointer;
+    border: 2px solid #8396a0;
+    margin-top: 24px;
+}

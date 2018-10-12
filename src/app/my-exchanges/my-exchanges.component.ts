@@ -1,18 +1,25 @@
 import { Component, OnInit } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 
+import { AssetService } from '../asset.service';
+
+
 @Component({
-  selector: 'app-my-exchanges',
-  templateUrl: './my-exchanges.component.html',
-  styleUrls: ['./my-exchanges.component.css']
+    selector: 'app-my-exchanges',
+    templateUrl: './my-exchanges.component.html',
+    styleUrls: ['./my-exchanges.component.css']
 })
 export class MyExchangesComponent implements OnInit {
 
-  constructor(private titleService: Title) {
-    titleService.setTitle("My Exchanges");
-  }
+    constructor(titleService: Title, private assetService: AssetService) {
+        titleService.setTitle("My Exchanges");
+    }
 
-  ngOnInit() {
-  }
+    ngOnInit() {
+    }
 
+
+    addCustomExchange(): void {
+      const newExchange = this.assetService.CreateCustomExchange();
+    }
 }
