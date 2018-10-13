@@ -15,6 +15,7 @@ import { AssetService } from './asset.service';
 import { HorizonRestService } from "./horizon-rest.service";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
+import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
 
 
 @NgModule({
@@ -27,7 +28,8 @@ import { OrderbookComponent } from './orderbook/orderbook.component';
         PageNotFoundComponent,
         ExchangeThumbnailComponent,
         TradeHistoryComponent,
-        OrderbookComponent
+        OrderbookComponent,
+        CustomExchangeComponent
     ],
     imports: [
         BrowserModule,

@@ -43,6 +43,7 @@ export class AssetService {
       this._customAssetCodes = this.loadAssetCodes();
         this._customAnchors = this.loadAnchors();
         this._customAssets = this.loadAssets();
+        this._customExchanges = this.loadExchanges();
 
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
@@ -58,6 +59,9 @@ export class AssetService {
             }
         }
     }
+
+    /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
+    getCustomExchanges(): ExchangePair[] { return this._customExchanges; }      //TODO: does Angular have public get/private set? Use that instead if yes.
 
     /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
     getAssetCodesForExchange(): string[] {
@@ -233,6 +237,51 @@ export class AssetService {
         }
 
         return customAssets;
+    }
+
+    /**
+     * Load user's custom exchanges
+     * @returns {Array} array of ExchangePair instances
+     */
+    private loadExchanges() {
+        const COOKIE_NAME = "exc";
+        const userExchanges = new Array();
+        const cookieText = this.cookieService.get(COOKIE_NAME) || "";
+
+        const parts = cookieText.split(";");
+        for (let i=0; i<parts.length; i++) {
+            const part = parts[i].trim();
+            if (part.indexOf(COOKIE_NAME) == 0) {
+                const exchanges = part.substr(COOKIE_NAME.length).split(",");
+                for (let e=0; e<exchanges.length; e++) {
+                    if ((exchanges[e] || "").length <= 0) {
+                        continue;
+                    }
+                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XLM
+                    const hashtagIndex = exchangeText.indexOf("#");
+                    const id = exchangeText.substr(0, hashtagIndex);
+                    const slashIndex = exchangeText.indexOf("/");
+                    //Base asset
+                    const baseAssetText = exchangeText.substring(hashtagIndex+1, slashIndex);
+                    let dashIndex = baseAssetText.indexOf("-");
+                    const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
+                    const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
+                    const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
+                    const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
+                    //Counter asset
+                    const counterAssetText = exchangeText.substr(slashIndex+1);
+                    dashIndex = counterAssetText.indexOf("-");
+                    const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
+                    const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
+                    const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
+                    const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
+
+                    userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));
+                }
+            }
+        }
+
+        return userExchanges;
     }
 
     private serializeToCookie() {

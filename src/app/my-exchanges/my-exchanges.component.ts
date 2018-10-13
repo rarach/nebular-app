@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 
 import { AssetService } from '../asset.service';
+import { ExchangePair } from '../model/exchange-pair.model';
 
 
 @Component({
@@ -10,16 +11,21 @@ import { AssetService } from '../asset.service';
     styleUrls: ['./my-exchanges.component.css']
 })
 export class MyExchangesComponent implements OnInit {
+    exchanges = new Array<ExchangePair>();
 
     constructor(titleService: Title, private assetService: AssetService) {
         titleService.setTitle("My Exchanges");
     }
 
     ngOnInit() {
+        this.exchanges = this.assetService.getCustomExchanges();
     }
 
 
     addCustomExchange(): void {
-      const newExchange = this.assetService.CreateCustomExchange();
+        const newExchange: ExchangePair = this.assetService.CreateCustomExchange();
+        this.exchanges.push(newExchange);
     }
 }
+
+

@@ -1,5 +1,8 @@
 <div class="row exchanges-frame">
-    <!-- User's custom markets added here dynamicaly -->
+    <ng-container *ngFor="let exch of exchanges">
+        <app-custom-exchange [exchange]="exch"></app-custom-exchange>
+    </ng-container>
+    
     <div id="addCustomExchange" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
         <div id="addExchangeButton" class="exchange-link" (click)="addCustomExchange();">
             (add)
