@@ -1,21 +1,21 @@
 <div class="exchange-link" (click)="onClick();">
-  <div class="assetsDescription">
-      <div class="lastPrice">{{lastPrice}}</div>
-      <div class="baseAssetDesc">
-          <span class="baseAssetCode">{{exchange.baseAsset.code}}</span><br/>
-          <span class="baseAssetIssuer">{{exchange.baseAsset.issuer.domain}}</span>
-      </div>
-      <span class="slash">/</span>
-      <div class="counterAssetDesc">
-          <span class="counterAssetCode">{{exchange.counterAsset.code}}</span><br/>
-          <span class="counterAssetIssuer">{{exchange.counterAsset.issuer.domain}}</span>
-      </div>
-      <div [className]="dailyChangeDesc.startsWith('-') ? 'dailyChangePercent red' : 'dailyChangePercent green'">{{dailyChangeDesc}}</div>
-  </div>
-  <div id="{{chartPlaceholderId}}" class="exchange-link-chart">
-      <div [ngClass]="{
-          'chartWarning': dataStatus === DataStatus.NoData,
-          'error': dataStatus === DataStatus.Error
-        }">{{userMessage}}</div>
-  </div>
+    <div class="assetsDescription">
+        <div class="lastPrice">{{lastPrice}}</div>
+            <div class="baseAssetDesc">
+                <span class="baseAssetCode">{{this.showAssetNames ? exchange.baseAsset.code : ""}}</span><br/>
+                <span class="baseAssetIssuer">{{this.showAssetNames ? exchange.baseAsset.issuer.domain : ""}}</span>
+            </div>
+            <span class="slash">{{this.showAssetNames ? "/" : ""}}</span>
+            <div class="counterAssetDesc">
+                <span class="counterAssetCode">{{this.showAssetNames ? exchange.counterAsset.code : ""}}</span><br/>
+                <span class="counterAssetIssuer">{{this.showAssetNames ? exchange.counterAsset.issuer.domain : ""}}</span>
+            </div>
+        <div [className]="dailyChangeDesc.startsWith('-') ? 'dailyChangePercent red' : 'dailyChangePercent green'">{{dailyChangeDesc}}</div>
+    </div>
+    <div id="{{chartPlaceholderId}}" class="exchange-link-chart">
+        <div [ngClass]="{
+            'chartWarning': dataStatus === DataStatus.NoData,
+            'error': dataStatus === DataStatus.Error
+            }">{{userMessage}}</div>
+    </div>
 </div>

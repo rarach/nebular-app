@@ -1,0 +1,27 @@
+.customExchange {
+    margin-top: 24px;
+}
+
+.removeExchButton {
+    display: none;
+    position: absolute;
+    top: -15px;
+    right: -15px;
+    z-index: 1;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    text-align: center;
+    color: white;
+    background-color: #ff6666;
+    font-size: 1.8em;
+    cursor: pointer;
+}
+
+div.assetsSelection {
+    position: relative;
+}
+div.assetsSelection > div.assetDropDowns {
+    display: flex;
+    flex-direction: row;
+}

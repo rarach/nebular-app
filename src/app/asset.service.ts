@@ -159,6 +159,41 @@ export class AssetService {
         return new Account(issuerAddress, null, null);
     }
 
+    /**
+     * Change custom exchange with given ID
+     * @public
+     * @returns {ExchangePair} updated instance
+     */
+    UpdateCustomExchange(exchangeId: string, baseAssetCode: string, baseIssuerAddress: string, counterAssetCode: string, counterIssuerAddress: string) {
+        for (let i=0; i<this._customExchanges.length; i++) {
+            if (this._customExchanges[i].id === exchangeId) {
+                const baseAnchor = this.getAnchorByAddress(baseIssuerAddress);
+                const counterAnchor = this.getAnchorByAddress(counterIssuerAddress);
+                const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
+                const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
+
+                this._customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
+                this.serializeToCookie();
+                return this._customExchanges[i];
+            }
+        }
+
+        return null;
+    }
+
+    /** @public Delete exchange by its ID in the array of custom exchanges */
+    RemoveCustomExchange(exchangeId: string) {
+        for (let i=0; i<this._customExchanges.length; i++) {
+            if (this._customExchanges[i].id === exchangeId) {
+                this._customExchanges.splice(i, 1);
+                this.serializeToCookie();
+                return true;
+            }
+        }
+
+        return false;
+    }
+
     private loadAssetCodes(): string[] {
         const COOKIE_NAME = "aco";
         const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";

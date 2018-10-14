@@ -22,10 +22,11 @@ export class MyExchangesComponent implements OnInit {
     }
 
 
-    addCustomExchange(): void {
+    addCustomExchange() {
         const newExchange: ExchangePair = this.assetService.CreateCustomExchange();
-        this.exchanges.push(newExchange);
+//        this.exchanges.push(newExchange);
     }
+
 }
 
 
