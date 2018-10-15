@@ -200,16 +200,13 @@ export class AssetService {
         const customCodes = new Array();
 
         const parts = cookieText.split(";");
-        for (let i=0; i<parts.length; i++) {
-            const part = parts[i].trim();
-            if (part.indexOf(COOKIE_NAME) == 0) {
-                const assetCodes = part.substr(COOKIE_NAME.length).split(",");
-                for (let a=0; a<assetCodes.length; a++) {
-                    if ((assetCodes[a] || "").length <= 0) {
-                        continue;
-                    }
-                    customCodes.push(assetCodes[a]);
+        for (let i=0; i<parts.length; i++) {            
+            const assetCodes = parts[i].trim().split(",");
+            for (let a=0; a<assetCodes.length; a++) {
+                if ((assetCodes[a] || "").length <= 0) {
+                    continue;
                 }
+                customCodes.push(assetCodes[a]);
             }
         }
 
@@ -227,19 +224,16 @@ export class AssetService {
 
         const parts = cookieText.split(";");
         for (let i=0; i<parts.length; i++) {
-            const part = parts[i].trim();
-            if (part.indexOf(COOKIE_NAME) == 0) {
-                const anchors = part.substr(COOKIE_NAME.length).split(",");
-                for (let a=0; a<anchors.length; a++) {
-                    if ((anchors[a] || "").length <= 0) {
-                        continue;
-                    }
-                    const anchorText = decodeURIComponent(anchors[a]);
-                    const dashIndex = anchorText.indexOf("/");
-                    const address = anchorText.substr(0, dashIndex);
-                    const domain = anchorText.substr(dashIndex+1);
-                    customAnchors.push(new Account(address, domain, domain));
+            const anchors = parts[i].trim().split(",");
+            for (let a=0; a<anchors.length; a++) {
+                if ((anchors[a] || "").length <= 0) {
+                    continue;
                 }
+                const anchorText = decodeURIComponent(anchors[a]);
+                const dashIndex = anchorText.indexOf("/");
+                const address = anchorText.substr(0, dashIndex);
+                const domain = anchorText.substr(dashIndex+1);
+                customAnchors.push(new Account(address, domain, domain));
             }
         }
 
@@ -254,20 +248,17 @@ export class AssetService {
 
         const parts = cookieText.split(";");
         for (let i=0; i<parts.length; i++) {
-            const part: string = parts[i].trim();
-            if (part.indexOf(COOKIE_NAME) == 0) {
-                const assets = part.substr(COOKIE_NAME.length).split(",");
-                for (let a=0; a<assets.length; a++) {
-                    if ((assets[a] || "").length <= 0) {
-                        continue;
-                    }
-                    const assetText = decodeURIComponent(assets[a]);
-                    const dashIndex = assetText.indexOf("-");
-                    const assetCode = assetText.substr(0, dashIndex);
-                    const issuerAddress = assetText.substr(dashIndex+1);
-                    const issuer = this.getAnchorByAddress(issuerAddress);
-                    customAssets.push(new Asset(assetCode, assetCode, null, issuer));
+            const assets = parts[i].trim().split(",");
+            for (let a=0; a<assets.length; a++) {
+                if ((assets[a] || "").length <= 0) {
+                    continue;
                 }
+                const assetText = assets[a];
+                const dashIndex = assetText.indexOf("-");
+                const assetCode = assetText.substr(0, dashIndex);
+                const issuerAddress = assetText.substr(dashIndex+1);
+                const issuer = this.getAnchorByAddress(issuerAddress);
+                customAssets.push(new Asset(assetCode, assetCode, null, issuer));
             }
         }
 
@@ -285,34 +276,31 @@ export class AssetService {
 
         const parts = cookieText.split(";");
         for (let i=0; i<parts.length; i++) {
-            const part = parts[i].trim();
-            if (part.indexOf(COOKIE_NAME) == 0) {
-                const exchanges = part.substr(COOKIE_NAME.length).split(",");
-                for (let e=0; e<exchanges.length; e++) {
-                    if ((exchanges[e] || "").length <= 0) {
-                        continue;
-                    }
-                    const exchangeText = decodeURIComponent(exchanges[e]);      //Format: 5366025104=USD-GABCDEFGH/XLM
-                    const hashtagIndex = exchangeText.indexOf("#");
-                    const id = exchangeText.substr(0, hashtagIndex);
-                    const slashIndex = exchangeText.indexOf("/");
-                    //Base asset
-                    const baseAssetText = exchangeText.substring(hashtagIndex+1, slashIndex);
-                    let dashIndex = baseAssetText.indexOf("-");
-                    const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
-                    const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
-                    const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
-                    const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
-                    //Counter asset
-                    const counterAssetText = exchangeText.substr(slashIndex+1);
-                    dashIndex = counterAssetText.indexOf("-");
-                    const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
-                    const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
-                    const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
-                    const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
-
-                    userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));
+            const exchanges = parts[i].trim().split(",");
+            for (let e=0; e<exchanges.length; e++) {
+                if ((exchanges[e] || "").length <= 0) {
+                    continue;
                 }
+                const exchangeText = exchanges[e];      //Format: 5366025104=USD-GABCDEFGH/XLM
+                const hashtagIndex = exchangeText.indexOf("#");
+                const id = exchangeText.substr(0, hashtagIndex);
+                const slashIndex = exchangeText.indexOf("/");
+                //Base asset
+                const baseAssetText = exchangeText.substring(hashtagIndex+1, slashIndex);
+                let dashIndex = baseAssetText.indexOf("-");
+                const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
+                const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
+                const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
+                const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
+                //Counter asset
+                const counterAssetText = exchangeText.substr(slashIndex+1);
+                dashIndex = counterAssetText.indexOf("-");
+                const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
+                const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
+                const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
+                const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
+
+                userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));
             }
         }
 
