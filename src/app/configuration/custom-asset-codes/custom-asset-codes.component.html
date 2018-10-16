@@ -1,0 +1,19 @@
+<h3>Custom asset types</h3>
+<hr/>
+<div id="customAssetTypesList" class="valueList">
+    <div *ngFor="let assetCode of customAssetCodes" id="{{assetCode}}" class="customItemRow"
+         [class.highlight]="assetCode == this.latestAddedCode" [class.duplicate]="assetCode == this.duplicateAssetCode">
+        <div class="itemTitle">{{assetCode}}</div>
+        <span (click)="removeAssetCode(assetCode);">remove</span>
+    </div>
+</div>
+
+<form (submit)="addAssetCode(assetCodeForm)" #assetCodeForm="ngForm">
+    <label for="newAssetCode">Asset type:</label>
+    <input type="text" id="newAssetCode" placeholder="JPY, LTC..." maxlength="12"
+           ngModel #newAssetCode="ngModel" name="newAssetCode" pattern="^[a-zA-Z0-9]{1,12}$"/>
+    <button type="submit" id="addAssetCodeBtn" [disabled]="!assetCodeForm.form.valid">Add</button>
+    <div *ngIf="newAssetCode.errors?.pattern" class="dataHint">Up to 12 characters, only letters and digits.</div>
+</form>
+
+<br/><br/>

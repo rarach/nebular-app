@@ -1,4 +1,5 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { FormsModule }   from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CookieModule } from 'ngx-cookie';
@@ -16,6 +17,7 @@ import { HorizonRestService } from "./horizon-rest.service";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
+import { CustomAssetCodesComponent } from './configuration/custom-asset-codes/custom-asset-codes.component';
 
 
 @NgModule({
@@ -29,10 +31,12 @@ import { CustomExchangeComponent } from './custom-exchange/custom-exchange.compo
         ExchangeThumbnailComponent,
         TradeHistoryComponent,
         OrderbookComponent,
-        CustomExchangeComponent
+        CustomExchangeComponent,
+        CustomAssetCodesComponent
     ],
     imports: [
         BrowserModule,
+        FormsModule,
         HttpClientModule,
         AppRoutingModule,
         CookieModule.forRoot()

@@ -1,0 +1,123 @@
+/*TODO: cleanup of unused directives */
+:host ::ng-deep hr {
+    background-color: rgb(91, 106, 114);
+    height: 4px;
+}
+
+.paddedRow {
+    padding: 30px;
+}
+
+:host ::ng-deep input[type='text'] {
+    border: 1px solid black;
+    margin-bottom: 4px;
+    height: 28px;
+    color: black;
+}
+
+:host ::ng-deep input.invalid {     /*TODO: ng-invalid? */
+    border-color: #ED8117;
+    background-color: #FAD9B9;
+}
+
+:host ::ng-deep .dataHint {
+    margin-left: 118px;
+    margin-bottom: 5px;
+    color: #ED8117;
+}
+
+input#newAnchorAddress {
+    text-transform: uppercase;
+}
+
+div.valueList {
+    margin-bottom: 30px;
+}
+
+input#newAnchorAddress {
+    width: 500px;
+}
+
+input#newAnchorName {
+    width: 250px;
+}
+
+:host ::ng-deep label {
+    width: 115px;
+}
+
+:host ::ng-deep button {
+    border: none;
+    border-radius: 3px;
+    margin-left: 10px;
+    height: 28px;
+    min-width: 50px;
+    background-color: #23527c;
+    color: white;
+}
+:host ::ng-deep button:focus, button:hover {
+    background-color: #4d81b0;
+    font-weight: bold;
+}
+
+button.big-button {
+    height: 40px;
+    min-width: 80px;
+}
+
+:host ::ng-deep div.customItemRow {
+    margin-bottom: 8px;
+    border: 1px solid transparent;
+    cursor: default;
+    display: flex;
+    flex-direction: row;
+    align-items: stretch;
+    width: 100%;
+}
+:host ::ng-deep div.customItemRow:hover {
+    border: 1px solid #8396a0;
+}
+@keyframes animateGreen {
+    from { background-color: #46B446; }
+    to { background-color: inherit; }
+}
+:host ::ng-deep div.customItemRow.highlight {
+    animation: animateGreen 1s linear 1;
+}
+@keyframes animateRed {
+    from { background-color: #ED8117; }
+    to { background-color: inherit; }
+}
+:host ::ng-deep div.customItemRow.duplicate {
+    animation: animateRed 1s linear 1;
+}
+
+:host ::ng-deep div.customItemRow > span {
+    padding-right: 10px;
+    cursor: pointer;
+    color: #ED8117;
+    font-weight: bold;
+}
+:host ::ng-deep div.customItemRow > div.itemTitle {
+    flex: 1;
+}
+
+:host ::ng-deep div.customItemRow > span:hover {
+    text-decoration: underline;
+}
+
+div.dd-select {
+    border: 1px solid black;
+    border-right: none;
+}
+a.dd-selected {
+    border-right: 1px solid black;
+}
+
+div#assetTypesDropDown-dd-placeholder {
+    float: left;
+}
+div#anchorsDropDown-dd-placeholder {
+    float: left;
+    margin-left: 4px;
+}

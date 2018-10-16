@@ -7,40 +7,40 @@ import { ExchangePair } from './model/exchange-pair.model';
 
 
 @Injectable({
-  providedIn: 'root'
+    providedIn: 'root'
 })
 export class AssetService {
-  private readonly _commonAssets: Asset[] = [
-    KnownAssets.XLM,
-    KnownAssets["BTC-NaoBTC"],
-    KnownAssets["BTC-Papaya"],
-    KnownAssets["BTC-Stronghold"],
-    KnownAssets["BTC-vcbear"],
-    KnownAssets["CNY-RippleFox"],
-    KnownAssets["ETH-Papaya"],
-    KnownAssets["ETH-Stronghold"],
-    KnownAssets.EURT,
-    KnownAssets.HKDT,
-    KnownAssets["LTC-Papaya"],
-    KnownAssets.MOBI,
-    KnownAssets.NGNT,
-    KnownAssets.PHP,
-    KnownAssets.REPO,
-    KnownAssets.RMT,
-    KnownAssets.SLT,
-    KnownAssets["USD-Golix"],
-    KnownAssets["USD-Stonghold"]
-  ];
-  private _commonAssetCodes: string[] = new Array<string>();
-  private _commonAnchors: Account[] = new Array<Account>();
-  private _customAssetCodes: string[];
-  private _customAnchors: Account[];
-  private _customAssets: Asset[];
-  private _customExchanges: ExchangePair[];
+    private readonly _commonAssets: Asset[] = [
+        KnownAssets.XLM,
+        KnownAssets["BTC-NaoBTC"],
+        KnownAssets["BTC-Papaya"],
+        KnownAssets["BTC-Stronghold"],
+        KnownAssets["BTC-vcbear"],
+        KnownAssets["CNY-RippleFox"],
+        KnownAssets["ETH-Papaya"],
+        KnownAssets["ETH-Stronghold"],
+        KnownAssets.EURT,
+        KnownAssets.HKDT,
+        KnownAssets["LTC-Papaya"],
+        KnownAssets.MOBI,
+        KnownAssets.NGNT,
+        KnownAssets.PHP,
+        KnownAssets.REPO,
+        KnownAssets.RMT,
+        KnownAssets.SLT,
+        KnownAssets["USD-Golix"],
+        KnownAssets["USD-Stonghold"]
+    ];
+    private _commonAssetCodes: string[] = new Array<string>();
+    private _commonAnchors: Account[] = new Array<Account>();
+    private _customAssetCodes: string[];
+    private _customAnchors: Account[];
+    private _customAssets: Asset[];
+    private _customExchanges: ExchangePair[];
 
 
-  constructor(private cookieService: CookieService) {
-      this._customAssetCodes = this.loadAssetCodes();
+    constructor(private cookieService: CookieService) {
+        this._customAssetCodes = this.loadAssetCodes();
         this._customAnchors = this.loadAnchors();
         this._customAssets = this.loadAssets();
         this._customExchanges = this.loadExchanges();
@@ -59,6 +59,9 @@ export class AssetService {
             }
         }
     }
+
+    /** @public User's custom defined asset codes */
+    getCustomAssetCodes() { return this._customAssetCodes; };   //TODO: public get/private set
 
     /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     getCustomExchanges(): ExchangePair[] { return this._customExchanges; }      //TODO: does Angular have public get/private set? Use that instead if yes.
@@ -118,7 +121,7 @@ export class AssetService {
         }
 
         return null;
-    };
+    }
 
     /** Return anchor with given address or NULL if there's no such among available anchors  */
     GetIssuerByAddress(address: string) {
@@ -131,7 +134,36 @@ export class AssetService {
         }
 
         return null;
-    };
+    }
+
+    /**
+     * Add new asset code (e.g. "USD", "BTC"...)
+     * @param assetCode up to 12 chars of new asset code
+     * @returns {boolean} - true on success, false if given asset type already exists
+     */
+    AddCustomAssetCode(assetCode: string): boolean {
+        //Don't add if it's already there
+        for (let i=0; i < this._customAssetCodes.length; i++) {
+            if (this._customAssetCodes[i] === assetCode) {
+                return false;
+            }
+        }
+        this._customAssetCodes.push(assetCode);
+        this.serializeToCookie();
+        return true;
+    }
+
+    RemoveCustomAssetCode(assetCode: string): boolean {
+        for (let i=0; i < this._customAssetCodes.length; i++) {
+            if (this._customAssetCodes[i] === assetCode) {
+                this._customAssetCodes.splice(i, 1);
+                this.serializeToCookie();
+                return true;
+            }
+        }
+        //No such asset type, nothing to remove
+        return false;
+    }
 
     /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
     CreateCustomExchange(): ExchangePair {
@@ -229,7 +261,7 @@ export class AssetService {
                 if ((anchors[a] || "").length <= 0) {
                     continue;
                 }
-                const anchorText = decodeURIComponent(anchors[a]);
+                const anchorText = decodeURIComponent(anchors[a]);      //TODO: Do we need the encode/decode stuff? ngx-cookie may do it already
                 const dashIndex = anchorText.indexOf("/");
                 const address = anchorText.substr(0, dashIndex);
                 const domain = anchorText.substr(dashIndex+1);
@@ -326,7 +358,7 @@ export class AssetService {
             if (i>0) {
                 cookieText += ","
             }
-            cookieText += encodeURIComponent(anchor.address + "/" + anchor.domain);
+            cookieText += encodeURIComponent(anchor.address + "/" + anchor.domain);     //TODO: Do we need the encode/decode stuff? ngx-cookie may do it already
         }
         this.setCookieValue("iss", cookieText);
 
