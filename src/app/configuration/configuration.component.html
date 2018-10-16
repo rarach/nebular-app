@@ -8,18 +8,7 @@
         <app-custom-asset-codes></app-custom-asset-codes>
     </div>
     <div class="col-lg-8 col-md-8 col-sm-12">
-        <h3>Custom issuers (anchors)</h3>
-        <hr/>
-        <div id="customAnchorsList" class="valueList"> </div>
-
-        <label for="newAnchorAddress">Issuer address:</label>
-        <input type="text" id="newAnchorAddress" placeholder="GASJBQBTC4C5J7X..." maxlength="56" data-validation-regex="^G[a-zA-Z0-9]{55}$"/>
-        <br/>
-        <div data-hint-for="newAnchorAddress">56 characters starting with G. Only letters and digits.</div>
-        <label for="newAnchorName">Issuer domain:</label>
-        <input type="text" id="newAnchorName" placeholder="example.com"/>
-        <button id="addAnchorBtn" >Add</button>
-
+        <app-custom-issuers></app-custom-issuers>
     </div>
 </div>
 

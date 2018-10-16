@@ -19,7 +19,7 @@ export class Asset {
     /** @public Return true for Lumens (XLM) */
     IsNative(): boolean {
         return this.code === Constants.NATIVE_ASSET_CODE && this.type === Constants.NATIVE_ASSET_TYPE;
-    };
+    }
 
     ToUrlParameters(prefix: string): string {
         let getParams = prefix + "_asset_code=" + this.code + "&" + prefix + "_asset_type=" + this.type;
@@ -28,11 +28,11 @@ export class Asset {
         }
 
         return getParams;
-    };
+    }
 
     ToExchangeUrlParameter(): string {
         return this.code + (this.type == Constants.NATIVE_ASSET_TYPE ? "" : "-" + this.issuer.address);
-    };
+    }
 
     /**
      * Create new Asset instance from its string description
@@ -61,7 +61,7 @@ export class Asset {
         }
     
         return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
-    };
+    }
 }
 
 

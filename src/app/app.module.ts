@@ -18,6 +18,7 @@ import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
 import { CustomAssetCodesComponent } from './configuration/custom-asset-codes/custom-asset-codes.component';
+import { CustomIssuersComponent } from './configuration/custom-issuers/custom-issuers.component';
 
 
 @NgModule({
@@ -32,7 +33,8 @@ import { CustomAssetCodesComponent } from './configuration/custom-asset-codes/cu
         TradeHistoryComponent,
         OrderbookComponent,
         CustomExchangeComponent,
-        CustomAssetCodesComponent
+        CustomAssetCodesComponent,
+        CustomIssuersComponent
     ],
     imports: [
         BrowserModule,

@@ -26,20 +26,8 @@
     color: #ED8117;
 }
 
-input#newAnchorAddress {
-    text-transform: uppercase;
-}
-
-div.valueList {
+:host ::ng-deep div.valueList {
     margin-bottom: 30px;
-}
-
-input#newAnchorAddress {
-    width: 500px;
-}
-
-input#newAnchorName {
-    width: 250px;
 }
 
 :host ::ng-deep label {
@@ -59,10 +47,8 @@ input#newAnchorName {
     background-color: #4d81b0;
     font-weight: bold;
 }
-
-button.big-button {
-    height: 40px;
-    min-width: 80px;
+:host ::ng-deep button:disabled {
+    color: gray;
 }
 
 :host ::ng-deep div.customItemRow {
@@ -104,6 +90,13 @@ button.big-button {
 
 :host ::ng-deep div.customItemRow > span:hover {
     text-decoration: underline;
+}
+
+
+/*TODO: move to custom-assets */
+button.big-button {
+    height: 40px;
+    min-width: 80px;
 }
 
 div.dd-select {

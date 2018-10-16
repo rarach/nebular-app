@@ -28,8 +28,6 @@ export class CustomExchangeComponent implements OnInit, AfterViewInit {
         this._baseAnchorDropDownId = "baseAssetAnchorDropDown" + this.exchange.id;
         this._counterAssetCodeDropDownId = "counterAssetCodeDropDown" + this.exchange.id;
         this._counterAnchorDropDownId = "counterAssetAnchorDropDown" + this.exchange.id;
-
-//DEL        this.setupChart();
     }
     
     ngAfterViewInit() {
@@ -89,12 +87,6 @@ export class CustomExchangeComponent implements OnInit, AfterViewInit {
         }
     }
 
-/*DEL    private setupChart() {
-        const customExchange1Ui = new ExchangeThumbnail(_baseAsset, _counterAsset);
-        customExchange1Ui.Initialize("customExchangeChart" + _id);
-    }
-*/
-
     private updateExchange() {
         const baseAssetCodeData = $('div[id^="' + this._baseAssetCodeDropDownId + '"]').data("ddslick");
         const baseIssuerData = $('div[id^="' + this._baseAnchorDropDownId + '"]').data("ddslick");
@@ -108,8 +100,6 @@ export class CustomExchangeComponent implements OnInit, AfterViewInit {
         const exchange = this.assetService.UpdateCustomExchange(this.exchange.id,
                                                                 baseAssetCodeData.selectedData.value, baseIssuerData.selectedData.value,
                                                                 counterAssetCodeData.selectedData.value, counterIssuerData.selectedData.value);
-
-//NOPE. This should happen automatically with binding        setupChart();
     }
 
     removeExchange() {

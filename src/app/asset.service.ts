@@ -61,7 +61,7 @@ export class AssetService {
     }
 
     /** @public User's custom defined asset codes */
-    getCustomAssetCodes() { return this._customAssetCodes; };   //TODO: public get/private set
+    getCustomAssetCodes() { return this._customAssetCodes; }   //TODO: public get/private set
 
     /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     getCustomExchanges(): ExchangePair[] { return this._customExchanges; }      //TODO: does Angular have public get/private set? Use that instead if yes.
@@ -77,20 +77,23 @@ export class AssetService {
         }
 
         return codes;
-    };
+    }
+
+    /** @public Custom anchors defined by the user */
+    getCustomAnchors(): Account[] { return this._customAnchors; }
 
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
     private getAvailableAssets(): Asset[] {
         return this._commonAssets.concat(this._customAssets);
-    };
+    }
 
     /**
      * All anchors, i.e. common + user defined (even if they aren't used in a custom asset)
      * @public
      */
-    getAllAnchors() {
+    getAllAnchors(): Account[] {
         return this._commonAnchors.concat(this._customAnchors);
-    };
+    }
 
     /**
      * Returns all available anchors issuing given asset code.
@@ -106,7 +109,7 @@ export class AssetService {
         }
 
         return issuers;
-    };
+    }
 
     /**
      * Return first anchor from that issues given asset code or NULL if there's no such among available anchors
@@ -165,6 +168,42 @@ export class AssetService {
         return false;
     }
 
+    /**
+     * Add new issuer (a.k.a. anchor).
+     * @public
+     * @param address - Valid Stellar public key
+     * @param domain - optional domain or any name describing the anchor
+     * @returns {boolean} - true on success, false if an issuer with given address already exists
+     */
+    AddCustomAnchor(address: string, domain: string) {
+        //Don't add if it's already there
+        for (let i=0; i < this._customAnchors.length; i++) {
+            if (this._customAnchors[i].address === address) {
+                return false;
+            }
+        }
+        this._customAnchors.push(new Account(address, domain, domain));
+        this.serializeToCookie();
+
+        return true;
+    }
+
+    /**
+     * Remove custom issuer by their address
+     * @param address - anchor's issuing address
+     */
+    RemoveCustomAnchor(address: string) {
+        for (let i=0; i < this._customAnchors.length; i++) {
+            if (this._customAnchors[i].address === address) {
+                this._customAnchors.splice(i, 1);
+                this.serializeToCookie();
+                return true;
+            }
+        }
+        //No such anchor, nothing to remove
+        return false;
+    }
+
     /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
     CreateCustomExchange(): ExchangePair {
         const id = (new Date()).getTime().toString();
@@ -173,7 +212,7 @@ export class AssetService {
         this.serializeToCookie();
 
         return newExchange;
-    };
+    }
 
     /**
      * Get issuer by their Stellar address

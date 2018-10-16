@@ -1,0 +1,8 @@
+input#newAnchorAddress {
+    width: 500px;
+    text-transform: uppercase;
+}
+
+input#newAnchorName {
+    width: 250px;
+}
