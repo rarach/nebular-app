@@ -16,7 +16,7 @@ export class CustomIssuersComponent {
     duplicateAddress: string;
 
     constructor(private assetService: AssetService) {
-        this.customAnchors = this.assetService.getCustomAnchors();
+        this.customAnchors = this.assetService.customAnchors;
     }
 
     addAnchor(theForm: NgForm) {

@@ -33,17 +33,20 @@ export class AssetService {
     ];
     private _commonAssetCodes: string[] = new Array<string>();
     private _commonAnchors: Account[] = new Array<Account>();
-    private _customAssetCodes: string[];
-    private _customAnchors: Account[];
     private _customAssets: Asset[];
-    private _customExchanges: ExchangePair[];
+    /** User's custom defined asset codes */
+    readonly customAssetCodes: string[];
+    /** Custom anchors defined by the user */
+    readonly customAnchors: Account[];
+    /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
+    readonly customExchanges: ExchangePair[];
 
 
     constructor(private cookieService: CookieService) {
-        this._customAssetCodes = this.loadAssetCodes();
-        this._customAnchors = this.loadAnchors();
+        this.customAssetCodes = this.loadAssetCodes();
+        this.customAnchors = this.loadAnchors();
         this._customAssets = this.loadAssets();
-        this._customExchanges = this.loadExchanges();
+        this.customExchanges = this.loadExchanges();
 
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
@@ -60,11 +63,11 @@ export class AssetService {
         }
     }
 
-    /** @public User's custom defined asset codes */
-    getCustomAssetCodes() { return this._customAssetCodes; }   //TODO: public get/private set
 
-    /** @public Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
-    getCustomExchanges(): ExchangePair[] { return this._customExchanges; }      //TODO: does Angular have public get/private set? Use that instead if yes.
+    /** Get all asset codes (i.e. common ones + custom defined by the user) excluding native XLM */
+    getAllAssetCodes(): string[] {
+        return this._commonAssetCodes.concat(this.customAssetCodes).slice(1);   //Exclude XLM
+    }
 
     /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
     getAssetCodesForExchange(): string[] {
@@ -79,8 +82,10 @@ export class AssetService {
         return codes;
     }
 
-    /** @public Custom anchors defined by the user */
-    getCustomAnchors(): Account[] { return this._customAnchors; }
+    /** All anchors, i.e. common + user defined (even if they aren't used in a custom asset) */
+    getAllAnchors(): Account[] {
+        return this._commonAnchors.concat(this.customAnchors);
+    }
 
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
     private getAvailableAssets(): Asset[] {
@@ -88,18 +93,10 @@ export class AssetService {
     }
 
     /**
-     * All anchors, i.e. common + user defined (even if they aren't used in a custom asset)
-     * @public
-     */
-    getAllAnchors(): Account[] {
-        return this._commonAnchors.concat(this._customAnchors);
-    }
-
-    /**
      * Returns all available anchors issuing given asset code.
      * @param assetCode Asset code, ideally one from available assets
      */
-    GetIssuersByAssetCode (assetCode: string) {
+    GetIssuersByAssetCode(assetCode: string): Account[] {
         const issuers: Account[] = new Array();
         const assets = this.getAvailableAssets();
         for (let i=0; i<assets.length; i++) {
@@ -127,7 +124,7 @@ export class AssetService {
     }
 
     /** Return anchor with given address or NULL if there's no such among available anchors  */
-    GetIssuerByAddress(address: string) {
+    GetIssuerByAddress(address: string): Account {
         //NOTE: user can register a known anchor. In that case first mathing address is returned
         const anchors: Array<Account> = this.getAllAnchors();          
         for (let i=0; i<anchors.length; i++) {
@@ -146,20 +143,20 @@ export class AssetService {
      */
     AddCustomAssetCode(assetCode: string): boolean {
         //Don't add if it's already there
-        for (let i=0; i < this._customAssetCodes.length; i++) {
-            if (this._customAssetCodes[i] === assetCode) {
+        for (let i=0; i < this.customAssetCodes.length; i++) {
+            if (this.customAssetCodes[i] === assetCode) {
                 return false;
             }
         }
-        this._customAssetCodes.push(assetCode);
+        this.customAssetCodes.push(assetCode);
         this.serializeToCookie();
         return true;
     }
 
     RemoveCustomAssetCode(assetCode: string): boolean {
-        for (let i=0; i < this._customAssetCodes.length; i++) {
-            if (this._customAssetCodes[i] === assetCode) {
-                this._customAssetCodes.splice(i, 1);
+        for (let i=0; i < this.customAssetCodes.length; i++) {
+            if (this.customAssetCodes[i] === assetCode) {
+                this.customAssetCodes.splice(i, 1);
                 this.serializeToCookie();
                 return true;
             }
@@ -170,19 +167,18 @@ export class AssetService {
 
     /**
      * Add new issuer (a.k.a. anchor).
-     * @public
      * @param address - Valid Stellar public key
      * @param domain - optional domain or any name describing the anchor
      * @returns {boolean} - true on success, false if an issuer with given address already exists
      */
-    AddCustomAnchor(address: string, domain: string) {
+    AddCustomAnchor(address: string, domain: string): boolean {
         //Don't add if it's already there
-        for (let i=0; i < this._customAnchors.length; i++) {
-            if (this._customAnchors[i].address === address) {
+        for (let i=0; i < this.customAnchors.length; i++) {
+            if (this.customAnchors[i].address === address) {
                 return false;
             }
         }
-        this._customAnchors.push(new Account(address, domain, domain));
+        this.customAnchors.push(new Account(address, domain, domain));
         this.serializeToCookie();
 
         return true;
@@ -192,10 +188,10 @@ export class AssetService {
      * Remove custom issuer by their address
      * @param address - anchor's issuing address
      */
-    RemoveCustomAnchor(address: string) {
-        for (let i=0; i < this._customAnchors.length; i++) {
-            if (this._customAnchors[i].address === address) {
-                this._customAnchors.splice(i, 1);
+    RemoveCustomAnchor(address: string): boolean {
+        for (let i=0; i < this.customAnchors.length; i++) {
+            if (this.customAnchors[i].address === address) {
+                this.customAnchors.splice(i, 1);
                 this.serializeToCookie();
                 return true;
             }
@@ -204,30 +200,17 @@ export class AssetService {
         return false;
     }
 
+
+
+
     /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
     CreateCustomExchange(): ExchangePair {
         const id = (new Date()).getTime().toString();
         const newExchange = new ExchangePair(id, KnownAssets.XLM, KnownAssets.XLM);
-        this._customExchanges.push(newExchange);
+        this.customExchanges.push(newExchange);
         this.serializeToCookie();
 
         return newExchange;
-    }
-
-    /**
-     * Get issuer by their Stellar address
-     * @param issuerAddress public key of an issuer
-     * @returns first issuer with given address or NULL if no such is registered here
-     */
-    private getAnchorByAddress(issuerAddress: string): Account {
-        for (let i=0; i<this._customAnchors.length; i++) {
-            if (issuerAddress === this._customAnchors[i].address) {
-                return this._customAnchors[i];
-            }
-        }
-
-        //Anchor not found among know issuers. Don't give up and create a dummy one
-        return new Account(issuerAddress, null, null);
     }
 
     /**
@@ -236,16 +219,16 @@ export class AssetService {
      * @returns {ExchangePair} updated instance
      */
     UpdateCustomExchange(exchangeId: string, baseAssetCode: string, baseIssuerAddress: string, counterAssetCode: string, counterIssuerAddress: string) {
-        for (let i=0; i<this._customExchanges.length; i++) {
-            if (this._customExchanges[i].id === exchangeId) {
+        for (let i=0; i<this.customExchanges.length; i++) {
+            if (this.customExchanges[i].id === exchangeId) {
                 const baseAnchor = this.getAnchorByAddress(baseIssuerAddress);
                 const counterAnchor = this.getAnchorByAddress(counterIssuerAddress);
                 const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseAnchor);
                 const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterAnchor);
 
-                this._customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
+                this.customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
                 this.serializeToCookie();
-                return this._customExchanges[i];
+                return this.customExchanges[i];
             }
         }
 
@@ -253,16 +236,32 @@ export class AssetService {
     }
 
     /** @public Delete exchange by its ID in the array of custom exchanges */
-    RemoveCustomExchange(exchangeId: string) {
-        for (let i=0; i<this._customExchanges.length; i++) {
-            if (this._customExchanges[i].id === exchangeId) {
-                this._customExchanges.splice(i, 1);
+    RemoveCustomExchange(exchangeId: string): boolean {
+        for (let i=0; i<this.customExchanges.length; i++) {
+            if (this.customExchanges[i].id === exchangeId) {
+                this.customExchanges.splice(i, 1);
                 this.serializeToCookie();
                 return true;
             }
         }
 
         return false;
+    }
+
+    /**
+     * Get issuer by their Stellar address
+     * @param issuerAddress public key of an issuer
+     * @returns first issuer with given address or NULL if no such is registered here
+     */
+    private getAnchorByAddress(issuerAddress: string): Account {
+        for (let i=0; i<this.customAnchors.length; i++) {
+            if (issuerAddress === this.customAnchors[i].address) {
+                return this.customAnchors[i];
+            }
+        }
+
+        //Anchor not found among know issuers. Don't give up and create a dummy one
+        return new Account(issuerAddress, null, null);
     }
 
     private loadAssetCodes(): string[] {
@@ -290,7 +289,7 @@ export class AssetService {
      */
     private loadAnchors(): Account[] {
         const COOKIE_NAME = "iss";
-        const customAnchors = new Array();
+        const customIssuers = new Array();
         const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
 
         const parts = cookieText.split(";");
@@ -304,11 +303,11 @@ export class AssetService {
                 const dashIndex = anchorText.indexOf("/");
                 const address = anchorText.substr(0, dashIndex);
                 const domain = anchorText.substr(dashIndex+1);
-                customAnchors.push(new Account(address, domain, domain));
+                customIssuers.push(new Account(address, domain, domain));
             }
         }
 
-        return customAnchors;
+        return customIssuers;
     }
 
     /** Loads user's custom defined assets (code + anchor) */
@@ -342,7 +341,7 @@ export class AssetService {
      */
     private loadExchanges() {
         const COOKIE_NAME = "exc";
-        const userExchanges = new Array();
+        const userExchanges = new Array<ExchangePair>();
         const cookieText = this.cookieService.get(COOKIE_NAME) || "";
 
         const parts = cookieText.split(";");
@@ -382,18 +381,18 @@ export class AssetService {
         let cookieText = "";
         //Asset codes
         var i = 0;
-        for (i = 0; i<this._customAssetCodes.length; i++) {
+        for (i = 0; i<this.customAssetCodes.length; i++) {
             if (i>0) {
                 cookieText += ",";
             }
-            cookieText += this._customAssetCodes[i];
+            cookieText += this.customAssetCodes[i];
         }
         this.setCookieValue("aco", cookieText);
 
         //Anchors
         cookieText = "";
-        for (i=0; i<this._customAnchors.length; i++) {
-            const anchor = this._customAnchors[i];
+        for (i=0; i<this.customAnchors.length; i++) {
+            const anchor = this.customAnchors[i];
             if (i>0) {
                 cookieText += ","
             }
@@ -414,8 +413,8 @@ export class AssetService {
         this.setCookieValue("ass", cookieText);
 
         cookieText = "";
-        for (let e=0; this._customExchanges != null && e<this._customExchanges.length; e++) {
-            const exchange = this._customExchanges[e];
+        for (let e=0; this.customExchanges != null && e<this.customExchanges.length; e++) {
+            const exchange = this.customExchanges[e];
             if (e>0) {
                 cookieText += ",";
             }

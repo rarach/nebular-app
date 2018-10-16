@@ -18,15 +18,11 @@ export class MyExchangesComponent implements OnInit {
     }
 
     ngOnInit() {
-        this.exchanges = this.assetService.getCustomExchanges();
+        this.exchanges = this.assetService.customExchanges;
     }
 
 
     addCustomExchange() {
         const newExchange: ExchangePair = this.assetService.CreateCustomExchange();
-//        this.exchanges.push(newExchange);
     }
-
 }
-
-
