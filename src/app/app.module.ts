@@ -19,6 +19,7 @@ import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
 import { CustomAssetCodesComponent } from './configuration/custom-asset-codes/custom-asset-codes.component';
 import { CustomIssuersComponent } from './configuration/custom-issuers/custom-issuers.component';
+import { CustomAssetsComponent } from './configuration/custom-assets/custom-assets.component';
 
 
 @NgModule({
@@ -34,7 +35,8 @@ import { CustomIssuersComponent } from './configuration/custom-issuers/custom-is
         OrderbookComponent,
         CustomExchangeComponent,
         CustomAssetCodesComponent,
-        CustomIssuersComponent
+        CustomIssuersComponent,
+        CustomAssetsComponent
     ],
     imports: [
         BrowserModule,

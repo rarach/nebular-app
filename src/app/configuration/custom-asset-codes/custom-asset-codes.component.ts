@@ -2,9 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { AssetService } from '../../asset.service';
-import { GETParams } from 'src/app/model/constants';
 import { ActivatedRoute } from '@angular/router';
-import { Subscription } from 'rxjs';
 
 
 @Component({
@@ -12,9 +10,7 @@ import { Subscription } from 'rxjs';
     templateUrl: './custom-asset-codes.component.html',
     styleUrls: ['./custom-asset-codes.component.css']
 })
-export class CustomAssetCodesComponent implements OnInit {
-    private _getParamsSubscriber: Subscription;         //TODO: NO! These two actually belong to new component custom-assets
-    private _selectedAssetCode: string = null;
+export class CustomAssetCodesComponent {
     customAssetCodes: string[];
     latestAddedCode: string;
     duplicateAssetCode: string;
@@ -24,13 +20,6 @@ export class CustomAssetCodesComponent implements OnInit {
         this.customAssetCodes = this.assetService.customAssetCodes;
     }
 
-
-    ngOnInit() {
-        //Handle GET parameter 'assetType'
-        this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-            this._selectedAssetCode = params.get(GETParams.ASSET_TYPE);
-        });
-    }
 
     addAssetCode(theForm: NgForm) {
         this.duplicateAssetCode = null;

@@ -1,0 +1,14 @@
+<h3>Custom assets</h3>
+<hr/>
+<div id="customAssetsList" class="valueList">
+    <div *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="customItemRow">
+        <div class="itemTitle">{{asset.code}}-{{asset.issuer.domain}} ({{asset.issuer.address}})</div>
+        <span (click)="removeAsset(asset.code, asset.issuer.address)">remove</span>
+    </div>
+</div>
+<br/>
+<div style="width:600px; float: left;">
+    <div id="assetTypesDropDown">assetTypesDropDown</div>
+    <div id="anchorsDropDown">anchorsDropDown</div>
+</div>
+<button type="button" id="addAssetBtn" class="big-button" (click)="addAsset()">Add</button>

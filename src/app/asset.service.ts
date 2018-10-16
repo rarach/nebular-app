@@ -33,7 +33,8 @@ export class AssetService {
     ];
     private _commonAssetCodes: string[] = new Array<string>();
     private _commonAnchors: Account[] = new Array<Account>();
-    private _customAssets: Asset[];
+    /** User's custom defined assets */
+    readonly customAssets: Asset[];
     /** User's custom defined asset codes */
     readonly customAssetCodes: string[];
     /** Custom anchors defined by the user */
@@ -45,7 +46,7 @@ export class AssetService {
     constructor(private cookieService: CookieService) {
         this.customAssetCodes = this.loadAssetCodes();
         this.customAnchors = this.loadAnchors();
-        this._customAssets = this.loadAssets();
+        this.customAssets = this.loadAssets();
         this.customExchanges = this.loadExchanges();
 
         //Derive common asset codes and anchors from assets
@@ -72,10 +73,10 @@ export class AssetService {
     /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
     getAssetCodesForExchange(): string[] {
         const codes: string[] = this._commonAssetCodes.slice();
-        for (let i = 0; i < this._customAssets.length; i++) {
+        for (let i = 0; i < this.customAssets.length; i++) {
             //Filter out overlaps
-            if (-1 === codes.indexOf(this._customAssets[i].code)) {
-                codes.push(this._customAssets[i].code);
+            if (-1 === codes.indexOf(this.customAssets[i].code)) {
+                codes.push(this.customAssets[i].code);
             }
         }
 
@@ -89,7 +90,7 @@ export class AssetService {
 
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
     private getAvailableAssets(): Asset[] {
-        return this._commonAssets.concat(this._customAssets);
+        return this._commonAssets.concat(this.customAssets);
     }
 
     /**
@@ -200,8 +201,58 @@ export class AssetService {
         return false;
     }
 
+    /**
+     * Add new asset with given code and issuer's address
+     * @param assetCode - existing asset code
+     * @param issuerAddress - address of an anchor
+     * @returns - returns newly created asset in case of success, otherwise null
+     */
+    AddCustomAsset(assetCode: string, issuerAddress: string): Asset {
+        //Don't add if it's already there
+        for (let i=0; i<this.customAssets.length; i++) {
+            if (assetCode === this.customAssets[i].code && issuerAddress === this.customAssets[i].issuer.address) {
+                return null;
+            }
+        }
+        //Try to match the address with known issuer.
+        let issuer = null;
+        const anchors = this.getAllAnchors();
+        for (let a=0; a<anchors.length; a++) {
+            if (issuerAddress === anchors[a].address) {
+                issuer = anchors[a];
+                break;
+            }
+        }
 
+        //Not a problem if issuer's not found (user might have deleted anchor meanwhile), simply crate a dummy
+        if (null === issuer) {
+            issuer = new Account(issuerAddress, null, null);
+        }
 
+        const newAsset = new Asset(assetCode, assetCode, null, issuer);
+        this.customAssets.push(newAsset);
+        this.serializeToCookie();
+
+        return newAsset;
+    }
+
+    /**
+     * Remove existing asset with given code and issuer's address
+     * @param assetCode - asset code of a known asset
+     * @param issuerAddress - address of an anchor
+     * @returns {boolean} - true on success, false if given asset is not registered here
+     */
+    RemoveCustomAsset(assetCode: string, issuerAddress: string): boolean {
+        for (var i=0; i<this.customAssets.length; i++) {
+            if (this.customAssets[i].code === assetCode && this.customAssets[i].issuer.address) {
+                this.customAssets.splice(i, 1);
+                this.serializeToCookie();
+                return true;
+            }
+        }
+        //Asset isn't registered here
+        return false;
+    }
 
     /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
     CreateCustomExchange(): ExchangePair {
@@ -402,8 +453,8 @@ export class AssetService {
 
         //Assets
         cookieText = "";
-        for (i=0; i<this._customAssets.length; i++) {
-            const asset = this._customAssets[i];
+        for (i=0; i<this.customAssets.length; i++) {
+            const asset = this.customAssets[i];
             if (i>0) {
                 cookieText += ",";
             }

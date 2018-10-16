@@ -1,0 +1,20 @@
+button.big-button {
+    height: 40px;
+    min-width: 80px;
+}
+
+div.dd-select {
+    border: 1px solid black;
+    border-right: none;
+}
+a.dd-selected {
+    border-right: 1px solid black;
+}
+
+div#assetTypesDropDown-dd-placeholder {
+    float: left;
+}
+div#anchorsDropDown-dd-placeholder {
+    float: left;
+    margin-left: 4px;
+}
