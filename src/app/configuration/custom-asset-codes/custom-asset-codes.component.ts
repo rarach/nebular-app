@@ -23,11 +23,11 @@ export class CustomAssetCodesComponent {
 
     addAssetCode(theForm: NgForm) {
         this.duplicateAssetCode = null;
-        if (theForm.invalid)
+        const assetCode = theForm.value.newAssetCode;
+        if (theForm.invalid || (assetCode || "").length <= 0)
         {
             return;
         }
-        const assetCode = theForm.value.newAssetCode;
 
         if (this.customAssetCodes.indexOf(assetCode) > -1)
         {

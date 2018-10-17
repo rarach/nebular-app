@@ -21,11 +21,11 @@ export class CustomIssuersComponent {
 
     addAnchor(theForm: NgForm) {
         this.duplicateAddress = null;
-        if (theForm.invalid)
+        const issuerAddress:string = theForm.value.newAnchorAddress.toUpperCase();
+        if (theForm.invalid || issuerAddress.length === 0)
         {
             return;
         }
-        const issuerAddress = theForm.value.newAnchorAddress.toUpperCase();
 
         if (this.customAnchors.find(issuer => issuer.address == issuerAddress))
         {

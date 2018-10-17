@@ -1,6 +1,4 @@
 import { Component } from '@angular/core';
-import { Title }     from '@angular/platform-browser';
-import { AssetService } from './asset.service';
 import * as $ from "jquery";
 
 
@@ -10,7 +8,5 @@ import * as $ from "jquery";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public constructor(private titleService: Title, private assetService: AssetService) { }
-
-  config = 'asdf_todo';
+  public constructor() { }
 }

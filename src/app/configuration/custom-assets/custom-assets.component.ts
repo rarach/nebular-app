@@ -14,7 +14,7 @@ import { GETParams } from 'src/app/model/constants';
 })
 export class CustomAssetsComponent implements OnInit, OnDestroy {
     private _getParamsSubscriber: Subscription;
-    private _selectedAssetCode: string = null;
+    selectedAssetCode: string = null;
     private _selectedIssuerAddress: string = null;
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
@@ -27,7 +27,7 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         //Handle GET parameter 'assetType'
         this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-            this._selectedAssetCode = params.get(GETParams.ASSET_TYPE);
+            this.selectedAssetCode = params.get(GETParams.ASSET_TYPE);
         });
     }
 
@@ -37,12 +37,16 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
 
 
     addAsset() {
-        if (null == this._selectedAssetCode || null == this._selectedIssuerAddress) {
+        if (null == this.selectedAssetCode || null == this._selectedIssuerAddress) {
             return;
         }
-        const newAsset: Asset = this.assetService.AddCustomAsset(this._selectedAssetCode, this._selectedIssuerAddress);
+        const newAsset: Asset = this.assetService.AddCustomAsset(this.selectedAssetCode, this._selectedIssuerAddress);
         if (null != newAsset) {
             this.lastAddedAsset = newAsset;
         }
+    }
+
+    removeAsset(asdf, jklsemi) {
+        //todo
     }
 }

@@ -15,7 +15,7 @@
     color: black;
 }
 
-:host ::ng-deep input.invalid {     /*TODO: ng-invalid? */
+:host ::ng-deep input.ng-invalid {
     border-color: #ED8117;
     background-color: #FAD9B9;
 }
