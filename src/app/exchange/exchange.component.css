@@ -16,6 +16,12 @@
     border-bottom: 1px solid #5B6A72;
 }
 
+.dropdownsWrapper {
+    width:450px;
+    height: 45px;
+    float: left;
+}
+
 #swapAssetsLink {
     cursor: pointer;
 }

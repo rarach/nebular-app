@@ -117,9 +117,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         success => {
             const data = success as any;
             if (data._embedded.records.length == 0) {
-            this.dataStatus = DataStatus.NoData;
-            this.chartMessage = "No data";    //TODO: "No trades in last XYZ days"
-            return;
+                this.dataStatus = DataStatus.NoData;
+                this.chartMessage = "No data";    //TODO: "No trades in last XYZ days"
+                return;
             }
 
             $("#marketChart").empty();    //TODO: Angular way
