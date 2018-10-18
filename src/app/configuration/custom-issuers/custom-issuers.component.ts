@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Account } from 'src/app/model/account.model';
@@ -11,6 +11,7 @@ import { AssetService } from 'src/app/asset.service';
     styleUrls: ['./custom-issuers.component.css']
 })
 export class CustomIssuersComponent {
+    @Output() issuersChanged = new EventEmitter();
     customAnchors: Account[];
     lastAddedAddress: string;
     duplicateAddress: string;
@@ -38,13 +39,13 @@ export class CustomIssuersComponent {
         if (this.assetService.AddCustomAnchor(issuerAddress, issuerName)) {
             this.lastAddedAddress = issuerAddress;
             theForm.reset();
-//TODO?            setupAnchorDropDown();
+            this.issuersChanged.emit();
         }
     }
 
     removeCustomAnchor(anchorAddress: string) {
         if (this.assetService.RemoveCustomAnchor(anchorAddress)) {
-//TODO: this should happen automatically in custom-exchanges, right?            setupAnchorDropDown();
+            this.issuersChanged.emit();
         }
     }
 }

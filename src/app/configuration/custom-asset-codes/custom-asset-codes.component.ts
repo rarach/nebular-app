@@ -1,8 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { AssetService } from '../../asset.service';
-import { ActivatedRoute } from '@angular/router';
 
 
 @Component({
@@ -11,12 +10,13 @@ import { ActivatedRoute } from '@angular/router';
     styleUrls: ['./custom-asset-codes.component.css']
 })
 export class CustomAssetCodesComponent {
+    @Output() assetCodesChanged = new EventEmitter();
     customAssetCodes: string[];
     latestAddedCode: string;
     duplicateAssetCode: string;
 
 
-    constructor(private route: ActivatedRoute, private assetService: AssetService) {
+    constructor(private assetService: AssetService) {
         this.customAssetCodes = this.assetService.customAssetCodes;
     }
 
@@ -39,13 +39,13 @@ export class CustomAssetCodesComponent {
         if (this.assetService.AddCustomAssetCode(assetCode)) {
             this.latestAddedCode = assetCode;
             theForm.reset();
-//TODO            setupAssetCodeDropDown(_selectedAssetCode);
+            this.assetCodesChanged.emit();
         }
     }
 
     removeAssetCode(assetCode: string) {
         if (this.assetService.RemoveCustomAssetCode(assetCode)) {
-//TODO            setupAssetCodeDropDown(_selectedAssetCode);
+            this.assetCodesChanged.emit();
         }
     }
 }

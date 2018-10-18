@@ -2,7 +2,6 @@ import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { Account } from "../model/account.model";
 import { AssetService } from '../asset.service';
 import { ExchangePair } from '../model/exchange-pair.model';
-import { ExchangeThumbnailComponent } from "../exchange-thumbnail/exchange-thumbnail.component";
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 

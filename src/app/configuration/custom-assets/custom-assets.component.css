@@ -3,18 +3,19 @@ button.big-button {
     min-width: 80px;
 }
 
-div.dd-select {
+/* Note: we need to use :host ::ng-deep hacks here because ddSlick wipes out angulars attributes from these elements */
+:host ::ng-deep div.dd-select {
     border: 1px solid black;
     border-right: none;
 }
-a.dd-selected {
+:host ::ng-deep a.dd-selected {
     border-right: 1px solid black;
 }
 
-div#assetTypesDropDown-dd-placeholder {
+:host ::ng-deep div#assetTypesDropDown-dd-placeholder {
     float: left;
 }
-div#anchorsDropDown-dd-placeholder {
+:host ::ng-deep div#anchorsDropDown-dd-placeholder {
     float: left;
     margin-left: 4px;
 }

@@ -1,7 +1,5 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
-
-import { AssetService } from '../asset.service';
 
 
 @Component({
@@ -9,14 +7,8 @@ import { AssetService } from '../asset.service';
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.css']
 })
-export class ConfigurationComponent implements OnInit {
-    
-
-    constructor(private titleService: Title, private assetService: AssetService) {
+export class ConfigurationComponent {
+    constructor(titleService: Title) {
         titleService.setTitle("Nebular - Configuration");
     }
-
-    ngOnInit() {
-    }
-
 }

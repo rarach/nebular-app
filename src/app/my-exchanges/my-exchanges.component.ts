@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 
 import { AssetService } from '../asset.service';
@@ -10,14 +10,11 @@ import { ExchangePair } from '../model/exchange-pair.model';
     templateUrl: './my-exchanges.component.html',
     styleUrls: ['./my-exchanges.component.css']
 })
-export class MyExchangesComponent implements OnInit {
+export class MyExchangesComponent {
     exchanges = new Array<ExchangePair>();
 
     constructor(titleService: Title, private assetService: AssetService) {
         titleService.setTitle("My Exchanges");
-    }
-
-    ngOnInit() {
         this.exchanges = this.assetService.customExchanges;
     }
 
