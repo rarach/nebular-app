@@ -25,16 +25,17 @@ declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
     styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit, OnDestroy {
-    private _isActive = false;
-    private _routeSubscriber: Subscription;
-    private _getParamsSubscriber: Subscription;
-    chartInterval: number = 900000;    //15min candles by default
     private readonly _baseAssetDdId = "baseAssetCodeDd";
     private readonly _baseAnchorDdId = "baseIssuerDd";
     private readonly _counterAssetDdId = "counterAssetCodeDd";
     private readonly _counterAnchorDdId = "counterIssuerDd";
+    private static readonly PAST_TRADES_INTERVAL: number = 8000;
+    private _isActive = false;
+    private _routeSubscriber: Subscription;
+    private _getParamsSubscriber: Subscription;
 
     //View-model properties
+    chartInterval: number = 900000;    //15min candles by default
     exchange: ExchangePair = null;
     tradeHistory: ExecutedTrade[] = new Array<ExecutedTrade>();
     DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
@@ -75,6 +76,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
         this._isActive = true;
         this.initPastTradesStream();
+        this.initChartStream();
     }
 
     ngOnDestroy() {
@@ -84,7 +86,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private setupUi() {
-        //TODO: order books, past trades
         this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
         this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
         this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
@@ -93,12 +94,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.renderCandlestickChart();
     }
 
+    /** Switch base and couter asset */
     swapAssets() {
         const url = "exchange/" + this.exchange.counterAsset.ToExchangeUrlParameter() + "/" +
                     this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
         this.router.navigateByUrl(url);
     }
 
+    /** Set chart interval (i.e. 'size' of one candle) */
     setChartInterval(intervalDesc: string) {
         this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
         this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
@@ -187,6 +190,18 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
     }
 
+    initChartStream() {
+        if (!this._isActive)
+        {
+            //Cancel the loop if user navigated away
+            return;
+        }
+        this.renderCandlestickChart();
+
+        setTimeout(() => {
+            this.initChartStream();
+        }, Constants.CHART_INTERVAL);
+    }
     /****************************** Trade history (right side panel) ******************************/
     private updateTradeHistory() {
         this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
@@ -231,7 +246,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
         setTimeout(() => {
             this.initPastTradesStream();
-        }, Constants.PAST_TRADES_INTERVAL);
+        }, ExchangeComponent.PAST_TRADES_INTERVAL);
     }
     /**********************************************************************************************/
 

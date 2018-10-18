@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Constants } from '../model/constants';
@@ -15,7 +15,8 @@ import { KnownAssets } from '../model/asset.model';
     templateUrl: './orderbook.component.html',
     styleUrls: ['./orderbook.component.css']
 })
-export class OrderbookComponent implements OnInit {
+export class OrderbookComponent implements OnInit, OnDestroy {
+    private _isActive = false;
     _exchange: ExchangePair;
 
     @Input()
@@ -27,16 +28,21 @@ export class OrderbookComponent implements OnInit {
     @Input() readonly lastTradeType: string = "";
     orderbook: Orderbook = new Orderbook();
     maxCumulativeAmount: number;
-    DataStatus=DataStatus/*accessibility*/; dataStatus: DataStatus = DataStatus.NoData;
+    DataStatus=DataStatus/*template access*/; dataStatus: DataStatus = DataStatus.NoData;
     message: string = "Loading data...";
     Utils = Utils;
 
 
     constructor(private readonly horizonService: HorizonRestService){}
 
-    //TODO: Setup stream
+    ngOnInit() {
+        this._isActive = true;
+        this.initOrderBookStream();
+    }
 
-    ngOnInit() { }
+    ngOnDestroy() {
+        this._isActive = false;
+    }
 
 
     /**
@@ -198,6 +204,18 @@ export class OrderbookComponent implements OnInit {
         this.maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
     }
 
+    private initOrderBookStream() {
+        if (!this._isActive)
+        {
+            //Cancel the loop if user navigated away
+            return;
+        }
+        this.fillOrderBook();
+
+        setTimeout(() => {
+            this.initOrderBookStream();
+        }, Constants.ORDERBOOK_INTERVAL);
+    }
 
     /** Set background of an offer item to visually indicate its volume (amount) relatively to cumulative volume of whole orderbook */
     getRowStyle(offer: Offer, offerType: string) {
