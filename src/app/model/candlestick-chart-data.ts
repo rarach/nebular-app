@@ -17,7 +17,7 @@ export class CandlestickChartData {
     addCandleData(candle: Array<object>, volume: Array<number>) {
         this._configCandleSticks.series[0].values.push(candle);
         this._configCandleSticks.series[1].values.push(volume);
-    };
+    }
 
     /**
      * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
@@ -25,7 +25,7 @@ export class CandlestickChartData {
      */
     setStartTime(timestamp: number) {
         this._configCandleSticks["scale-x"]["min-value"] = timestamp;
-    };
+    }
 
     /**
      * Set resolution of X axis in milliseconds, i.e. how much time does one candle represent.
@@ -33,7 +33,7 @@ export class CandlestickChartData {
      */
     setCandleSize(millisInCandle: number) {
         this._configCandleSticks["scale-x"]["step"] = millisInCandle.toString();
-    };
+    }
 
     /**
      * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
@@ -58,7 +58,7 @@ export class CandlestickChartData {
         this. _configCandleSticks["scale-y"]["max-value"] = maxPrice;
         this._configCandleSticks["scale-y"]["step"] = step;
         this._configCandleSticks["scale-y"]["decimals"] = decimals;
-    };
+    }
 
     /**
      * Set precision of volume tooltips
@@ -66,13 +66,13 @@ export class CandlestickChartData {
      */
     setVolumeDecimals(decimals: number) {
         this._configCandleSticks.series[1]["guide-label"].decimals = decimals;
-    };
+    }
 
     /** Set range of lower part of X axis (i.e. volume) by giving upper bound. */
     setVolumeScale(maxVolume: number) {
         const step = maxVolume / 3.0;
         this._configCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
-    };
+    }
 
     /** Get the chart data ready to be used by ZingChart */
     getData() {

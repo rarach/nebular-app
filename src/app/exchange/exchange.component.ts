@@ -113,7 +113,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     private renderCandlestickChart() {
         const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
 
-        this.horizonService.getTradeAggregations(this.exchange, 900000, 70).subscribe(
+        this.horizonService.getTradeAggregations(this.exchange, this.chartInterval, 70).subscribe(
         success => {
             const data = success as any;
             if (data._embedded.records.length == 0) {
@@ -131,32 +131,32 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             let volumeSum = 0.0;
 
             for (let record of data._embedded.records) {
-            //Collect data for a single candle in the candlestick chart
-            const open = parseFloat(record.open);
-            globalOpen = open;
-            const high = parseFloat(record.high);
-            if (high > maxPrice) {
-                maxPrice = high;
-            }
-            const low = parseFloat(record.low);
-            if (low < minPrice) {
-                minPrice = low;
-            }
-            const close = parseFloat(record.close);
-            if (-1.0 == globalClose) {
-                globalClose = close;
-            }
-            const candle = [record.timestamp, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
+                //Collect data for a single candle in the candlestick chart
+                const open = parseFloat(record.open);
+                globalOpen = open;
+                const high = parseFloat(record.high);
+                if (high > maxPrice) {
+                    maxPrice = high;
+                }
+                const low = parseFloat(record.low);
+                if (low < minPrice) {
+                    minPrice = low;
+                }
+                const close = parseFloat(record.close);
+                if (-1.0 == globalClose) {
+                    globalClose = close;
+                }
+                const candle = [record.timestamp, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
 
-            //Collect data for bar chart with volume
-            const volume = parseFloat(record.base_volume);
-            if (volume > maxVolume) {
-                maxVolume = volume;
-            }
-            volumeSum += volume;
-            const volumeBar = [record.timestamp, volume];
-            chartData.addCandleData(candle, volumeBar);
-            chartData.setStartTime(record.timestamp);
+                //Collect data for bar chart with volume
+                const volume = parseFloat(record.base_volume);
+                if (volume > maxVolume) {
+                    maxVolume = volume;
+                }
+                volumeSum += volume;
+                const volumeBar = [record.timestamp, volume];
+                chartData.addCandleData(candle, volumeBar);
+                chartData.setStartTime(record.timestamp);
             }
 
             chartData.setCandleSize(this.chartInterval);

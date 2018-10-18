@@ -57,7 +57,6 @@ export class OrderbookComponent implements OnInit, OnDestroy {
         this.horizonService.getOrderbook(this._exchange).subscribe(
             success => {
                 const data = success as any;
-                this.orderbook = new Orderbook();
 
                 if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
                     this.renderOrderBook(data);
@@ -185,6 +184,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     private renderOrderBook(completeOrderBook: any) {
         let sumBidsAmount = 0.0;
         let sumAsksAmount = 0.0;
+        this.orderbook = new Orderbook();
 
         for (let bid of completeOrderBook.bids) {
             const price: number = parseFloat(bid.price);
