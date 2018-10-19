@@ -1,18 +1,12 @@
 <div class="row">
-    <div class="col-lg-12" style="border: 1px solid black;">
-        TODO: decide what<br />
-        could be here.<br/>
-        (some stats in any case)
+    <div class="col-lg-12">
+        <br/>
+        <!-- TODO: maybe we can put something useful here? -->
     </div>
 </div>
 
 <div class="row exchanges-frame">
   <div *ngFor="let exchange of exchangeList" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
     <app-exchange-thumbnail [exchange]="exchange"></app-exchange-thumbnail>
-  </div>
-
-  <div class="col-xl-3 col-lg-4 col-md-6 col-sm-12" style="border: 1px solid green; color: red; font-weight: bold;">
-      TODO: unfortunately I'll need backend because evaluating the statistics in client
-      script would kill the browser (and the user).
   </div>
 </div>

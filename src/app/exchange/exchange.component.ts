@@ -222,7 +222,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     const time = new Date(record.ledger_close_time);
                     const tradeType = record.base_is_seller ? "buy" : "sell";
                     this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account));
-                };
+                }
             }
         },
         error => {

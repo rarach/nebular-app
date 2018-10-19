@@ -144,7 +144,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
             }
         }
         //Calculate "bids" (selling counterAsset)
-        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {    //TODO: double-check this fishy condition
+        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {
             const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
             const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
 

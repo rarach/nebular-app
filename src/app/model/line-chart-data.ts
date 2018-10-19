@@ -11,7 +11,7 @@ export class LineChartData {
     /** @public Delete all data of this chart. Should be called before updating with new data. */
     ClearData() {
         this._chartConfig.series[0].values = [];
-    };
+    }
 
     /** Returns the object to be used as ZingChart configuration and data */
     getChartConfigData(): Object {
@@ -21,7 +21,7 @@ export class LineChartData {
     /** @public Add data for one point in the chart, i.e. timestamp and price */
     AddPointData(point: Array<number>) {
         this._chartConfig.series[0].values.push(point);
-    };
+    }
 
     /**
      * Returns number of points to be rendered in this chart
@@ -29,7 +29,7 @@ export class LineChartData {
      */
     DataPointCount(): number {
         return this._chartConfig.series[0].values.length;
-    };
+    }
 
     /**
      * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
@@ -37,7 +37,7 @@ export class LineChartData {
      */
     SetStartTime(timestamp: number) {
         this._chartConfig["scale-x"]["min-value"] = timestamp;
-    };
+    }
 
     /**
      * Set scope of the Y axis, i.e. price. The axis will be divided into up to 5 equal segments for visual guidance.
@@ -52,7 +52,7 @@ export class LineChartData {
         this._chartConfig["scale-y"]["min-value"] = minPrice;
         this._chartConfig["scale-y"]["max-value"] = maxPrice;
         //NOTE: we don't set "step" here and leave ZingChart figure it out. Doing it ourselves led to the chart randomly shift vertically (ZingChart bug?)
-    };
+    }
 
     /**
      * Set background color of this chart. Usually used to indicate raising/falling market.
@@ -60,7 +60,7 @@ export class LineChartData {
      */
     SetBackgroundColor = function(color: string) {
         this._chartConfig["background-color"] = color;
-    };
+    }
 
     /**
      * Set line color. Usually used to emphasize rising/falling trend.
@@ -68,12 +68,12 @@ export class LineChartData {
      */
     SetLineColor(color: string) {
         this._chartConfig.series[0]["line-color"] = color;
-    };
+    }
 
     /** URL to be opened when user clicks the context menu item "Open in new tab" */
     ContextMenuLink(url: string) {
         this._chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
-    };
+    }
 
     private readonly _chartConfig =
     {

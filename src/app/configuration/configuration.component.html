@@ -1,8 +1,9 @@
-<button onclick="dumpCookie();">Show cookies</button>
-<button onclick="eraseCookies();">Clear cookies</button>
 <br/>
-<div id="debug" style="width: 800px; height: 200px; border: 1px solid green;">Hello World</div>
-<h5>Manage custom assets to be used on the Exchanges.</h5>
+<div class="row paddedRow">
+    <div class="col-lg-12">
+        <h4>Manage custom assets to be used on the Exchanges.</h4>
+    </div>
+</div>
 <div class="row paddedRow">
     <div class="col-lg-4 col-md-4 col-sm-12">
         <app-custom-asset-codes (assetCodesChanged)="customAssets.updateAssetCodes()"></app-custom-asset-codes>

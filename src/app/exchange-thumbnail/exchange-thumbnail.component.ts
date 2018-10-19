@@ -1,4 +1,4 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
 import zingchart from "zingchart";
@@ -16,7 +16,7 @@ import { DataStatus } from '../model/data-status.enum';
     templateUrl: './exchange-thumbnail.component.html',
     styleUrls: ['./exchange-thumbnail.component.css']
 })
-export class ExchangeThumbnailComponent implements OnInit {
+export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     @Input() exchange: ExchangePair;
     @Input() showAssetNames = true;
 
@@ -27,6 +27,7 @@ export class ExchangeThumbnailComponent implements OnInit {
     DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.NoData;
     userMessage: string = "Loading data...";
 
+    private _isActive = false;
     private _lineChart: LineChartData = null;
 
     constructor(private router: Router, private horizonService: HorizonRestService) { }
@@ -41,7 +42,12 @@ export class ExchangeThumbnailComponent implements OnInit {
         this._lineChart = new LineChartData();
 
         this._lineChart.ContextMenuLink(this.getUrl());
+        this._isActive = true;
         this.initChartStream();
+    }
+
+    ngOnDestroy() {
+        this._isActive = false;
     }
 
     onClick() {
@@ -144,7 +150,12 @@ export class ExchangeThumbnailComponent implements OnInit {
     }
 
     /** Reload the chart every 8 minutes */
-    private initChartStream() {     //BUG?? I SUSPECT THIS WILL KEEP RUNNING EVEN AFTER USER NAVIGATES AWAY. TODO: investigate and fix
+    private initChartStream() {
+        if (!this._isActive)
+        {
+            //Cancel the loop if user navigated away
+            return;
+        }
         this.renderLineChart();
 
         setTimeout(() => {
