@@ -13,8 +13,7 @@ import { DataStatus } from '../model/data-status.enum';
 
 @Component({
     selector: 'app-exchange-thumbnail',
-    templateUrl: './exchange-thumbnail.component.html',
-    styleUrls: ['./exchange-thumbnail.component.css']
+    templateUrl: './exchange-thumbnail.component.html'
 })
 export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     @Input() exchange: ExchangePair;

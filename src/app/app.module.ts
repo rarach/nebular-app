@@ -20,6 +20,7 @@ import { CustomExchangeComponent } from './custom-exchange/custom-exchange.compo
 import { CustomAssetCodesComponent } from './configuration/custom-asset-codes/custom-asset-codes.component';
 import { CustomIssuersComponent } from './configuration/custom-issuers/custom-issuers.component';
 import { CustomAssetsComponent } from './configuration/custom-assets/custom-assets.component';
+import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analytics.component';
 
 
 @NgModule({
@@ -36,7 +37,8 @@ import { CustomAssetsComponent } from './configuration/custom-assets/custom-asse
         CustomExchangeComponent,
         CustomAssetCodesComponent,
         CustomIssuersComponent,
-        CustomAssetsComponent
+        CustomAssetsComponent,
+        ExchangeAnalyticsComponent
     ],
     imports: [
         BrowserModule,

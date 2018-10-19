@@ -6,8 +6,7 @@ import { AssetService } from '../../asset.service';
 
 @Component({
     selector: 'app-custom-asset-codes',
-    templateUrl: './custom-asset-codes.component.html',
-    styleUrls: ['./custom-asset-codes.component.css']
+    templateUrl: './custom-asset-codes.component.html'
 })
 export class CustomAssetCodesComponent {
     @Output() assetCodesChanged = new EventEmitter();

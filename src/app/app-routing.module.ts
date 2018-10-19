@@ -3,6 +3,7 @@ import { RouterModule, Routes } from "@angular/router";
 
 import { OverviewComponent } from "./overview/overview.component";
 import { ExchangeComponent } from "./exchange/exchange.component";
+import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analytics.component';
 import { MyExchangesComponent } from "./my-exchanges/my-exchanges.component";
 import { ConfigurationComponent } from "./configuration/configuration.component";
 import { PageNotFoundComponent } from "./not-found.component";
@@ -11,6 +12,7 @@ import { PageNotFoundComponent } from "./not-found.component";
 const appRoutes: Routes = [
   { path: 'overview', component: OverviewComponent },
   { path: 'exchange/:baseAssetId/:counterAssetId', component: ExchangeComponent },
+  { path: 'analyze/:baseAssetId/:counterAssetId', component: ExchangeAnalyticsComponent },
   { path: 'myExchanges', component: MyExchangesComponent },
   { path: "configuration", component: ConfigurationComponent },
   { path: '', redirectTo: '/overview', pathMatch: 'full' },

@@ -1,3 +1,3 @@
 # nebular-app
 
-TODO: Angular port of [Stellar Candles](../../../stellar-candles), the charts for asset exchanges on the Stellar network.
+Price charts for asset exchanges on the Stellar decentralized exchange. [www.nebular.app](https://www.nebular.app)
