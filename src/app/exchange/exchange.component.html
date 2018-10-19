@@ -31,17 +31,13 @@
         <br/><br/>
         <app-orderbook [exchange]="exchange" [lastPrice]="lastPrice" [lastTradeType]="lastTradeType"></app-orderbook>
     </div>
-  <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
-      <div id="marketChart" style="min-height: 500px; height: 100%;"
-           [ngClass]="{
-                'chartWarning': dataStatus === DataStatus.NoData,
-                'error': dataStatus === DataStatus.Error
-           }">
-          <br/><br/>{{chartMessage}}
-      </div>
-  </div>
-  <div class="col-lg-3 col-md-4 col-sm-4">
-      <br/>
-      <app-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></app-trade-history>
-  </div>
+    <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
+        <div class="chartWarning" [class.error]="dataStatus === DataStatus.Error">{{chartMessage}}</div>
+        <div id="marketChart" style="min-height: 500px; height: 100%;">
+        </div>
+    </div>
+    <div class="col-lg-3 col-md-4 col-sm-4">
+        <br/>
+        <app-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></app-trade-history>
+    </div>
 </div>

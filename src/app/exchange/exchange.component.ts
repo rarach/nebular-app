@@ -41,13 +41,11 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
     lastPrice: number = 0.0;
     lastTradeType: string = "";
-    chartMessage: string = "Loading data...";
+    chartMessage: string = "Loading chart...";
 
 
     constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
                 private assetService: AssetService, private horizonService: HorizonRestService) {
-        //Setup ZingChart
-        zingchart.THEME="classic";
     }
 
 
@@ -103,7 +101,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
     /** Set chart interval (i.e. 'size' of one candle) */
     setChartInterval(intervalDesc: string) {
-        this.chartMessage = "Loading chart...";     //BUG: won't render if there's already the chart as it removed the DIV
+        this.chartMessage = "Loading chart...";
         this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
 
         const url = this.router.createUrlTree([{interval: this.chartInterval}], {relativeTo: this.route}).toString();
@@ -111,6 +109,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private renderCandlestickChart() {
+        zingchart.exec("marketChart", "destroy");
         const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
 
         this.horizonService.getTradeAggregations(this.exchange, this.chartInterval, 70).subscribe(
@@ -122,7 +121,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            $("#marketChart").empty();    //TODO: Angular way
+            this.chartMessage = "";
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
             let maxVolume = -1.0;
@@ -165,6 +164,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             //Set volume chart range
             chartData.setVolumeScale(maxVolume);
 
+            zingchart.THEME="classic";
             zingchart.render({
                 id : "marketChart",
                 data : chartData.getData(),

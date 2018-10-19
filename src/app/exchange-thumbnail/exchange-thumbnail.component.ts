@@ -13,7 +13,8 @@ import { DataStatus } from '../model/data-status.enum';
 
 @Component({
     selector: 'app-exchange-thumbnail',
-    templateUrl: './exchange-thumbnail.component.html'
+    templateUrl: './exchange-thumbnail.component.html',
+    styleUrls: ['./exchange-thumbnail.component.css']
 })
 export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     @Input() exchange: ExchangePair;
@@ -59,9 +60,9 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
         success => {
             const data = success as any;
             if (data._embedded.records.length == 0) {
-            this.dataStatus = DataStatus.NoData;
-            this.userMessage = "No trades in last 24 hours";
-            return;
+                this.dataStatus = DataStatus.NoData;
+                this.userMessage = "No trades in last 24 hours";
+                return;
             }
             //Check age of last trade
             const minDate = new Date();
@@ -118,6 +119,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
 
             this.setPriceStatistics(startPrice, lastPrice);
             this._lineChart.SetPriceScale(minPrice, maxPrice);
+            zingchart.THEME=null;
             zingchart.render({
                 id : this.chartPlaceholderId,
                 data : this._lineChart.getChartConfigData(),

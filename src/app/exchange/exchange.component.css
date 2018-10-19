@@ -50,8 +50,10 @@ div.intervalButtons {
 }
 
 div.chartWarning {
-    height: 300px;
+    position: absolute;
+    top: 300px;
+    width: 100%;
     line-height: 70px;
-    text-align: center;
     font-size: 25px;
+    text-align: center;
 }
