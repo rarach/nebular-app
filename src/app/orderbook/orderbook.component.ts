@@ -4,7 +4,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Constants } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
-import { HorizonRestService } from '../horizon-rest.service';
+import { HorizonRestService } from '../services/horizon-rest.service';
 import { Orderbook, Offer } from '../model/orderbook.model';
 import { Utils } from '../utils';
 import { KnownAssets } from '../model/asset.model';

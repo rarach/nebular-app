@@ -1,7 +1,7 @@
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { AssetService } from '../../asset.service';
+import { AssetService } from '../../services/asset.service';
 
 
 @Component({
@@ -11,7 +11,7 @@ import { AssetService } from '../../asset.service';
 export class CustomAssetCodesComponent {
     @Output() assetCodesChanged = new EventEmitter();
     customAssetCodes: string[];
-    latestAddedCode: string;
+    latestAddedCode: string = null;
     duplicateAssetCode: string;
 
 

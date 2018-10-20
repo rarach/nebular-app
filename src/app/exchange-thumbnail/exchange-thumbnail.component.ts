@@ -7,7 +7,7 @@ import { Constants } from "../model/constants";
 import { ExchangePair } from '../model/exchange-pair.model';
 import { LineChartData } from '../model/line-chart-data';
 import { Utils } from 'src/app/utils';
-import { HorizonRestService } from '../horizon-rest.service';
+import { HorizonRestService } from '../services/horizon-rest.service';
 import { DataStatus } from '../model/data-status.enum';
 
 

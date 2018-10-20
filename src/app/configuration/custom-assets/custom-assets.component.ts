@@ -3,7 +3,7 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
 import { Asset, KnownAssets } from 'src/app/model/asset.model';
-import { AssetService } from 'src/app/asset.service';
+import { AssetService } from 'src/app/services/asset.service';
 import { GETParams } from 'src/app/model/constants';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick

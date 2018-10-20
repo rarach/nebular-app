@@ -2,7 +2,7 @@ import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
 import { Account } from 'src/app/model/account.model';
-import { AssetService } from 'src/app/asset.service';
+import { AssetService } from 'src/app/services/asset.service';
 
 
 @Component({

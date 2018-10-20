@@ -2,8 +2,8 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Constants } from './model/constants';
-import { ExchangePair } from './model/exchange-pair.model';
+import { Constants } from '../model/constants';
+import { ExchangePair } from '../model/exchange-pair.model';
 
 
 @Injectable({

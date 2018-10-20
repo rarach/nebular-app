@@ -1,5 +1,5 @@
 import { Account, KnownAccounts } from "./account.model";
-import { AssetService } from "../asset.service";
+import { AssetService } from "../services/asset.service";
 import { Constants } from "./constants";
 
 

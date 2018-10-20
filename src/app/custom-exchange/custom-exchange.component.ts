@@ -1,6 +1,6 @@
 import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
 import { Account } from "../model/account.model";
-import { AssetService } from '../asset.service';
+import { AssetService } from '../services/asset.service';
 import { ExchangePair } from '../model/exchange-pair.model';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick

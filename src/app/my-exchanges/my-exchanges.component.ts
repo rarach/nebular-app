@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 
-import { AssetService } from '../asset.service';
+import { AssetService } from '../services/asset.service';
 import { ExchangePair } from '../model/exchange-pair.model';
 
 

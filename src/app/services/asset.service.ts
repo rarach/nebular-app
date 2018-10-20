@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 import { CookieService, CookieOptions } from 'ngx-cookie';
 
-import { Account } from "./model/account.model";
-import { Asset, KnownAssets } from './model/asset.model';
-import { ExchangePair } from './model/exchange-pair.model';
+import { Account } from "../model/account.model";
+import { Asset, KnownAssets } from '../model/asset.model';
+import { ExchangePair } from '../model/exchange-pair.model';
 
 
 @Injectable({
@@ -391,7 +391,7 @@ export class AssetService {
             if ((exchanges[e] || "").length <= 0) {
                 continue;
             }
-            const exchangeText = exchanges[e].trim();      //Format: 5366025104=USD-GABCDEFGH/XLM
+            const exchangeText = exchanges[e].trim();      //Format: 5366025104#USD-GABCDEFGH/XLM
             const hashtagIndex = exchangeText.indexOf("#");
             const id = exchangeText.substr(0, hashtagIndex);
             const slashIndex = exchangeText.indexOf("/");

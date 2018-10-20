@@ -7,13 +7,13 @@ import zingchart from "zingchart";
 
 import { Account } from "../model/account.model";
 import { Asset, KnownAssets } from '../model/asset.model';
-import { AssetService } from '../asset.service';
+import { AssetService } from '../services/asset.service';
 import { CandlestickChartData } from '../model/candlestick-chart-data';
 import { Constants, GETParams } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
-import { HorizonRestService } from '../horizon-rest.service';
+import { HorizonRestService } from '../services/horizon-rest.service';
 import { Utils } from '../utils';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
