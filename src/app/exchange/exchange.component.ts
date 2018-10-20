@@ -89,7 +89,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
         this.setupAnchorDropDown(this._counterAnchorDdId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
         this.updateTradeHistory();
-        this.renderCandlestickChart();
+        this.renderCandlestickChart(true);
     }
 
     /** Switch base and couter asset */
@@ -108,8 +108,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.router.navigateByUrl(url);
     }
 
-    private renderCandlestickChart() {
-        zingchart.exec("marketChart", "destroy");
+    /**
+     * @param reinit true if old ZingChart object should be destroyed before new one is initialized. Useful for refreshing
+     * the same exchange if just new data arrived, so it doesn't "flicker" on the screen.
+     */
+    private renderCandlestickChart(reinit: boolean) {
+        if (reinit) {
+            this.chartMessage = "Loading chart...";
+            zingchart.exec("marketChart", "destroy");
+        }
         const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
 
         this.horizonService.getTradeAggregations(this.exchange, this.chartInterval, 70).subscribe(
@@ -196,7 +203,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             //Cancel the loop if user navigated away
             return;
         }
-        this.renderCandlestickChart();
+        this.renderCandlestickChart(false);
 
         setTimeout(() => {
             this.initChartStream();
