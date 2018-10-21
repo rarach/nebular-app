@@ -11,7 +11,7 @@ import { AssetService } from '../../services/asset.service';
 export class CustomAssetCodesComponent {
     @Output() assetCodesChanged = new EventEmitter();
     customAssetCodes: string[];
-    latestAddedCode: string = null;
+    lastAddedCode: string = null;
     duplicateAssetCode: string;
 
 
@@ -36,7 +36,7 @@ export class CustomAssetCodesComponent {
         }
 
         if (this.assetService.AddCustomAssetCode(assetCode)) {
-            this.latestAddedCode = assetCode;
+            this.lastAddedCode = assetCode;
             theForm.reset();
             this.assetCodesChanged.emit();
         }

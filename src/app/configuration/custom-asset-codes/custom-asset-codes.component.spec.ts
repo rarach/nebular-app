@@ -35,7 +35,7 @@ describe('CustomAssetCodesComponent', () => {
             invalid: true
         }
         component.addAssetCode(invalidFormStub);
-        expect(component.latestAddedCode).toBeNull();
+        expect(component.lastAddedCode).toBeNull();
         expect(component.duplicateAssetCode).toBeNull();
     });
     it("doesn't save data after submit of empty asset code", () => {
@@ -44,7 +44,7 @@ describe('CustomAssetCodesComponent', () => {
             invalid: false
         }
         component.addAssetCode(invalidFormStub);
-        expect(component.latestAddedCode).toBeNull();
+        expect(component.lastAddedCode).toBeNull();
         expect(component.duplicateAssetCode).toBeNull();
     });
     it("highlights duplicate asset code", () => {
@@ -53,7 +53,7 @@ describe('CustomAssetCodesComponent', () => {
             invalid: false
         }
         component.addAssetCode(invalidFormStub);
-        expect(component.latestAddedCode).toBeNull();
+        expect(component.lastAddedCode).toBeNull();
         expect(component.duplicateAssetCode).toBe("JKL;");
     });
     it("adds new code and emits event", () => {
@@ -67,10 +67,19 @@ describe('CustomAssetCodesComponent', () => {
             emitted = true;
         });
         component.addAssetCode(invalidFormStub);
-        expect(component.latestAddedCode).toBe("NEW3333");
+        expect(component.lastAddedCode).toBe("NEW3333");
         expect(component.duplicateAssetCode).toBeNull();
         expect(emitted).toBeTruthy();
     });
+    
+    it("deletes existing asset code and emits event", () => {
+        let emitted = false;
+        component.assetCodesChanged.subscribe(asdf => {
+            emitted = true;
+        });
+        component.removeAssetCode("DEL");
+        expect(emitted).toBeTruthy();
+    }); 
 });
 
 class AssetServiceStub {
@@ -78,5 +87,9 @@ class AssetServiceStub {
 
     AddCustomAssetCode(code: string): boolean {
         return "NEW3333" === code;
+    }
+
+    RemoveCustomAssetCode(code: string): boolean {
+        return "DEL" === code;
     }
 }

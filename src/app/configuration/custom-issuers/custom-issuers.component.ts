@@ -13,7 +13,7 @@ import { AssetService } from 'src/app/services/asset.service';
 export class CustomIssuersComponent {
     @Output() issuersChanged = new EventEmitter();
     customAnchors: Account[];
-    lastAddedAddress: string;
+    lastAddedAddress: string = null;
     duplicateAddress: string;
 
     constructor(private assetService: AssetService) {
