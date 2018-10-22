@@ -1,25 +1,28 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
 
 import { OverviewComponent } from './overview.component';
 
+
 describe('OverviewComponent', () => {
-  let component: OverviewComponent;
-  let fixture: ComponentFixture<OverviewComponent>;
+    let component: OverviewComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OverviewComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: Title, useClass: Title }
+            ]
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OverviewComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(inject([Title], (titleService) => {
+        component = new OverviewComponent(titleService);
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it("should have the title 'Nebular'", () => {
+        expect(component).toBeTruthy();
+        const titleService = TestBed.get(Title);
+        expect(titleService.getTitle()).toBe("Nebular");
+    });
 });

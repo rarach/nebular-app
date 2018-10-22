@@ -1,25 +1,26 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 
 import { OrderbookComponent } from './orderbook.component';
+import { HorizonRestService } from '../services/horizon-rest.service';
+
 
 describe('OrderbookComponent', () => {
-  let component: OrderbookComponent;
-  let fixture: ComponentFixture<OrderbookComponent>;
+    let component: OrderbookComponent;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ OrderbookComponent ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [
+                { provide: HorizonRestService, useValue: {/*TODO: definitely something better*/} }
+            ]
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(OrderbookComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
+    beforeEach(inject([HorizonRestService], (horizonService) => {
+        component = new OrderbookComponent(horizonService);
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
 });

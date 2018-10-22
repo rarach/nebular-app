@@ -5,15 +5,14 @@ import { Utils } from '../utils';
 
 
 @Component({
-  selector: 'app-trade-history',
-  templateUrl: './trade-history.component.html',
-  styleUrls: ['./trade-history.component.css']
+    selector: 'app-trade-history',
+    templateUrl: './trade-history.component.html',
+    styleUrls: ['./trade-history.component.css']
 })
 export class TradeHistoryComponent {
-  @Input() readonly exchange: ExchangePair;
-  @Input() readonly recentTrades: ExecutedTrade[];
-  Utils = Utils;  //template accessibility
+    @Input() /*readonly TODO: how to test such?*/ exchange: ExchangePair;
+    @Input() readonly recentTrades: ExecutedTrade[] = [];
+    Utils = Utils;  //template accessibility
 
-
-  constructor(){}
+    constructor(){}
 }
