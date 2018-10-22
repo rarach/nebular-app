@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 
 import { OverviewComponent } from './overview.component';

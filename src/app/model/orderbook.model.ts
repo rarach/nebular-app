@@ -4,8 +4,6 @@ export class Orderbook {
 }
 
 export class Offer {
-    readonly cumulativePercentage: number;
-
     constructor(public readonly price: number, public readonly amount: number, public readonly cummulativeAmount: number,
                 public readonly isCrossLinked: boolean = false) { }
 }
