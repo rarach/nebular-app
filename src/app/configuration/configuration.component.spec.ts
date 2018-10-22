@@ -1,31 +1,29 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
-import { FormsModule } from '@angular/forms';
+import { async, TestBed, inject } from '@angular/core/testing';
 
 import { ConfigurationComponent } from './configuration.component';
-import { CustomAssetCodesComponent } from './custom-asset-codes/custom-asset-codes.component';
-import { CustomAssetsComponent } from './custom-assets/custom-assets.component';
-import { CustomIssuersComponent } from './custom-issuers/custom-issuers.component';
+import { Title } from '@angular/platform-browser';
 
 
 describe('ConfigurationComponent', () => {
-  let component: ConfigurationComponent;
-  let fixture: ComponentFixture<ConfigurationComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ ConfigurationComponent, CustomAssetCodesComponent, CustomAssetsComponent, CustomIssuersComponent ],
-      imports: [ FormsModule ]
-    })
-    .compileComponents();
-  }));
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            providers: [ { provide: Title, useClass: TitleStub } ]
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(() => {
-    fixture = TestBed.createComponent(ConfigurationComponent);
-    component = fixture.componentInstance;
-    fixture.detectChanges();
-  });
-
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', inject([Title], (titleService) => {
+        const component = new ConfigurationComponent(titleService);
+        expect(component).toBeTruthy();
+        expect(titleService.title).toBe("Nebular - Configuration");
+    }));
 });
+
+class TitleStub {
+    title: string = null;
+
+    setTitle(value: string) {
+        this.title = value;
+    }
+}

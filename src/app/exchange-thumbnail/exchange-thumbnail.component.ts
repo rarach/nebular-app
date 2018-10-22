@@ -32,7 +32,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
 
     constructor(private router: Router, private horizonService: HorizonRestService) { }
 
-    getUrl() {
+    getUrl(): string {
         return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
     }
 
