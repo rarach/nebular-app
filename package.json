@@ -10,7 +10,8 @@
     "build": "ng build",
     "test": "ng test --watch=false --code-coverage --browsers=\"ChromeHeadless\"",
     "lint": "ng lint",
-    "e2e": "ng e2e"
+    "e2e": "ng e2e",
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
   },
   "private": true,
   "dependencies": {
