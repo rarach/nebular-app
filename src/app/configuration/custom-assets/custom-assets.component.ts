@@ -80,8 +80,8 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
             //Search for asset full name among know assets
             let assetFullName = assetCode + " (custom)";
             for (var asset in KnownAssets) {
-                if (KnownAssets[asset].AssetCode === assetCode) {
-                    assetFullName = KnownAssets[asset].FullName;
+                if (KnownAssets[asset].code === assetCode) {
+                    assetFullName = KnownAssets[asset].fullName;
                     break;
                 }
             }

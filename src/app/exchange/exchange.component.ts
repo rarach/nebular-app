@@ -222,7 +222,11 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 this.lastTradeType = "";
             }
             else {
-                this.titleService.setTitle(this.currentPriceTitle(data._embedded.records[0]));
+                const pageTitle = this.currentPriceTitle(data._embedded.records[0]);
+                if (!this._isActive) {
+                    return;     //Little bit of race condition here. If user just left this page we don't want to overwrite the title.
+                }
+                this.titleService.setTitle(pageTitle);
                 for(let record of data._embedded.records) {
                     const sellPrice = record.price.n / record.price.d;
                     const amount = parseFloat(record.base_amount);
@@ -275,8 +279,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             //Search for asset full name among know assets
             let assetFullName: string = assetCode + " (custom)";
             for (let asset in KnownAssets) {
-                if (KnownAssets[asset].AssetCode === assetCode) {
-                    assetFullName = KnownAssets[asset].FullName;
+                if (KnownAssets[asset].code === assetCode) {
+                    assetFullName = KnownAssets[asset].fullName;
                     break;
                 }
             }
