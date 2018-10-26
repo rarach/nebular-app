@@ -24,7 +24,7 @@ export class OverviewComponent implements OnInit {
         new ExchangePair("highTradeCount03", KnownAssets.XLM, KnownAssets.ABDT),
         new ExchangePair("letsSee1", KnownAssets.XLM, KnownAssets.SLT),
         new ExchangePair("letsSee2", KnownAssets.XLM, KnownAssets["USD-Stonghold"]),
-        new ExchangePair("letsSee1", KnownAssets.XLM, KnownAssets.WSD)
+        new ExchangePair("letsSee3", KnownAssets.XLM, KnownAssets.WSD)
     ];
 
     constructor(titleService: Title) {

@@ -124,7 +124,20 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const data = success as any;
             if (data._embedded.records.length == 0) {
                 this.dataStatus = DataStatus.NoData;
-                this.chartMessage = "No data";    //TODO: "No trades in last XYZ days"
+                this.chartMessage = "No trades in this exchange";
+                return;
+            }
+
+            //Check age of last trade, show candles only for specific number of last days, depending on current scale
+            const minDate = new Date();
+            const chartRangeInDays = this.getChartRangeByInterval();
+            minDate.setDate(minDate.getDate() - chartRangeInDays);
+            const rangeStart = minDate.getTime();
+            const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
+            if (firstTimestamp < rangeStart) {
+                //Last trade is older than date range => we have no data
+                this.dataStatus = DataStatus.NoData;
+                this.chartMessage = `No trades in last ${chartRangeInDays} days`;
                 return;
             }
 
@@ -136,8 +149,11 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             let globalClose = -1.0
             let volumeSum = 0.0;
 
+            //Collect data for a single candle in the candlestick chart
             for (let record of data._embedded.records) {
-                //Collect data for a single candle in the candlestick chart
+                if (record.timestamp < rangeStart) {
+                    break;    //Break at first value older than range start
+                }
                 const open = parseFloat(record.open);
                 globalOpen = open;
                 const high = parseFloat(record.high);
@@ -227,7 +243,22 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     return;     //Little bit of race condition here. If user just left this page we don't want to overwrite the title.
                 }
                 this.titleService.setTitle(pageTitle);
+
+                //Check age of last trade, show only trades for specific number of last days, depending on current scale
+                const minDate = new Date();
+                const chartRangeInDays = this.getChartRangeByInterval();
+                minDate.setDate(minDate.getDate() - chartRangeInDays);
+                const rangeStart = minDate.getTime();
+                const firstTimestamp = new Date(data._embedded.records[0].ledger_close_time).getTime();
+                if (firstTimestamp < rangeStart) {
+                    //Last trade is older than date range => we have no data
+                    return;
+                }
+
                 for(let record of data._embedded.records) {
+                    if (record.timestamp < rangeStart) {
+                        break;    //Break at first value older than range start
+                    }
                     const sellPrice = record.price.n / record.price.d;
                     const amount = parseFloat(record.base_amount);
                     const time = new Date(record.ledger_close_time);
@@ -260,6 +291,22 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }, ExchangeComponent.PAST_TRADES_INTERVAL);
     }
     /**********************************************************************************************/
+
+    private getChartRangeByInterval(): number {
+        switch(this.chartInterval)
+        {
+            case 300000:    //5min => 1 day
+                return 1;
+            case 900000:    //15min => 2 days
+                return 2;
+            case 3600000:   //1 hour => 8 days
+                return 8;
+            case 86400000:  //1 day => 192 days
+                return 192;
+            default:
+                return 999999;  //unlimited (show as many candles as we got from the API)
+        }
+    }
 
     private currentPriceTitle(record) {
         const sellPrice = record.price.n / record.price.d;

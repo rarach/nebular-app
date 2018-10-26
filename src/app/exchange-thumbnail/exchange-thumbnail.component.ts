@@ -87,7 +87,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             const that = this;
             for(let record of data._embedded.records) {
                 if (record.timestamp < yesterday) {
-                break;    //Break at first value older than 24hrs
+                    break;    //Break at first value older than 24hrs
                 }
 
                 //Collect value for a single point in the chart as average
