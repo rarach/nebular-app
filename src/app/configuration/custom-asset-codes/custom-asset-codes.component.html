@@ -2,7 +2,7 @@
 <hr/>
 <div id="customAssetTypesList" class="valueList">
     <div *ngFor="let assetCode of customAssetCodes" id="{{assetCode}}" class="customItemRow"
-         [class.highlight]="assetCode == this.latestAddedCode" [class.duplicate]="assetCode == this.duplicateAssetCode">
+         [class.highlight]="assetCode == this.lastAddedCode" [class.duplicate]="assetCode == this.duplicateAssetCode">
         <div class="itemTitle">{{assetCode}}</div>
         <span (click)="removeAssetCode(assetCode);">remove</span>
     </div>

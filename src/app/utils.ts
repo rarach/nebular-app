@@ -23,13 +23,13 @@ export class Utils {
         if (!intervalDesc || "900000" === intervalDesc || "15min" === intervalDesc || "15m" === intervalDesc) {
             return 900000;
         }
-        if ("3600000" === intervalDesc || "hour" === intervalDesc || "1hour" === intervalDesc || "60min" === intervalDesc || "60m" === intervalDesc) {
+        if ("3600000" === intervalDesc || "hour" === intervalDesc || 0 === intervalDesc.indexOf("1h") || "60min" === intervalDesc || "60m" === intervalDesc) {
             return 3600000;
         }
-        if ("86400000" === intervalDesc || "day" === intervalDesc || "1day" === intervalDesc || "1d" === intervalDesc || intervalDesc.indexOf("24h") === 0) {
+        if ("86400000" === intervalDesc || "day" === intervalDesc || 0 === intervalDesc.indexOf("1d") || intervalDesc.indexOf("24h") === 0) {
             return 86400000;
         }
-        if ("604800000" === intervalDesc || "week" == intervalDesc || "1week" === intervalDesc || "1w" === intervalDesc || intervalDesc.indexOf("7d") === 0) {
+        if ("604800000" === intervalDesc || "week" == intervalDesc || 0 === intervalDesc.indexOf("1w") || intervalDesc.indexOf("7d") === 0) {
             return 604800000;
         }
 
@@ -43,19 +43,15 @@ export class Utils {
     }
 
     static formatPrice(price: number): string {
-        const decimals: number = Utils.getPrecisionDecimals(price);
-        return Utils.formatNumber(price, decimals);
+        return this.formatAmount(price);
     }
-    
+
     private static formatNumber(value: number, decimals: number): string {
-        const numString: string = decimals ? value.toFixed(decimals) : value.toString();
+        const numString: string = value.toFixed(decimals);
         return Utils.trimZeros(numString);
     }
 
     private static trimZeros(str: string): string {
-        if (str.indexOf('.') <= -1) {
-            return str;
-        }
         str = str.replace(/0{1,99}$/, '');  //Trim trailing zeros
         return str.replace(/\.$/, '');      //Replace possible trailing dot (if the number was whole)
     }

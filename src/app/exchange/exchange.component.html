@@ -18,7 +18,7 @@
       <div class="chartButton intervalButtons">
         <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
         <a class="link" [class.selected]="chartInterval === 900000" (click)="setChartInterval('15min');">15min</a>&nbsp;
-        <a class="link" [class.selected]="chartInterval === 3600000" (click)="setChartInterval('1hour');">hour</a>&nbsp;
+        <a class="link" [class.selected]="chartInterval === 3600000" (click)="setChartInterval('1h');">hour</a>&nbsp;
         <a class="link" [class.selected]="chartInterval === 86400000" (click)="setChartInterval('1day');">day</a>&nbsp;
         <a class="link" [class.selected]="chartInterval === 604800000" (click)="setChartInterval('1week');">week</a>
       </div>

@@ -60,7 +60,7 @@ describe('CustomIssuersComponent', () => {
         expect(component.duplicateAddress).toBe("GXXXXXXXXXXXXXX");
     });
     it("adds new issuer and emits event", () => {
-        const invalidFormStub = <NgForm>{
+        const formStub = <NgForm>{
             value: { newAnchorAddress: "GABCDEF5656565656565", newAnchorName: "ThisIsNew" },
             invalid: false,
             reset: () => {}
@@ -69,11 +69,28 @@ describe('CustomIssuersComponent', () => {
         component.issuersChanged.subscribe(asdf => {
             emitted = true;
         });
-        component.addAnchor(invalidFormStub);
+        component.addAnchor(formStub);
         expect(component.lastAddedAddress).toBe("GABCDEF5656565656565");
         expect(component.duplicateAddress).toBeNull();
         expect(emitted).toBeTruthy();
     });
+    it("doesn't emit event if adding an issuer failed", () => {
+        component.lastAddedAddress = "GA123";
+        const formStub = <NgForm>{
+            value: { newAnchorAddress: "GAWHATEVER", newAnchorName: "Asset Service will reject this for 'some' reason" },
+            invalid: false,
+            reset: () => {}
+        }
+        let emitted = false;
+        component.issuersChanged.subscribe(asdf => {
+            emitted = true;
+        });
+        component.addAnchor(formStub);
+        expect(component.lastAddedAddress).toBe("GA123");
+        expect(component.duplicateAddress).toBeNull();
+        expect(emitted).toBe(false);
+    });
+
     it("deletes existing issuer and emits event", () => {
         let emitted = false;
         component.issuersChanged.subscribe(asdf => {
