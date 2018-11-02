@@ -1,5 +1,4 @@
 export class Constants {
-    static readonly API_URL: string = "https://horizon.stellar.org";
     static readonly CONFIGURATION_URL: string = "/configuration";
     static readonly ORDERBOOK_INTERVAL: number = 7000;
     static readonly CHART_INTERVAL: number = 8 * 60 * 1000;

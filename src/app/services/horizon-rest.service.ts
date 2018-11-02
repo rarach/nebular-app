@@ -2,7 +2,6 @@ import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
-import { Constants } from '../model/constants';
 import { ExchangePair } from '../model/exchange-pair.model';
 
 
@@ -13,6 +12,14 @@ export class HorizonRestService {
 
     constructor(private http: HttpClient) { }
 
+
+    private getApiUrl(): string {
+        const apiUrls = [ "https://horizon.stellar.org", "https://horizon-mon.stellar-ops.com" ];
+        const random = (new Date()).getTime() % apiUrls.length;
+        return apiUrls[random];
+    }
+
+
     /**
      * Retrieve trade history in form of OHLC candles for given exchange.
      * @param exchange exchange pair to get the aggregation for
@@ -20,7 +27,7 @@ export class HorizonRestService {
      * @param maxCandles max. records to return. Must not exceed 200 as that's current limit supported by Horizon
      */
     getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number = 96) : Observable<Object> {
-        const url = Constants.API_URL + "/trade_aggregations?" +
+        const url = this.getApiUrl() + "/trade_aggregations?" +
                     exchange.baseAsset.ToUrlParameters("base") + "&" + exchange.counterAsset.ToUrlParameters("counter") +
                     "&order=desc&resolution=" + interval + "&limit=" + maxCandles;
 
@@ -34,7 +41,7 @@ export class HorizonRestService {
      * @param maxItems maximum number of trades to get
      */
     getTradeHistory(exchange: ExchangePair, maxItems: number = 40){
-        const url = Constants.API_URL + "/trades?" + exchange.baseAsset.ToUrlParameters("base") +
+        const url = this.getApiUrl() + "/trades?" + exchange.baseAsset.ToUrlParameters("base") +
                     "&" + exchange.counterAsset.ToUrlParameters("counter") + "&order=desc&limit=" + maxItems;
 
         const response = this.http.get(url);
@@ -42,7 +49,7 @@ export class HorizonRestService {
     }
 
     getOrderbook(exchange: ExchangePair, maxItems: number = 17) {
-        const url = Constants.API_URL + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
+        const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                     "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
 
         const response = this.http.get(url);

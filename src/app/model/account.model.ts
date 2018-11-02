@@ -11,7 +11,7 @@ export class Account {
     /** True for dummy issuer of XLM */
     IsNativeIssuer() : boolean {
         return null === this.address;
-    };
+    }
 }
 
 
@@ -58,15 +58,5 @@ export const KnownAccounts = {
     "VcBearXRP" : new Account("GA7FCCMTTSUIC37PODEL6EOOSPDRILP6OQI5FWCWDDVDBLJV72W6RINZ", "VCBear", "vcbear.net"),
     "WhiteStandard": new Account("GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V", "White Standard", "thewwallert.com"),
     "XimCoin" : new Account("GBZ35ZJRIKJGYH5PBKLKOZ5L6EXCNTO7BKIL7DAVVDFQ2ODJEEHHJXIM", "XimCoin", "ximcoin.com"),
-    "Xirkle" : new Account("GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5", "Xirkle", "xirkle.com"),
-
-    GetAccountByAddress: function(address) {
-        for (var account in KnownAccounts) {
-            if (KnownAccounts[account].Address === address) {
-                return KnownAccounts[account];
-            }
-        }
-
-        return null;
-    }
+    "Xirkle" : new Account("GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5", "Xirkle", "xirkle.com")
 };
