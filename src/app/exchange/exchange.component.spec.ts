@@ -1,28 +1,26 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { async, TestBed, inject, ComponentFixture } from '@angular/core/testing';
 import { ActivatedRoute,  convertToParamMap, Router, ParamMap, Params } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { ReplaySubject } from 'rxjs';
+import { ReplaySubject, Observable } from 'rxjs';
 
 import { AssetService } from '../services/asset.service';
+import { DataStatus } from '../model/data-status.enum';
 import { ExchangeComponent } from './exchange.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { Observable } from 'rxjs';
-import { of as observableOf } from 'rxjs';
+import { ExchangePair } from '../model/exchange-pair.model';
+import { KnownAssets } from '../model/asset.model';
+
 
 
 describe('ExchangeComponent', () => {
-    let component: ExchangeComponent;
-    let activatedRoute: ActivatedRouteStub;
-
-    beforeEach(() => {
-        activatedRoute = new ActivatedRouteStub();
-        activatedRoute.setParamMap({ baseAssetId: ""});
-    })
+    let exchComponent: ExchangeComponent;
+    let activRoute: ActivatedRouteStub;
 
     beforeEach(async(() => {
+        activRoute = new ActivatedRouteStub();
         TestBed.configureTestingModule({
             providers: [
-                { provide: ActivatedRoute, /* useClass: ActivatedRouteStub */ useValue: activatedRoute },
+                { provide: ActivatedRoute, /* useClass: ActivatedRouteStub */ useValue: activRoute },
                 { provide: Router, useClass: RouterStub },
                 { provide: Title, useClass: TitleStub },
                 { provide: AssetService, useClass: AssetServiceStub },
@@ -31,55 +29,46 @@ describe('ExchangeComponent', () => {
         })
         .compileComponents();
     }));
-
     beforeEach(inject([ActivatedRoute, Router, Title, AssetService, HorizonRestService],
                       (route, router, titleService, assetService, horizonRestService) => {
-        component = new ExchangeComponent(route, router, titleService, assetService, horizonRestService);
+        exchComponent = new ExchangeComponent(route, router, titleService, assetService, horizonRestService);
     }));
 
-    it('should create', () => {
-        expect(component).toBeTruthy();
-        expect(component.chartMessage).toBe("Loading chart...");
+    it('should have a default chart message "Loading chart..."', () => {
+        expect(exchComponent.chartMessage).toBe("Loading chart...");
     });
-
-    it("should throw an error if URL parameter for base asset is not provided", () => {
-        const route = TestBed.get(ActivatedRoute);
-//        route.testCaseId = "EMPTY baseAssetId";
-//        route.setParamMap({ baseAssetId: ""});
-//TODO        expect( function() { component.ngOnInit(); }).toThrow(new Error("Invalid URL parameters"));
-        expect(true).toBeTruthy();
+    it("should display error message when base asset is missing in URL", () => {
+        exchComponent.exchange = new ExchangePair("test01", KnownAssets.XLM, KnownAssets.TELLUS);
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.Error);
+        expect(exchComponent.chartMessage).toBe("Invalid URL: missing base asset");
+        //How come we don't have to reset timer we started in ngOnInit?
     });
+    it("should display error message when counter asset is missing in URL", () => {
+        activRoute.setParamMap({ baseAssetId: "XLM" });
+        exchComponent.exchange = new ExchangePair("test02", KnownAssets.ABDT, KnownAssets.XCN);
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.Error);
+        expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");
+    });
+/*TODO (WATCH OUT! This one throws silent error. In Karma page it looks like fail of some other test)
+    it("should initialize exchange from URL parameters", () => {
+        activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY" });
+        expect(exchComponent.dataStatus).toBe(DataStatus.OK);
+        exchComponent.ngOnInit();
+        expect(exchComponent.exchange.baseAsset.code).toBe("XLM");
+        expect(exchComponent.dataStatus).toBe(DataStatus.OK);
+    }); */
 });
 
-/*
-class ActivatedRouteStub {
-    testCaseId: string = null;
-
-    paramMap: Observable<ParamMap> = new Observable<ParamMap>((subscriber) => {
-        const map: ParamMap = {
-            has: (name: string) => { return true; },
-            getAll: (name: string) => { return []; },
-            get: (name: string) => {
-                if ("baseAssetId" === name && "EMPTY baseAssetId" === this.testCaseId) {
-                    return null;
-                }
-                if ("EMPTY counterAssetId" === this.testCaseId) {
-                    return null;
-                }
-            },
-            keys: []
-        };
-
-        subscriber.next(map);
-    });
-} */
-export class ActivatedRouteStub {
+//credit belongs to https://angular.io/guide/testing#activatedroutestub
+export class ActivatedRouteStub {   //TODO: move to testing/activated-route-stub.ts
     // Use a ReplaySubject to share previous values with subscribers
     // and pump new values into the `paramMap` observable
     private subject = new ReplaySubject<ParamMap>();
   
-    constructor(/*initialParams?: Params*/) {
-//      this.setParamMap(initialParams);
+    constructor(initialParams?: Params) {
+      this.setParamMap(initialParams);
     }
   
     /** The mock paramMap observable */
@@ -105,5 +94,15 @@ class TitleStub {
 }
 
 class HorizonRestServiceStub {
-    //todo
+    getTradeHistory(): Observable<Object> {
+        return new Observable<Object>();
+    }
+
+    getTradeAggregations(): Observable<Object> {
+        return new Observable<Object>();
+    }
+
+    getOrderbook(): Observable<Object> {
+        return new Observable<Object>();
+    }
 }

@@ -32,7 +32,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     private static readonly PAST_TRADES_INTERVAL: number = 8000;
     private _isActive = false;
     private _routeSubscriber: Subscription;
-    private _getParamsSubscriber: Subscription;
 
     //View-model properties
     chartInterval: number = 900000;    //15min candles by default
@@ -54,22 +53,26 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             //'Parse' the route
             const baseAssetString = params.get('baseAssetId');
             const counterAssetString = params.get('counterAssetId');
+            const intParam = params.get(GETParams.INTERVAL);
 
             if ((baseAssetString || "").length <= 0) {
-                throw new Error("Invalid URL parameters");
+                this.dataStatus = DataStatus.Error;
+                this.chartMessage = "Invalid URL: missing base asset";
+                return;
             }
             if ((counterAssetString || "").length <= 0) {
-                throw new Error("Invalid URL parameters (missing counter asset): ");
+                this.dataStatus = DataStatus.Error;
+                this.chartMessage = "Invalid URL: missing counter asset";
+                return;
             }
+            if (intParam) {
+                this.chartInterval = Utils.intervalAsMilliseconds(intParam);
+            }
+
             const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
             const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
             this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
             this.setupUi();
-        });
-        //Handle GET parameter 'interval'
-        this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-            const intParam = params.get(GETParams.INTERVAL);
-            this.chartInterval = Utils.intervalAsMilliseconds(intParam);
         });
 
         this._isActive = true;
@@ -80,7 +83,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     ngOnDestroy() {
         this._isActive = false;
         this._routeSubscriber.unsubscribe();
-        this._getParamsSubscriber.unsubscribe();
     }
 
     private setupUi() {
