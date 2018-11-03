@@ -39,7 +39,7 @@ export class Asset {
      * @param assetUrlParam asset definition, most likely gotten from URL, in form CODE-STELLAR_ADDRESS_OF_ISSUER
      * @param assetService instance of AssetService
      */
-    static ParseFromUrlParam(assetUrlParam: string, assetService: AssetService) {   //TODO: this method doesn't really belong here. When you move it, delete the AssetService dependencies all the way up the call tree
+    static ParseFromUrlParam(assetUrlParam: string, assetService: AssetService): Asset {   //TODO: this method doesn't really belong here. When you move it, delete the AssetService dependencies all the way up the call tree
         const index = assetUrlParam.indexOf("-");
         let assetCode;
         let issuerAddress = null;
@@ -48,9 +48,9 @@ export class Asset {
             assetCode = assetUrlParam;
             if (assetUrlParam != Constants.NATIVE_ASSET_CODE) {
                 //Try to find issuers of that asset among known accounts
-                issuerAddress = assetService.GetFirstIssuerAddress(assetUrlParam);
+                issuerAddress = assetService.getFirstIssuerAddress(assetUrlParam);
                 if (!issuerAddress) {
-                    throw new Error("Invalid URL parameters (missing issuer): " + assetUrlParam);
+                    throw "Invalid URL parameters (missing issuer): " + assetUrlParam;
                 }
             }
             else assetType = Constants.NATIVE_ASSET_TYPE;   //"native" for XLM

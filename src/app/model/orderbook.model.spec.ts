@@ -9,6 +9,7 @@ describe('Orderbook (model)', () => {
         const offer = new Offer(123.456, 1000, 489222.0009, false);
         expect(offer.price).toBe(123.456);
         expect(offer.cummulativeAmount).toBe(489222.0009);
+        expect(offer.isCrossLinked).toBe(false);
         const orderbook = new Orderbook();
         orderbook.bids.push(offer);
         expect(orderbook.asks.length).toBe(0);

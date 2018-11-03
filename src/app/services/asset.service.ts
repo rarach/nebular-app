@@ -113,7 +113,7 @@ export class AssetService {
      * Return first anchor from that issues given asset code or NULL if there's no such among available anchors
      * @param assetCode Asset code
      */
-    GetFirstIssuerAddress(assetCode: string): string {
+    getFirstIssuerAddress(assetCode: string): string {
         const assets = this.getAvailableAssets();
         for (let i=0; i<assets.length; i++) {
             if (assetCode === assets[i].code) {

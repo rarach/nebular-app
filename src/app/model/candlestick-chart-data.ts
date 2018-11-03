@@ -12,7 +12,7 @@ export class CandlestickChartData {
     /**
      * Add data of one candle for the chart
      * @param candle candle data in form [timestamp_as_millis, [open, high, low, close]]
-     * @param volume volume data in form [timestamp_as_millis, ]
+     * @param volume volume data in form [timestamp_as_millis, volume]
      */
     addCandleData(candle: Array<object>, volume: Array<number>) {
         this._configCandleSticks.series[0].values.push(candle);

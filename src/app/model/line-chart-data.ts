@@ -9,17 +9,17 @@ export class LineChartData {
 
 
     /** @public Delete all data of this chart. Should be called before updating with new data. */
-    ClearData() {
+    clearData() {
         this._chartConfig.series[0].values = [];
     }
 
     /** Returns the object to be used as ZingChart configuration and data */
-    getChartConfigData(): Object {
+    getData(): Object {
         return this._chartConfig;
     }
 
     /** @public Add data for one point in the chart, i.e. timestamp and price */
-    AddPointData(point: Array<number>) {
+    addPointData(point: Array<number>) {
         this._chartConfig.series[0].values.push(point);
     }
 
@@ -35,7 +35,7 @@ export class LineChartData {
      * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
      * @param timestamp timestamp of the first candle in ticks
      */
-    SetStartTime(timestamp: number) {
+    setStartTime(timestamp: number) {
         this._chartConfig["scale-x"]["min-value"] = timestamp;
     }
 
@@ -44,21 +44,21 @@ export class LineChartData {
      * @param minPrice lower bound
      * @param maxPrice upper bound
      */
-    SetPriceScale(minPrice: number, maxPrice: number) {
+    setPriceScale(minPrice: number, maxPrice: number) {
         const diff = maxPrice - minPrice;
         minPrice = minPrice - 0.1*diff;     //10% bottom offset so it doesn't sit on X axis
 
-        const step = (maxPrice - minPrice) / 5.0;
         this._chartConfig["scale-y"]["min-value"] = minPrice;
         this._chartConfig["scale-y"]["max-value"] = maxPrice;
         //NOTE: we don't set "step" here and leave ZingChart figure it out. Doing it ourselves led to the chart randomly shift vertically (ZingChart bug?)
+        //const step = (maxPrice - minPrice) / 5.0;
     }
 
     /**
      * Set background color of this chart. Usually used to indicate raising/falling market.
      * @param color CSS style color name or color code
      */
-    SetBackgroundColor = function(color: string) {
+    setBackgroundColor(color: string) {
         this._chartConfig["background-color"] = color;
     }
 
@@ -66,14 +66,15 @@ export class LineChartData {
      * Set line color. Usually used to emphasize rising/falling trend.
      * @param color CSS style color name of color code
      */
-    SetLineColor(color: string) {
+    setLineColor(color: string) {
         this._chartConfig.series[0]["line-color"] = color;
     }
 
     /** URL to be opened when user clicks the context menu item "Open in new tab" */
-    ContextMenuLink(url: string) {
+    contextMenuLink(url: string) {
         this._chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
     }
+
 
     private readonly _chartConfig =
     {

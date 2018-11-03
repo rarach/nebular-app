@@ -41,7 +41,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
         this.chartPlaceholderId = "exch_" + this.exchange.id;
         this._lineChart = new LineChartData();
 
-        this._lineChart.ContextMenuLink(this.getUrl());
+        this._lineChart.contextMenuLink(this.getUrl());
         this._isActive = true;
         this.initChartStream();
     }
@@ -76,7 +76,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
                 return;
             }
 
-            this._lineChart.ClearData();
+            this._lineChart.clearData();
 
             $("#"+this.chartPlaceholderId).empty();     //TODO: Angular way?
             let minPrice = Number.MAX_VALUE;
@@ -105,24 +105,24 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
                 }
 
                 const point = [record.timestamp, avgValue];
-                that._lineChart.AddPointData(point);
-                that._lineChart.SetStartTime(record.timestamp);
+                that._lineChart.addPointData(point);
+                that._lineChart.setStartTime(record.timestamp);
             }
 
             //Special case: if we have only one point in the chart, use trick and add artificial starting point
             //              with value equal to the existing point
             if (this._lineChart.DataPointCount() === 1) {
                 const artifPoint = [yesterday, startPrice];
-                this._lineChart.AddPointData(artifPoint);
-                this._lineChart.SetStartTime(yesterday);
+                this._lineChart.addPointData(artifPoint);
+                this._lineChart.setStartTime(yesterday);
             }
 
             this.setPriceStatistics(startPrice, lastPrice);
-            this._lineChart.SetPriceScale(minPrice, maxPrice);
+            this._lineChart.setPriceScale(minPrice, maxPrice);
             zingchart.THEME=null;
             zingchart.render({
                 id : this.chartPlaceholderId,
-                data : this._lineChart.getChartConfigData(),
+                data : this._lineChart.getData(),
                 height: "100%",
                 width: "100%"
             });
@@ -146,8 +146,8 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
         let dailyChange = price / startPrice -1.0;
         dailyChange *= 100.0;
         this.dailyChangeDesc = (dailyChange <= 0.0 ? "" : "+") +  dailyChange.toFixed(2) + "%";
-        this._lineChart.SetLineColor(dailyChange < 0.0 ? Constants.Style.RED : Constants.Style.GREEN);
-        this._lineChart.SetBackgroundColor(dailyChange < 0.0 ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN);
+        this._lineChart.setLineColor(dailyChange < 0.0 ? Constants.Style.RED : Constants.Style.GREEN);
+        this._lineChart.setBackgroundColor(dailyChange < 0.0 ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN);
     }
 
     /** Reload the chart every 8 minutes */
