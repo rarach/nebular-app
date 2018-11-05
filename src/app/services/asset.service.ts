@@ -244,7 +244,7 @@ export class AssetService {
      */
     RemoveCustomAsset(assetCode: string, issuerAddress: string): boolean {
         for (var i=0; i<this.customAssets.length; i++) {
-            if (this.customAssets[i].code === assetCode && this.customAssets[i].issuer.address) {
+            if (this.customAssets[i].code === assetCode && this.customAssets[i].issuer.address === issuerAddress) {
                 this.customAssets.splice(i, 1);
                 this.serializeToCookie();
                 return true;
@@ -254,7 +254,7 @@ export class AssetService {
         return false;
     }
 
-    /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
+    /** @public Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
     CreateCustomExchange(): ExchangePair {
         const id = (new Date()).getTime().toString();
         const newExchange = new ExchangePair(id, KnownAssets.XLM, KnownAssets.XLM);
