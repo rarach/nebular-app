@@ -29,7 +29,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     orderbook: Orderbook = new Orderbook();
     maxCumulativeAmount: number;
     DataStatus=DataStatus/*template access*/; dataStatus: DataStatus = DataStatus.NoData;
-    message: string = "Loading data...";
+    message: string = null;
     Utils = Utils;
 
 

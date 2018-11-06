@@ -40,7 +40,7 @@ export class HorizonRestService {
      * @param exchange exchange pair to get the past trades for
      * @param maxItems maximum number of trades to get
      */
-    getTradeHistory(exchange: ExchangePair, maxItems: number = 40){
+    getTradeHistory(exchange: ExchangePair, maxItems: number = 40): Observable<Object> {
         const url = this.getApiUrl() + "/trades?" + exchange.baseAsset.ToUrlParameters("base") +
                     "&" + exchange.counterAsset.ToUrlParameters("counter") + "&order=desc&limit=" + maxItems;
 
@@ -48,7 +48,7 @@ export class HorizonRestService {
         return response;
     }
 
-    getOrderbook(exchange: ExchangePair, maxItems: number = 17) {
+    getOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {
         const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                     "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
 

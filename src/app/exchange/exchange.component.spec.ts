@@ -78,7 +78,7 @@ export class ActivatedRouteStub {   //TODO: move to testing/activated-route-stub
     setParamMap(params?: Params) {
         this.subject.next(convertToParamMap(params));
     }
-  }
+}
 
 class RouterStub {
     //todo

@@ -125,6 +125,29 @@ describe('AssetService', () => {
     it("#RemoveCustomAssetCode('NOsuch') returns false", () => {
         expect(assetService.RemoveCustomAssetCode("NOsuch")).toBe(false);
     });
+    it("#AddCustomAnchor() doesn't add new issuer if it already exists", () => {
+        expect(assetService.customAnchors.length).toBe(3);
+        expect(assetService.AddCustomAnchor("GBBBBBBBBBBBB", "golgotha.com")).toBe(false);
+        expect(assetService.customAnchors.length).toBe(3);
+    });
+    it("#AddCustomAnchor() adds new issuer", () => {
+        expect(assetService.customAnchors.length).toBe(3);
+        expect(assetService.AddCustomAnchor("GOLGOTHA", "golgotha.com")).toBe(true);
+        expect(assetService.customAnchors.length).toBe(4);
+        expect(assetService.customAnchors).toContain(new Account("GOLGOTHA", "golgotha.com", "golgotha.com"));
+    });
+    it("#RemoveCustomAnchor() deletes existing anchor", () => {
+        expect(assetService.customAnchors.length).toBe(3);
+        expect(assetService.customAnchors).toContain(new Account("GA123456", "example.org", "example.org"));
+        expect(assetService.RemoveCustomAnchor("GA123456")).toBe(true);
+        expect(assetService.customAnchors.length).toBe(2);
+        expect(assetService.customAnchors).not.toContain(new Account("GA123456", "example.org", "example.org"));
+    });
+    it("#RemoveCustomAnchor('Gnonsense') doesn't delete any anchor and returns FALSE", () => {
+        expect(assetService.customAnchors.length).toBe(3);
+        expect(assetService.RemoveCustomAnchor("Gnonsense")).toBe(false);
+        expect(assetService.customAnchors.length).toBe(3);
+    });
     it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
         assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));
         expect(assetService.customAssets.length).toBe(5);
@@ -173,7 +196,7 @@ describe('AssetService', () => {
         expect(assetService.customExchanges.length).toBe(3);
         expect(assetService.customExchanges[1].baseAsset.issuer.address).toBe("GIBRALTARRRRR458743551");
         expect(assetService.customExchanges[1].counterAsset.code).toBe("XrP");
-        const updatedExch = assetService.UpdateCustomExchange("12345", "MXN", "GUPDATED", "DDD", "GREENMustBeEaten");
+        const updatedExch = assetService.UpdateCustomExchange("12345", "MXN", "GUPDATED", "DDD", "GBBBBBBBBBBBB");
         expect(assetService.customExchanges.length).toBe(3);
         expect(updatedExch.id).toBe("12345");
         expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "MXN", null, new Account("GUPDATED", "GUPDATED...", "GUPDATED...")));

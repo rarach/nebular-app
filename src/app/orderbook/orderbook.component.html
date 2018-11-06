@@ -6,6 +6,7 @@
         </tr>
     </thead>
     <tbody id="orderBookAsks">
+        <!--TODO: use this.message is dataStatus is error -->
         <ng-container *ngIf="this.orderbook.asks.length === 0; else askRows">
             <tr></tr>
             <tr><td>Loading data...</td></tr>
@@ -24,6 +25,7 @@
 </div>
 <table>
     <tbody id="orderBookBids">
+        <!--TODO: use this.message is dataStatus is error -->
         <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
             <tr></tr>
             <tr><td>Loading data...</td></tr>
