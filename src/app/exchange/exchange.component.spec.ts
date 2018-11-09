@@ -9,6 +9,7 @@ import { ExchangeComponent } from './exchange.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { KnownAssets } from '../model/asset.model';
+import { Account } from '../model/account.model';
 
 
 
@@ -51,14 +52,13 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");
     });
-/*TODO (WATCH OUT! This one throws silent error. In Karma page it looks like fail of some other test)
     it("should initialize exchange from URL parameters", () => {
-        activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY" });
+        activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY", interval: "1hour" });
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         exchComponent.ngOnInit();
         expect(exchComponent.exchange.baseAsset.code).toBe("XLM");
-        expect(exchComponent.dataStatus).toBe(DataStatus.OK);
-    }); */
+        expect(exchComponent.chartInterval).toBe(3600000);
+    }); 
 });
 
 //credit belongs to https://angular.io/guide/testing#activatedroutestub
@@ -85,7 +85,17 @@ class RouterStub {
 }
 
 class AssetServiceStub {
-    //todo
+    getAssetCodesForExchange(): string[] {
+        return [ "Xyz" ];
+    }
+
+    GetIssuersByAssetCode(assetCode: string): Account[] {
+        return [];
+    }
+
+    GetIssuerByAddress(address: string): Account {
+        return null;
+    }
 }
 
 class TitleStub {

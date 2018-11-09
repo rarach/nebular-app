@@ -42,6 +42,14 @@ describe('CustomExchangeComponent', () => {
         expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null, null)));
     });
     //TODO: aaaand so on. (BTW this is not really a unit test, full page is loaded. DYOR)
+
+
+    it("#removeCustomExchange deletes the exchange from repository", () => {
+        const assetService = TestBed.get(AssetService);
+        expect(assetService.removeCalled).toBe(false);
+        component.removeExchange();
+        expect(assetService.removeCalled).toBe(true);
+    });
 });
 
 class AssetServiceStub {
@@ -64,6 +72,14 @@ class AssetServiceStub {
     UpdateCustomExchange(id: string, baseAssetCode: string, baseIssuerAddress: string,
                          counterAssetCode: string, counterIssuerAddress: string): ExchangePair {
         return null;
+    }
+
+    removeCalled = false;
+    RemoveCustomExchange(exchId: string) {
+        if ("cust_ex96984" != exchId) {
+            throw "Test not ready for input exchange ID " + exchId;
+        }
+        this.removeCalled = true;
     }
 }
 

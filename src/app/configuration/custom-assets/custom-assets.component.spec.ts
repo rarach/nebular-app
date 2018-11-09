@@ -66,4 +66,8 @@ class AssetServiceStub {
             throw new Error(`No test data prepared for inputs '${assetCode}', '${anchorAddress}'`);
         }
     }
+
+    getAllAssetCodes(): string[] {
+        return [ "ZZZz" ];
+    }
 }
