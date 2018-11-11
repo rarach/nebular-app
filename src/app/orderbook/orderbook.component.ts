@@ -77,7 +77,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     /** Fetch the baseAsset/XLM order book for cross-linked offers */
     private addCrossLinkedOffers1(originalOrderBook: any) {
         //Query XLM / baseAsset
-        const xlmBaseExch = new ExchangePair("XLM-ASSET1", KnownAssets.XLM, this._exchange.baseAsset);
+        const xlmBaseExch = new ExchangePair("XLM-"+this._exchange.baseAsset.code, KnownAssets.XLM, this._exchange.baseAsset);
         this.horizonService.getOrderbook(xlmBaseExch).subscribe(
             success => {
                 const data = success as any;
@@ -95,7 +95,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
             this.renderOrderBook(originalOrderBook);
         }
         //Query XLM / counterAsset
-        const xlmCounterExch = new ExchangePair("XLM-ASSET2", KnownAssets.XLM, this._exchange.counterAsset);
+        const xlmCounterExch = new ExchangePair("XLM-"+this._exchange.counterAsset.code, KnownAssets.XLM, this._exchange.counterAsset);
         this.horizonService.getOrderbook(xlmCounterExch).subscribe(
             success => {
                 const data = success as any;
