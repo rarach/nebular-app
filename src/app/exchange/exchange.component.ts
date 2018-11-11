@@ -407,7 +407,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             });
         }
 
-        if (!issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
+        if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
             assetIssuersDdData.push({
                 text: "[+] Manage",
                 value: "ADD_CUSTOM",
