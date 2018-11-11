@@ -1,16 +1,16 @@
-import { async, TestBed, inject, ComponentFixture } from '@angular/core/testing';
-import { ActivatedRoute,  convertToParamMap, Router, ParamMap, Params } from '@angular/router';
+import { async, TestBed, inject } from '@angular/core/testing';
+import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { ReplaySubject, Observable } from 'rxjs';
+import { Observable } from 'rxjs';
 
+import { Account } from '../model/account.model';
+import { ActivatedRouteStub } from '../testing/activated-route-stub';
 import { AssetService } from '../services/asset.service';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangeComponent } from './exchange.component';
-import { HorizonRestService } from '../services/horizon-rest.service';
 import { ExchangePair } from '../model/exchange-pair.model';
+import { HorizonRestService } from '../services/horizon-rest.service';
 import { KnownAssets } from '../model/asset.model';
-import { Account } from '../model/account.model';
-
 
 
 describe('ExchangeComponent', () => {
@@ -21,7 +21,7 @@ describe('ExchangeComponent', () => {
         activRoute = new ActivatedRouteStub();
         TestBed.configureTestingModule({
             providers: [
-                { provide: ActivatedRoute, /* useClass: ActivatedRouteStub */ useValue: activRoute },
+                { provide: ActivatedRoute, useValue: activRoute },
                 { provide: Router, useClass: RouterStub },
                 { provide: Title, useClass: TitleStub },
                 { provide: AssetService, useClass: AssetServiceStub },
@@ -60,25 +60,6 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.chartInterval).toBe(3600000);
     }); 
 });
-
-//credit belongs to https://angular.io/guide/testing#activatedroutestub
-export class ActivatedRouteStub {   //TODO: move to testing/activated-route-stub.ts
-    // Use a ReplaySubject to share previous values with subscribers
-    // and pump new values into the `paramMap` observable
-    private subject = new ReplaySubject<ParamMap>();
-  
-    constructor(initialParams?: Params) {
-      this.setParamMap(initialParams);
-    }
-  
-    /** The mock paramMap observable */
-    readonly paramMap = this.subject.asObservable();
-  
-    /** Set the paramMap observables's next value */
-    setParamMap(params?: Params) {
-        this.subject.next(convertToParamMap(params));
-    }
-}
 
 class RouterStub {
     //todo

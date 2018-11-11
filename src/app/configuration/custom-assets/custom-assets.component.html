@@ -8,6 +8,8 @@
 </div>
 <br/>
 
+DEBUG: {{selectedAssetCode}}
+
 <mat-form-field style="width: 150px;">
     <mat-select [(value)]="selectedAssetCode" class="selectedAssetCode" placeholder="asset type..."
                 [ngStyle]="{
@@ -16,7 +18,7 @@
                     'font-style': this.selectedAssetCode ? 'normal' : 'italic'
                 }">
         <mat-option class="ddOption" *ngFor="let assetCode of assetCodes" value="{{assetCode.value}}" title="{{assetCode.tooltip}}">
-            <img src="https://nebular.app/assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
+            <img src="./assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
             {{assetCode.text}}
         </mat-option>
     </mat-select>

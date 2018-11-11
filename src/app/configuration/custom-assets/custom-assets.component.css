@@ -53,27 +53,3 @@ mat-form-field {
     line-height: 38px;
     padding-left: 5px;
 }
-
-
-
-
-
-
-
-
-/* Note: we need to use :host ::ng-deep hacks here because ddSlick wipes out angulars attributes from these elements */
-:host ::ng-deep div.dd-select {
-    border: 1px solid black;
-    border-right: none;
-}
-:host ::ng-deep a.dd-selected {
-    border-right: 1px solid black;
-}
-
-:host ::ng-deep div#assetTypesDropDown-dd-placeholder {
-    float: left;
-}
-:host ::ng-deep div#anchorsDropDown-dd-placeholder {
-    float: left;
-    margin-left: 4px;
-}

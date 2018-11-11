@@ -29,7 +29,7 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         //Handle GET parameter 'assetType'
-        this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
+        this._getParamsSubscriber = this.route.paramMap.subscribe(params => {
             this.selectedAssetCode = params.get(GETParams.ASSET_TYPE);
         });
         this.loadAssetCodes();
