@@ -407,11 +407,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             });
         }
 
-        assetIssuersDdData.push({
-            text: "[+] Manage",
-            value: "ADD_CUSTOM",
-            description: "Add anchor manually"
-        });
+        if (!issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
+            assetIssuersDdData.push({
+                text: "[+] Manage",
+                value: "ADD_CUSTOM",
+                description: "Add anchor manually"
+            });
+        }
 
         const that = this;
         jQuery("#" + dropDownId).ddslick({
@@ -419,7 +421,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             width: 250,
             onSelected: function (data) {
                 if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    const url = Constants.CONFIGURATION_URL + "?" + GETParams.ASSET_TYPE + "=" + assetCode;
+                    const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + assetCode;
                     that.router.navigateByUrl(url);
                 }
                 else {
