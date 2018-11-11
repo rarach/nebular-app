@@ -1,3 +1,4 @@
+@import "./assets/styles/material-custom.css";
 @import "./assets/styles/3rdParty/bootstrap.css";
 @import "./assets/styles/3rdParty/bootstrap-theme.css";
 
@@ -89,3 +90,8 @@ div.exchange-link-chart {
     height: 100%;
 }
 /**************************************/
+
+/** This is sad but the only way we can affect the Material SELECT styling being baked in deeply in the component */
+div.mat-select-panel {
+    max-height: none;
+}

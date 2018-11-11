@@ -34,6 +34,10 @@ describe('CustomAssetsComponent', () => {
         component.lastAddedAsset = new Asset("XYYYYZ", "XYZ test", null, null);
         component.addAsset();
         expect(component.lastAddedAsset).toEqual(new Asset("XYYYYZ", "XYZ test", null, null));
+
+        component.selectedAssetCode = "whatever";
+        component.addAsset();
+        expect(component.lastAddedAsset).toEqual(new Asset("XYYYYZ", "XYZ test", null, null));
     });
     //TODO: figure out how to test the private properties (maybe we get rid of the jQuery drop-down component?)
     it("#removeAsset", () => {
@@ -51,10 +55,11 @@ class AssetServiceStub {
         new Asset("ETC", "Ethereum classic", null, new Account("GORRILA", null, null))
     ];
 
-    AddCustomAsset(assetCode: string, issuerAddress: string) {
+    AddCustomAsset(assetCode: string, issuerAddress: string): Asset {
         if (null === assetCode || null == issuerAddress) {
             throw Error("Both input parameters for asset are NULL!");
         }
+        return new Asset(assetCode, "this is test", null, null);
     }
 
     removeCalled = false;

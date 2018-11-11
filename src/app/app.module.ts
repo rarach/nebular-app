@@ -1,8 +1,10 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { CookieModule } from 'ngx-cookie';
 import { FormsModule }   from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
-import { CookieModule } from 'ngx-cookie';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatSelectModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -42,8 +44,10 @@ import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analyt
     ],
     imports: [
         BrowserModule,
+        BrowserAnimationsModule,
         FormsModule,
         HttpClientModule,
+        MatSelectModule,
         AppRoutingModule,
         CookieModule.forRoot()
     ],

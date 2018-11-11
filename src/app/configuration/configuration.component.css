@@ -10,6 +10,7 @@
 :host ::ng-deep input[type='text'] {
     border: 1px solid black;
     margin-bottom: 4px;
+    margin-right: 10px;
     height: 28px;
     color: black;
 }
@@ -36,7 +37,6 @@
 :host ::ng-deep button {
     border: none;
     border-radius: 3px;
-    margin-left: 10px;
     height: 28px;
     min-width: 50px;
     background-color: #23527c;

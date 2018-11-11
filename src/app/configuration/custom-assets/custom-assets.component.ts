@@ -5,8 +5,7 @@ import { Subscription } from 'rxjs';
 import { Asset, KnownAssets } from 'src/app/model/asset.model';
 import { AssetService } from 'src/app/services/asset.service';
 import { GETParams } from 'src/app/model/constants';
-
-declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
+import { DropdownOption } from 'src/app/model/dropdown-option';
 
 
 @Component({
@@ -16,8 +15,10 @@ declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 })
 export class CustomAssetsComponent implements OnInit, OnDestroy {
     private _getParamsSubscriber: Subscription;
-    private _selectedAssetCode: string = null;
-    private _selectedIssuerAddress: string = null;
+    assetCodes: DropdownOption[] = null;
+    selectedAssetCode: string = "";
+    assetIssuers: DropdownOption[] = null;
+    selectedIssuerAddress: string = "";
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
 
@@ -29,10 +30,10 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
     ngOnInit() {
         //Handle GET parameter 'assetType'
         this._getParamsSubscriber = this.route.queryParamMap.subscribe(params => {
-            this._selectedAssetCode = params.get(GETParams.ASSET_TYPE);
+            this.selectedAssetCode = params.get(GETParams.ASSET_TYPE);
         });
-        this.setupAssetCodeDropDown(this._selectedAssetCode);
-        this.setupAnchorDropDown();
+        this.loadAssetCodes();
+        this.loadAnchors();
     }
 
     ngOnDestroy() {
@@ -41,10 +42,10 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
 
 
     addAsset() {
-        if (null == this._selectedAssetCode || null == this._selectedIssuerAddress) {
+        if (!this.selectedAssetCode || !this.selectedIssuerAddress) {
             return;
         }
-        const newAsset: Asset = this.assetService.AddCustomAsset(this._selectedAssetCode, this._selectedIssuerAddress);
+        const newAsset: Asset = this.assetService.AddCustomAsset(this.selectedAssetCode, this.selectedIssuerAddress);
         if (null != newAsset) {
             this.lastAddedAsset = newAsset;
         }
@@ -56,27 +57,18 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
 
     /** Should be called when list of available asset codes changes. Will update the respective dropdown. */
     updateAssetCodes() {
-        this.setupAssetCodeDropDown(this._selectedAssetCode);
+        this.loadAssetCodes();
     }
 
     /** Should be called when list of available issuers changes. Will update the respective dropdown. */
     updateIssuers() {
-        this.setupAnchorDropDown();
+        this.loadAnchors()
     }
 
-    /** Setup the drop-down with known asset codes */
-    private setupAssetCodeDropDown(selectedAssetType: string) {
-        //In case this is re-init, destroy previous instance
-        jQuery('div[id^="assetTypesDropDown"]').ddslick('destroy');
-
-        const assetTypesList = [{
-            text: "<i style='color: gray;'>asset type...</i>",
-            value: null,
-            selected: false,
-            description: null,
-            imageSrc: null
-        }];
-        this.assetService.getAllAssetCodes().forEach(function(assetCode: string) {
+    private loadAssetCodes() {
+        this.assetCodes = new Array<DropdownOption>();
+        const codes: string[] = this.assetService.getAllAssetCodes();
+        for(let assetCode of codes) {
             //Search for asset full name among know assets
             let assetFullName = assetCode + " (custom)";
             for (var asset in KnownAssets) {
@@ -85,60 +77,21 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
                     break;
                 }
             }
-    
-            assetTypesList.push({
-                text: assetCode,
-                value: assetCode,
-                selected: assetCode === selectedAssetType,
-                description: assetFullName,
-                imageSrc: "./assets/images/asset_icons/" + assetCode + ".png"
-            });
-        });
 
-        const that = this;
-        jQuery("#assetTypesDropDown").ddslick({
-            data: assetTypesList,
-            width: 150,
-            onSelected: function (data) {
-                if (null === data.selectedData.value ) {
-                    jQuery('div[id^="anchorsDropDown"]').ddslick('select', {index: 0 });
-                }
-                that._selectedAssetCode = data.selectedData.value;
-            }
-        });
+            this.assetCodes.push(new DropdownOption(assetCode, assetCode, assetFullName));
+        }
     }
 
-    private setupAnchorDropDown() {
-        //In case this is re-init, destroy previous instance
-        jQuery('div[id^="anchorsDropDown"]').ddslick('destroy');
-
-        const assetIssuersDdData = [{
-            text: "<i style='color: gray;'>asset issuer...</i>",
-            value: null,
-            selected: false,
-            description: null
-        }];
+    private loadAnchors() {
+        this.assetIssuers = new Array<DropdownOption>();
         const anchors = this.assetService.getAllAnchors();
         for (let i=0; i<anchors.length; i++) {
             const issuerAccount = anchors[i];
             if (issuerAccount.IsNativeIssuer()) {
                 continue;
             }
-            assetIssuersDdData.push({
-                text: issuerAccount.domain + " (" + issuerAccount.address.substring(0, 22) + "...)",
-                description: issuerAccount.address,
-                selected: this._selectedIssuerAddress === issuerAccount.address,
-                value: issuerAccount.address
-            });
+            const tooltip = issuerAccount.domain + " (" + issuerAccount.address.substring(0, 8) + "..." + issuerAccount.address.substring(48) + ")";
+            this.assetIssuers.push(new DropdownOption(issuerAccount.address, tooltip, issuerAccount.address));
         }
-
-        const that = this;
-        jQuery("#anchorsDropDown").ddslick({
-            data: assetIssuersDdData,
-            width: 420,
-            onSelected: function (data) {
-                that._selectedIssuerAddress = data.selectedData.value
-            }
-        });
     }
 }
