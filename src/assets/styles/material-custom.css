@@ -489,7 +489,7 @@ input.mat-input-element{
     z-index:1000;
     display:flex;
     max-width:100%;
-    max-height:100%
+    max-height: 60%;/*Disappointing but fixes the unreachable drop-downs with many items*/
 }
 .cdk-overlay-backdrop{
     position:absolute;
