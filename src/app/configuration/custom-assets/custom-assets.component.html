@@ -11,7 +11,7 @@
 <mat-form-field style="width: 150px;">
     <mat-select [(value)]="selectedAssetCode" class="selectedAssetCode" placeholder="asset type..."
                 [ngStyle]="{
-                    'background-image':'url(./assets/images/asset_icons/' + this.selectedAssetCode + '.png',
+                    'background-image': selectedAssetCode ? 'url(./assets/images/asset_icons/' + this.selectedAssetCode + '.png' : '',
                     'padding-left': this.selectedAssetCode ? '40px' : '5px',
                     'font-style': this.selectedAssetCode ? 'normal' : 'italic'
                 }">
