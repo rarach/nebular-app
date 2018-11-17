@@ -12,7 +12,8 @@
             <tr><td>Loading data...</td></tr>
         </ng-container>
         <ng-template #askRows>
-            <tr *ngFor="let ask of orderbook.asks.slice().reverse()" [class.linked]="ask.isCrossLinked" [attr.title]="ask.isCrossLinked ? 'linked thru XLM' : null"
+            <tr *ngFor="let ask of orderbook.asks.slice().reverse()" [class.linked]="ask.isCrossLinked"
+                [attr.title]="ask.isCrossLinked ? (ask.price + ' - linked thru XLM') : ask.price"
                 [ngStyle]="getRowStyle(ask, 'ask')">
                 <td>{{Utils.formatPrice(ask.price)}}</td>
                 <td>{{Utils.formatAmount(ask.amount)}}</td>
@@ -31,8 +32,9 @@
             <tr><td>Loading data...</td></tr>
         </ng-container>
         <ng-template #bidRows>
-            <tr *ngFor="let bid of orderbook.bids" [class.linked]="bid.isCrossLinked" [attr.title]="bid.isCrossLinked ? 'linked thru XLM' : null"
-            [ngStyle]="getRowStyle(bid, 'bid')">
+            <tr *ngFor="let bid of orderbook.bids" [class.linked]="bid.isCrossLinked"
+                [attr.title]="bid.isCrossLinked ? (bid.price + ' - linked thru XLM') : bid.price"
+                [ngStyle]="getRowStyle(bid, 'bid')">
                 <td>{{Utils.formatPrice(bid.price)}}</td>
                 <td>{{Utils.formatAmount(bid.amount)}}</td>
             </tr>
