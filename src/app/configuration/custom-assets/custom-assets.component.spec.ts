@@ -63,7 +63,14 @@ describe('CustomAssetsComponent', () => {
         component.selectedAssetCode = "RRR";
         component.selectedIssuerAddress = "GORGONDOLA40651277187";
         component.addAsset();
+        expect(component.duplicateAsset).toBeNull();
         expect(component.lastAddedAsset.code).toBe("RRR");
+    });
+    it("#addAsset doesn't add duplicate asset", () => {
+        component.selectedAssetCode = "PLZ";
+        component.selectedIssuerAddress = "GNatioanlBankOfPoland";
+        component.addAsset();
+        expect(component.duplicateAsset).toBe("PLZ-GNatioanlBankOfPoland");
     });
     it("#removeAsset", () => {
         component.removeAsset("GOE", "GEEEERDY74747474");
@@ -121,6 +128,9 @@ class AssetServiceStub {
     AddCustomAsset(assetCode: string, issuerAddress: string): Asset {
         if (null === assetCode || null == issuerAddress) {
             throw Error("Both input parameters for asset are NULL!");
+        }
+        if ("PLZ" === assetCode && "GNatioanlBankOfPoland" === issuerAddress) {
+            return null;
         }
         return new Asset(assetCode, "this is test", null, null);
     }

@@ -58,6 +58,8 @@ describe('ExchangeComponent', () => {
         exchComponent.ngOnInit();
         expect(exchComponent.exchange.baseAsset.code).toBe("XLM");
         expect(exchComponent.chartInterval).toBe(3600000);
+        //Code coverage...
+        exchComponent.ngOnDestroy();
     }); 
 });
 
