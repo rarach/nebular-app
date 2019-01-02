@@ -59,18 +59,18 @@ describe('AssetService', () => {
             new Asset("abcdef", "abcdef", "credit_alphanum12", new Account("GGGGGGGGaposdyuhfjkasndfm8415", "GGGGGGGGaposdyuh...", "GGGGGGGGaposdyuh...")),
             new Asset("btC", "btC", null, new Account("GGGGGGK", "GGGGGGK...", "GGGGGGK...")),
             new Asset("CNY", "CNY", "credit_alphanum4",
-                      new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "GAREELUB43IRHWEA...", "GAREELUB43IRHWEA..."))
+                      new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox", "ripplefox.com"))
         ]);
         expect(assetService.customExchanges).toEqual([
             new ExchangePair("5555",
                              new Asset("USD", "USD", null, new Account("GAAAASLIMIT", "GAAAASLIMIT...", "GAAAASLIMIT...")),
-                             new Asset("XLM", "XLM", null, new Account(/*native*/null, null, null))),
+                             new Asset("XLM", "XLM", null, new Account(/*native*/null, "(native)", "(native)"))),
             new ExchangePair("12345",
                              new Asset("lightcoin", "lightcoin", "credit_alphanum12", new Account("GIBRALTARRRRR458743551", "GIBRALTARRRRR458...", "GIBRALTARRRRR458...")),
                              new Asset("XrP", "XrP", "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0...", "G0G0G0G0..."))),
             new ExchangePair("10101010",
-                             new Asset("XLM", "XLM", "native", new Account(null, null, null)),
-                             new Asset("xlm", "xlm", null, new Account(null, null, null)))
+                             new Asset("XLM", "XLM", "native", new Account(null, "(native)", "(native)")),
+                             new Asset("xlm", "xlm", null, new Account(null, "(native)", "(native)")))
         ]);
     });
     it("#getAssetCodesForExchange() ", () => {
@@ -91,7 +91,7 @@ describe('AssetService', () => {
         const assets = assetService.GetIssuersByAssetCode("CNY");
         expect(assets).toEqual([
             KnownAccounts.RippleFox,
-            new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "GAREELUB43IRHWEA...", "GAREELUB43IRHWEA..."),
+            new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox", "ripplefox.com"),
             new Account("GBELS050505050505050505", "GBELS05050505050...", "GBELS05050505050...")
         ]);
     });

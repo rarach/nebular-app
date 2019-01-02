@@ -44,11 +44,6 @@ export class AssetService {
 
 
     constructor(private cookieService: CookieService) {
-        this.customAssetCodes = this.loadAssetCodes();
-        this.customAnchors = this.loadAnchors();
-        this.customAssets = this.loadAssets();
-        this.customExchanges = this.loadExchanges();
-
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
             //Take asset codes from the common assets
@@ -62,6 +57,11 @@ export class AssetService {
                 this._commonAnchors.push(anchor);
             }
         }
+
+        this.customAssetCodes = this.loadAssetCodes();
+        this.customAnchors = this.loadAnchors();
+        this.customAssets = this.loadAssets();
+        this.customExchanges = this.loadExchanges();
     }
 
 
@@ -305,9 +305,10 @@ export class AssetService {
      * @returns first issuer with given address or NULL if no such is registered here
      */
     private getAnchorByAddress(issuerAddress: string): Account {
-        for (let i=0; i<this.customAnchors.length; i++) {
-            if (issuerAddress === this.customAnchors[i].address) {
-                return this.customAnchors[i];
+        const allAnchors: Account[] = this.getAllAnchors();
+        for (let i=0; i<allAnchors.length; i++) {
+            if (issuerAddress === allAnchors[i].address) {
+                return allAnchors[i];
             }
         }
 
@@ -451,6 +452,7 @@ export class AssetService {
         }
         this.setCookieValue("ass", cookieText);
 
+        //Exchanges
         cookieText = "";
         for (let e=0; this.customExchanges != null && e<this.customExchanges.length; e++) {
             const exchange = this.customExchanges[e];
