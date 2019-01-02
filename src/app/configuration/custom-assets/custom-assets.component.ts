@@ -21,6 +21,7 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
     selectedIssuerAddress: string = "";
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
+    duplicateAsset: string = null;
 
 
     constructor(private route: ActivatedRoute, private assetService: AssetService) {
@@ -42,12 +43,17 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
 
 
     addAsset() {
+        this.duplicateAsset = null;
+
         if (!this.selectedAssetCode || !this.selectedIssuerAddress) {
             return;
         }
         const newAsset: Asset = this.assetService.AddCustomAsset(this.selectedAssetCode, this.selectedIssuerAddress);
         if (null != newAsset) {
             this.lastAddedAsset = newAsset;
+        }
+        else {
+            this.duplicateAsset = this.selectedAssetCode + "-" + this.selectedIssuerAddress;
         }
     }
 
