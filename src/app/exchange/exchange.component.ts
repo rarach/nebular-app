@@ -15,6 +15,7 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { Utils } from '../utils';
+import { DropdownOption } from '../model/dropdown-option';
 
 declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
 
@@ -41,6 +42,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     lastPrice: number = 0.0;
     lastTradeType: string = "";
     chartMessage: string = "Loading chart...";
+
+
+
+    assetCodes: DropdownOption[] = [];
+    baseAssetCode: DropdownOption = null;
+    counterAssetCode: DropdownOption = null;
+    baseIssuer: DropdownOption = null;
+    counterIssuer: DropdownOption = null;
+
 
 
     constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
@@ -86,6 +96,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private setupUi() {
+
+
+        this.loadAssetCodes();
+
+
+
         this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
         this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
         this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
@@ -378,6 +394,36 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         });
     }
 
+
+
+
+
+    private loadAssetCodes() {
+        for (let assetCode of this.assetService.getAssetCodesForExchange()) {
+            //Search for asset full name among know assets
+            let assetFullName: string = assetCode + " (custom)";
+            for (let asset in KnownAssets) {
+                if (KnownAssets[asset].code === assetCode) {
+                    assetFullName = KnownAssets[asset].fullName;
+                    break;
+                }
+            }
+
+            this.assetCodes.push(
+                new DropdownOption(assetCode, assetCode, assetFullName)
+            );
+        }
+
+        this.assetCodes.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
+    }
+
+    debug_todo(event) {
+        window.alert("selected base asset code=" + this.baseAssetCode.value);
+    }
+
+
+
+
     private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
         //In case this is re-init, destroy previous instance
         jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
@@ -446,6 +492,27 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
             if (counterIssuer != null) {
                 urlAssets += "-" + counterIssuer;
+            }
+        }
+
+        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+        this.router.navigateByUrl(newUrl);
+    }
+
+
+
+    private debug__changeAssets(selectingAnchor: boolean) {
+        let urlAssets: string = this.baseAssetCode.value;
+        if (selectingAnchor) {
+            if (this.baseIssuer != null) {
+                urlAssets += "-" + this.baseIssuer.value;
+            }
+        }
+
+        urlAssets += "/" + this.counterAssetCode.value;
+        if (selectingAnchor) {
+            if (this.counterIssuer != null) {
+                urlAssets += "-" + this.counterIssuer.value;
             }
         }
 

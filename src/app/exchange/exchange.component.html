@@ -5,6 +5,26 @@
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div class="dropdownsWrapper">
           <div id="baseAssetCodeDd">Asset code drop-down here</div>
+
+
+
+        <mat-form-field style="width: 150px;">
+            <mat-select [(value)]="baseAssetCode" class="selectedAssetCode" (selectionChange)="debug_todo($event)"
+                        [title]="this.baseAssetCode != null ? this.baseAssetCode.tooltip : 'select asset type...'"
+                        [ngStyle]="{
+                            'background-image': baseAssetCode ? 'url(./assets/images/asset_icons/' + baseAssetCode.value + '.png' : '',
+                            'padding-left': baseAssetCode ? '40px' : '5px'
+                        }">
+                <mat-option class="ddOption" *ngFor="let assetCode of assetCodes" [value]="assetCode" title="{{assetCode.tooltip}}">
+                    <img *ngIf="assetCode.value != 'ADD_CUSTOM'"
+                         src="./assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
+                    {{assetCode.text}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+
           <div id="baseIssuerDd">Anchor drop-down here</div>
           <div class="chartButton swapButton">
               <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
