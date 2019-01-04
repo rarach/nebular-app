@@ -45,16 +45,19 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
 
 
-    assetCodes: DropdownOption[] = [];
-    baseAssetCode: DropdownOption = null;
-    counterAssetCode: DropdownOption = null;
-    baseIssuer: DropdownOption = null;
-    counterIssuer: DropdownOption = null;
+    assetCodeOptions: DropdownOption[] = [];
+    selectedBaseAssetCode: DropdownOption = null;
+    selectedCounterAssetCode: DropdownOption = null;
+    baseIssuerOptions: DropdownOption[] = [];
+    counterIssuerOptions: DropdownOption[] = []
+    selectedBaseIssuer: DropdownOption = null;
+    selectedCounterIssuer: DropdownOption = null;
 
 
 
     constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
                 private assetService: AssetService, private horizonService: HorizonRestService) {
+        this.loadAssetCodes();
     }
 
 
@@ -96,9 +99,28 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private setupUi() {
+        //Set selected option in base asset code drop-down
+        let baseCodeDdOption: DropdownOption = null;
+        for (let option of this.assetCodeOptions) {
+            if (option.value === this.exchange.baseAsset.code) {
+                baseCodeDdOption = option;
+                break;
+            }
+        }
+        this.selectedBaseAssetCode = baseCodeDdOption;
+        //and counter code drop-down
+        let counCodeDdOption: DropdownOption = null;
+        for (let option of this.assetCodeOptions) {
+            if (option.value === this.exchange.counterAsset.code) {
+                counCodeDdOption = option;
+                break;
+            }
+        }
+        this.selectedCounterAssetCode = counCodeDdOption;
 
 
-        this.loadAssetCodes();
+
+        this.loadBaseIssuers();
 
 
 
@@ -409,16 +431,21 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 }
             }
 
-            this.assetCodes.push(
+            this.assetCodeOptions.push(
                 new DropdownOption(assetCode, assetCode, assetFullName)
             );
         }
 
-        this.assetCodes.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
+        this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
     debug_todo(event) {
-        window.alert("selected base asset code=" + this.baseAssetCode.value);
+        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value || "ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
+            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
+        }
+        else {
+            this.debug__changeAssets(false);
+        }
     }
 
 
@@ -477,6 +504,101 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         });
     }
 
+
+
+    private loadBaseIssuers(/*TODO: parameterize so it can serve both base and counter issuers*/) {
+        const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
+        const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
+        let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
+        for (let i=0; i<issuersArray.length; i++) {
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            this.baseIssuerOptions.push(ddOption);
+/*DEL            assetIssuersDdData.push({
+                text: issuersArray[i].shortName,
+                description: issuersArray[i].domain,
+                value: issuersArray[i].address,
+                selected: null != issuerAccount && issuersArray[i].address === issuerAccount.address
+            }); */
+            //By default, pre-select the first option
+            if (0 === i) {
+                this.selectedBaseIssuer = ddOption;
+            }
+            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                found = true;
+                this.selectedBaseIssuer = ddOption;
+            }
+        }
+
+        //Some unknown address, probably from manual URL
+        if (!found) {
+            //Insert at the beginning
+            const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address, "", "unknown (" + this.exchange.baseAsset.issuer.address + ")");
+            this.baseIssuerOptions.splice(0, 0, ddOption);
+            this.selectedBaseIssuer = ddOption;
+/*DEL            assetIssuersDdData.splice(0, 0, {    //Insert at beginning
+                text: assetIssuer.shortName,
+                description: "unknown (" + assetIssuer.address + ")",
+                value: assetIssuer.address,
+                selected: true
+            }); */
+        }
+
+        if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
+            this.baseIssuerOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Manage", "Add anchor manually"));
+/*            assetIssuersDdData.push({
+                text: "[+] Manage",
+                value: "ADD_CUSTOM",
+                description: "Add anchor manually"
+            }); */
+        }
+    }
+
+    private loadCounterIssuers() {
+        const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.counterAsset.code);
+        const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
+        let found = this.exchange.counterAsset.issuer.IsNativeIssuer();
+        for (let i=0; i<issuersArray.length; i++) {
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            this.counterIssuerOptions.push(ddOption);
+            //By default, pre-select the first option
+            if (0 === i) {
+                this.selectedCounterIssuer = ddOption;
+            }
+            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                found = true;
+                this.selectedCounterIssuer = ddOption;
+            }
+        }
+
+        //Some unknown address, probably from manual URL
+        if (!found) {
+            //Insert at the beginning
+            const ddOption = new DropdownOption(this.exchange.counterAsset.issuer.address, "", "unknown (" + this.exchange.counterAsset.issuer.address + ")");
+            this.counterIssuerOptions.splice(0, 0, ddOption);
+            this.selectedCounterIssuer = ddOption;
+        }
+
+        if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
+            this.counterIssuerOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Manage", "Add anchor manually"));
+        }
+    }
+
+    issuerChanged(event) {
+        if ("ADD_CUSTOM"  === this.selectedBaseIssuer.value) {
+            const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + this.selectedBaseAssetCode.value;
+            this.router.navigateByUrl(url);
+        }
+        else if ("ADD_CUSTOM" === this.selectedCounterIssuer.value) {
+            const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + this.selectedCounterAssetCode.value;
+            this.router.navigateByUrl(url);
+        }
+        else {
+            this.debug__changeAssets(true);
+        }
+    }
+
+
+
     /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
     private changeAssets(selectingAnchor) {
         let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
@@ -502,17 +624,17 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
 
     private debug__changeAssets(selectingAnchor: boolean) {
-        let urlAssets: string = this.baseAssetCode.value;
+        let urlAssets: string = this.selectedBaseAssetCode.value;
         if (selectingAnchor) {
-            if (this.baseIssuer != null) {
-                urlAssets += "-" + this.baseIssuer.value;
+            if (this.selectedBaseIssuer != null) {
+                urlAssets += "-" + this.selectedBaseIssuer.value;
             }
         }
 
-        urlAssets += "/" + this.counterAssetCode.value;
+        urlAssets += "/" + this.selectedCounterAssetCode.value;
         if (selectingAnchor) {
-            if (this.counterIssuer != null) {
-                urlAssets += "-" + this.counterIssuer.value;
+            if (this.selectedCounterIssuer != null) {
+                urlAssets += "-" + this.selectedCounterIssuer.value;
             }
         }
 

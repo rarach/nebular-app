@@ -4,20 +4,58 @@
   </div>
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div class="dropdownsWrapper">
-          <div id="baseAssetCodeDd">Asset code drop-down here</div>
+<!--          <div id="baseAssetCodeDd">Asset code drop-down here</div>  -->
 
 
 
         <mat-form-field style="width: 150px;">
-            <mat-select [(value)]="baseAssetCode" class="selectedAssetCode" (selectionChange)="debug_todo($event)"
-                        [title]="this.baseAssetCode != null ? this.baseAssetCode.tooltip : 'select asset type...'"
+            <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode" (selectionChange)="debug_todo($event)"
+                        [title]="selectedBaseAssetCode != null ? selectedBaseAssetCode.tooltip : 'select asset type...'"
                         [ngStyle]="{
-                            'background-image': baseAssetCode ? 'url(./assets/images/asset_icons/' + baseAssetCode.value + '.png' : '',
-                            'padding-left': baseAssetCode ? '40px' : '5px'
+                            'background-image': selectedBaseAssetCode ? 'url(./assets/images/asset_icons/' + selectedBaseAssetCode.value + '.png' : '',
+                            'padding-left': selectedBaseAssetCode ? '40px' : '5px'
                         }">
-                <mat-option class="ddOption" *ngFor="let assetCode of assetCodes" [value]="assetCode" title="{{assetCode.tooltip}}">
+                <mat-option class="ddOption" *ngFor="let assetCode of assetCodeOptions" [value]="assetCode" title="{{assetCode.tooltip}}">
                     <img *ngIf="assetCode.value != 'ADD_CUSTOM'"
                          src="./assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
+                    {{assetCode.text}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+        
+<!--          <div id="baseIssuerDd">Anchor drop-down here</div>  -->
+
+
+
+        <mat-form-field style="width: 250px;">
+            <mat-select [(value)]="selectedBaseIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)"
+                        [title]="selectedBaseIssuer != null ? selectedBaseIssuer.tooltip : 'select anchor...'">
+                <mat-option class="ddOption" *ngFor="let issuer of this.baseIssuerOptions" [value]="issuer" title="{{issuer.tooltip}}">
+                    {{issuer.text}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
+
+
+
+          <div class="chartButton swapButton">
+              <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
+          </div>
+      </div>
+
+      <div class="dropdownsWrapper">
+<!--          <div id="counterAssetCodeDd">Asset code drop-down here</div>  -->
+
+        <mat-form-field style="width: 150px; float: left;">
+            <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode" (selectionChange)="debug_todo($event)"
+                        [title]="selectedCounterAssetCode != null ? selectedCounterAssetCode.tooltip : 'select asset type...'"
+                        [ngStyle]="{
+                            'background-image': selectedCounterAssetCode ? 'url(./assets/images/asset_icons/' + selectedCounterAssetCode.value + '.png' : '',
+                            'padding-left': selectedCounterAssetCode ? '40px' : '5px'
+                        }">
+                <mat-option class="ddOption" *ngFor="let assetCode of assetCodeOptions" [value]="assetCode" title="{{assetCode.tooltip}}">
+                    <img *ngIf="assetCode.value != 'ADD_CUSTOM'"
+                        src="./assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
                     {{assetCode.text}}
                 </mat-option>
             </mat-select>
@@ -25,15 +63,20 @@
 
 
 
-          <div id="baseIssuerDd">Anchor drop-down here</div>
-          <div class="chartButton swapButton">
-              <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
-          </div>
-      </div>
+<!--          <div id="counterIssuerDd">Anchor drop-down here</div> -->
+        <mat-form-field style="width: 250px;">
+            <mat-select [(value)]="selectedCounterIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)"
+                        [title]="selectedCounterIssuer != null ? selectedCounterIssuer.tooltip : 'select anchor...'">
+                <mat-option class="ddOption" *ngFor="let issuer of counterIssuerOptions" [value]="issuer" title="{{issuer.tooltip}}">
+                    {{issuer.text}}
+                </mat-option>
+            </mat-select>
+        </mat-form-field>
 
-      <div class="dropdownsWrapper">
-          <div id="counterAssetCodeDd">Asset code drop-down here</div>
-          <div id="counterIssuerDd">Anchor drop-down here</div>
+
+
+
+
       </div>
       <div class="chartButton intervalButtons">
         <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
