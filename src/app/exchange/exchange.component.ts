@@ -16,8 +16,6 @@ import { HorizonRestService } from '../services/horizon-rest.service';
 import { Utils } from '../utils';
 import { DropdownOption } from '../model/dropdown-option';
 
-declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
-
 
 @Component({
     selector: 'app-exchange',
@@ -42,8 +40,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     lastTradeType: string = "";
     chartMessage: string = "Loading chart...";
 
-
-
     assetCodeOptions: DropdownOption[] = [];
     selectedBaseAssetCode: DropdownOption = null;
     selectedCounterAssetCode: DropdownOption = null;
@@ -51,7 +47,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     counterIssuerOptions: DropdownOption[] = []
     selectedBaseIssuer: DropdownOption = null;
     selectedCounterIssuer: DropdownOption = null;
-
 
 
     constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,

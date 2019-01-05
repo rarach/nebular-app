@@ -4,9 +4,6 @@
   </div>
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div class="dropdownsWrapper">
-<!--          <div id="baseAssetCodeDd">Asset code drop-down here</div>  -->
-
-
         <mat-form-field style="width: 150px;">
             <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode" (selectionChange)="assetCodeChanged($event)"
                         [title]="selectedBaseAssetCode != null ? selectedBaseAssetCode.tooltip : 'select asset type...'"
@@ -21,10 +18,6 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-        
-<!--          <div id="baseIssuerDd">Anchor drop-down here</div>  -->
-
-
 
         <mat-form-field style="width: 250px;">
             <mat-select [(value)]="selectedBaseIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)"
@@ -35,15 +28,12 @@
             </mat-select>
         </mat-form-field>
 
-
           <div class="chartButton swapButton">
               <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
           </div>
       </div>
 
       <div class="dropdownsWrapper">
-<!--          <div id="counterAssetCodeDd">Asset code drop-down here</div>  -->
-
         <mat-form-field style="width: 150px; float: left;">
             <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode" (selectionChange)="assetCodeChanged($event)"
                         [title]="selectedCounterAssetCode != null ? selectedCounterAssetCode.tooltip : 'select asset type...'"
@@ -59,9 +49,6 @@
             </mat-select>
         </mat-form-field>
 
-
-
-<!--          <div id="counterIssuerDd">Anchor drop-down here</div> -->
         <mat-form-field style="width: 250px;">
             <mat-select [(value)]="selectedCounterIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)"
                         [title]="selectedCounterIssuer != null ? selectedCounterIssuer.tooltip : 'select anchor...'">
@@ -70,11 +57,6 @@
                 </mat-option>
             </mat-select>
         </mat-form-field>
-
-
-
-
-
       </div>
       <div class="chartButton intervalButtons">
         <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
