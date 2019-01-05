@@ -347,6 +347,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
     }
 
+
     private loadAssetCodes() {
         for (let assetCode of this.assetService.getAssetCodesForExchange()) {
             //Search for asset full name among know assets
