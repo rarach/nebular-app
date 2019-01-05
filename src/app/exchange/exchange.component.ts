@@ -23,10 +23,6 @@ import { DropdownOption } from '../model/dropdown-option';
     styleUrls: ['./exchange.component.css']
 })
 export class ExchangeComponent implements OnInit, OnDestroy {
-    private readonly _baseAssetDdId = "baseAssetCodeDd";
-    private readonly _baseAnchorDdId = "baseIssuerDd";
-    private readonly _counterAssetDdId = "counterAssetCodeDd";
-    private readonly _counterAnchorDdId = "counterIssuerDd";
     private static readonly PAST_TRADES_INTERVAL: number = 8000;
     private _isActive = false;
     private _routeSubscriber: Subscription;
@@ -362,12 +358,21 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
-    assetCodeChanged(event) {
-        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value || "ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
+    baseAssetCodeChanged(event) {
+        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value) {
             this.router.navigateByUrl(Constants.CONFIGURATION_URL);
         }
         else {
-            this.changeAssets(false);
+            this.changeBaseAsset(false);
+        }
+    }
+
+    counterAssetCodeChanged(event) {
+        if ("ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
+            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
+        }
+        else {
+            this.changeCounterAsset(false);
         }
     }
 
@@ -443,17 +448,33 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.router.navigateByUrl(url);
         }
         else {
-            this.changeAssets(true);
+            //NOTE: it doesn't really matter whether we use base or counter drop-down here
+            this.changeBaseAsset(true);
         }
     }
 
-    /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
-    private changeAssets(selectingAnchor: boolean) {
+    /** After changing the base asset drop-down, compose respective exchange URL and navigate there. */
+    private changeBaseAsset(selectingAnchor: boolean) {
         let urlAssets: string = this.selectedBaseAssetCode.value;
         if (selectingAnchor) {
             if (this.selectedBaseIssuer != null && this.selectedBaseIssuer.value != null) {
                 urlAssets += "-" + this.selectedBaseIssuer.value;
             }
+        }
+
+        urlAssets += "/" + this.selectedCounterAssetCode.value;
+        if (this.selectedCounterIssuer != null && this.selectedCounterIssuer.value != null) {
+            urlAssets += "-" + this.selectedCounterIssuer.value;
+        }
+
+        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+        this.router.navigateByUrl(newUrl);
+    }
+
+    private changeCounterAsset(selectingAnchor: boolean) {
+        let urlAssets: string = this.selectedBaseAssetCode.value;
+        if (this.selectedBaseIssuer != null && this.selectedBaseIssuer.value != null) {
+            urlAssets += "-" + this.selectedBaseIssuer.value;
         }
 
         urlAssets += "/" + this.selectedCounterAssetCode.value;

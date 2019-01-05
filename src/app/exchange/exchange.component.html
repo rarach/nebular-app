@@ -5,7 +5,7 @@
   <div class="col-lg-10 col-md-12 col-sm-12">
       <div class="dropdownsWrapper">
         <mat-form-field style="width: 150px;">
-            <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode" (selectionChange)="assetCodeChanged($event)"
+            <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode" (selectionChange)="baseAssetCodeChanged($event)"
                         [title]="selectedBaseAssetCode != null ? selectedBaseAssetCode.tooltip : 'select asset type...'"
                         [ngStyle]="{
                             'background-image': selectedBaseAssetCode ? 'url(./assets/images/asset_icons/' + selectedBaseAssetCode.value + '.png' : '',
@@ -35,7 +35,7 @@
 
       <div class="dropdownsWrapper">
         <mat-form-field style="width: 150px; float: left;">
-            <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode" (selectionChange)="assetCodeChanged($event)"
+            <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode" (selectionChange)="counterAssetCodeChanged($event)"
                         [title]="selectedCounterAssetCode != null ? selectedCounterAssetCode.tooltip : 'select asset type...'"
                         [ngStyle]="{
                             'background-image': selectedCounterAssetCode ? 'url(./assets/images/asset_icons/' + selectedCounterAssetCode.value + '.png' : '',
