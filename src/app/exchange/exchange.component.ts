@@ -388,7 +388,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     that.router.navigateByUrl(Constants.CONFIGURATION_URL);
                 }
                 else {
-                    that.changeAssets(false);
+                    if (that._baseAssetDdId === dropDownId) {
+                        that.changeBaseAsset(false);
+                    }
+                    else {
+                        that.changeCounterAsset(false);
+                    }
                 }
             }
         });
@@ -471,20 +476,38 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     that.router.navigateByUrl(url);
                 }
                 else {
-                    that.changeAssets(true);
+                    //NOTE: doesn't matter if we fire the change from base or counter asset
+                    that.changeBaseAsset(true);
                 }
             }
         });
     }
 
     /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
-    private changeAssets(selectingAnchor) {
+    private changeBaseAsset(selectingAnchor) {
         let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
         if (selectingAnchor) {
             const baseIssuer = $('div[id^="' + this._baseAnchorDdId + '"]').data('ddslick').selectedData.value;
             if (baseIssuer != null) {
                 urlAssets += "-" + baseIssuer;
             }
+        }
+
+        urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
+        const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
+        if (counterIssuer != null) {
+            urlAssets += "-" + counterIssuer;
+        }
+
+        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+        this.router.navigateByUrl(newUrl);
+    }
+
+    private changeCounterAsset(selectingAnchor) {
+        let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
+        const baseIssuer = $('div[id^="' + this._baseAnchorDdId + '"]').data('ddslick').selectedData.value;
+        if (baseIssuer != null) {
+            urlAssets += "-" + baseIssuer;
         }
 
         urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
