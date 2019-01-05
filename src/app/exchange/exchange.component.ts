@@ -5,7 +5,6 @@ import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import zingchart from "zingchart";
 
-import { Account } from "../model/account.model";
 import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
 import { CandlestickChartData } from '../model/candlestick-chart-data';
@@ -118,16 +117,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
         this.selectedCounterAssetCode = counCodeDdOption;
 
-
-
         this.loadBaseIssuers();
+        this.loadCounterIssuers();
 
-
-
-        this.setupAssetCodesDropDown(this._baseAssetDdId, this.exchange.baseAsset.code);
-        this.setupAnchorDropDown(this._baseAnchorDdId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
-        this.setupAssetCodesDropDown(this._counterAssetDdId, this.exchange.counterAsset.code);
-        this.setupAnchorDropDown(this._counterAnchorDdId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
         this.updateTradeHistory();
         this.renderCandlestickChart(true);
     }
@@ -355,71 +347,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
     }
 
-
-    private setupAssetCodesDropDown(dropDownId: string, selectedAssetCode: string) {
-        //In case this is re-init, destroy previous instance
-        jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
-
-        const assetList: object[] = new Array();
-        let found: boolean = false;
-        this.assetService.getAssetCodesForExchange().forEach(function(assetCode){
-            //Search for asset full name among know assets
-            let assetFullName: string = assetCode + " (custom)";
-            for (let asset in KnownAssets) {
-                if (KnownAssets[asset].code === assetCode) {
-                    assetFullName = KnownAssets[asset].fullName;
-                    break;
-                }
-            }
-            if (assetCode === selectedAssetCode) {
-                found = true;
-            }
-
-            assetList.push({
-                text: assetCode,
-                value: assetCode,
-                selected: assetCode === selectedAssetCode,
-                description: assetFullName,
-                imageSrc: "./assets/images/asset_icons/" + assetCode + ".png"
-            });
-        });
-
-        //Some unknown code
-        if (!found) {
-            assetList.splice(0, 0, {    //Insert at beginning
-                text: selectedAssetCode,
-                value: selectedAssetCode,
-                selected: true,
-                description: selectedAssetCode + " (custom)",
-                imageSrc: "./assets/images/asset_icons/" + selectedAssetCode + ".png"   //In case we don't have it, web serice is configured to return unknown.png as 404
-            });
-        }
-
-        assetList.push({
-            text: "[+] Add",
-            value: "ADD_CUSTOM",
-            description: "Add asset manually"
-        });
-
-        const that = this;
-        jQuery("#" + dropDownId).ddslick({
-            data: assetList,
-            width: 150,
-            onSelected: function (data) {
-                if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    that.router.navigateByUrl(Constants.CONFIGURATION_URL);
-                }
-                else {
-                    that.changeAssets(false);
-                }
-            }
-        });
-    }
-
-
-
-
-
     private loadAssetCodes() {
         for (let assetCode of this.assetService.getAssetCodesForExchange()) {
             //Search for asset full name among know assets
@@ -439,86 +366,23 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
-    debug_todo(event) {
+    assetCodeChanged(event) {
         if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value || "ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
             this.router.navigateByUrl(Constants.CONFIGURATION_URL);
         }
         else {
-            this.debug__changeAssets(false);
+            this.changeAssets(false);
         }
     }
 
-
-
-
-    private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
-        //In case this is re-init, destroy previous instance
-        jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
-        const issuersArray = this.assetService.GetIssuersByAssetCode(assetCode);
-        const issuerAccount = this.assetService.GetIssuerByAddress(assetIssuer.address);
-        const assetIssuersDdData = new Array();
-        let found = assetIssuer.IsNativeIssuer();
-        for (let i=0; i<issuersArray.length; i++) {
-            assetIssuersDdData.push({
-                text: issuersArray[i].shortName,
-                description: issuersArray[i].domain,
-                value: issuersArray[i].address,
-                selected: null != issuerAccount && issuersArray[i].address === issuerAccount.address
-            });
-            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
-                found = true;
-            }
-        }
-
-        //Some unknown address, probably from manual URL
-        if (!found) {
-            assetIssuersDdData.splice(0, 0, {    //Insert at beginning
-                text: assetIssuer.shortName,
-                description: "unknown (" + assetIssuer.address + ")",
-                value: assetIssuer.address,
-                selected: true
-            });
-        }
-
-        if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
-            assetIssuersDdData.push({
-                text: "[+] Manage",
-                value: "ADD_CUSTOM",
-                description: "Add anchor manually"
-            });
-        }
-
-        const that = this;
-        jQuery("#" + dropDownId).ddslick({
-            data: assetIssuersDdData,
-            width: 250,
-            onSelected: function (data) {
-                if ("ADD_CUSTOM"  === data.selectedData.value) {
-                    const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + assetCode;
-                    that.router.navigateByUrl(url);
-                }
-                else {
-                    that.changeAssets(true);
-                }
-            }
-        });
-    }
-
-
-
-    private loadBaseIssuers(/*TODO: parameterize so it can serve both base and counter issuers*/) {
+    private loadBaseIssuers() {
+        this.baseIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
         let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
         for (let i=0; i<issuersArray.length; i++) {
             const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
             this.baseIssuerOptions.push(ddOption);
-/*DEL            assetIssuersDdData.push({
-                text: issuersArray[i].shortName,
-                description: issuersArray[i].domain,
-                value: issuersArray[i].address,
-                selected: null != issuerAccount && issuersArray[i].address === issuerAccount.address
-            }); */
             //By default, pre-select the first option
             if (0 === i) {
                 this.selectedBaseIssuer = ddOption;
@@ -535,25 +399,15 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address, "", "unknown (" + this.exchange.baseAsset.issuer.address + ")");
             this.baseIssuerOptions.splice(0, 0, ddOption);
             this.selectedBaseIssuer = ddOption;
-/*DEL            assetIssuersDdData.splice(0, 0, {    //Insert at beginning
-                text: assetIssuer.shortName,
-                description: "unknown (" + assetIssuer.address + ")",
-                value: assetIssuer.address,
-                selected: true
-            }); */
         }
 
         if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
             this.baseIssuerOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Manage", "Add anchor manually"));
-/*            assetIssuersDdData.push({
-                text: "[+] Manage",
-                value: "ADD_CUSTOM",
-                description: "Add anchor manually"
-            }); */
         }
     }
 
     private loadCounterIssuers() {
+        this.counterIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.counterAsset.code);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
         let found = this.exchange.counterAsset.issuer.IsNativeIssuer();
@@ -593,47 +447,22 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.router.navigateByUrl(url);
         }
         else {
-            this.debug__changeAssets(true);
+            this.changeAssets(true);
         }
     }
-
-
 
     /** After changing one of the asset drop-downs, compose respective exchange URL and navigate there. */
-    private changeAssets(selectingAnchor) {
-        let urlAssets = $('div[id^="' + this._baseAssetDdId + '"]').data('ddslick').selectedData.value;
-        if (selectingAnchor) {
-            const baseIssuer = $('div[id^="' + this._baseAnchorDdId + '"]').data('ddslick').selectedData.value;
-            if (baseIssuer != null) {
-                urlAssets += "-" + baseIssuer;
-            }
-        }
-
-        urlAssets += "/" + $('div[id^="' + this._counterAssetDdId + '"]').data('ddslick').selectedData.value;
-        if (selectingAnchor) {
-            const counterIssuer = $('div[id^="' + this._counterAnchorDdId + '"]').data('ddslick').selectedData.value;
-            if (counterIssuer != null) {
-                urlAssets += "-" + counterIssuer;
-            }
-        }
-
-        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
-        this.router.navigateByUrl(newUrl);
-    }
-
-
-
-    private debug__changeAssets(selectingAnchor: boolean) {
+    private changeAssets(selectingAnchor: boolean) {
         let urlAssets: string = this.selectedBaseAssetCode.value;
         if (selectingAnchor) {
-            if (this.selectedBaseIssuer != null) {
+            if (this.selectedBaseIssuer != null && this.selectedBaseIssuer.value != null) {
                 urlAssets += "-" + this.selectedBaseIssuer.value;
             }
         }
 
         urlAssets += "/" + this.selectedCounterAssetCode.value;
         if (selectingAnchor) {
-            if (this.selectedCounterIssuer != null) {
+            if (this.selectedCounterIssuer != null && this.selectedCounterIssuer.value != null) {
                 urlAssets += "-" + this.selectedCounterIssuer.value;
             }
         }
