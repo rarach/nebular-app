@@ -59,56 +59,13 @@ div.chartWarning {
     text-align: center;
 }
 
-
-
-
-/** Experimental at the moment */
+/** Material drop-downs */
 mat-form-field {
-    margin-right: 5px;
-    margin-bottom: 5px;
-    height: 40px;
-    background-color: white;
     border: 1px solid #ccc;
-}
-.mat-select {
-    font-family: consolas,"Liberation Mono",courier,monospace;
-    font-weight: bolder;
 }
 
 .mat-option {
     border-bottom: 1px solid #ddd;
     font-size: .92rem !important;
     font-family: consolas,"Liberation Mono",courier,monospace;
-}
-
-:host ::ng-deep label.mat-form-field-label {
-    margin-top: 5px;
-    font-family: consolas,"Liberation Mono",courier,monospace;
-    font-style: italic;
-    padding-left: 5px;
-}
-:host ::ng-deep label.mat-form-field-label:not(.mat-empty) {
-    display: none;
-}
-
-.ddOption {
-    height: 40px;
-    padding: 3px;
-}
-.ddOption:hover {
-    font-weight: bolder;
-    background-color: #FDFDFD;
-}
-.selectedAssetCode {
-    height: 38px;
-    width: 140px;
-    line-height: 38px;
-    background-position: 4px 50%;
-    background-repeat: no-repeat;
-    background-size: 32px 32px;
-}
-.selectedIssuerOption {
-    height: 38px;
-    line-height: 38px;
-    padding-left: 5px;
 }

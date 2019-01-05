@@ -57,3 +57,54 @@ div.headerLinks {
     line-height: 50px;
     padding-right: 40px;
 }
+
+/* Asset drop-downs */
+:host ::ng-deep mat-form-field {
+    margin-right: 5px;
+    margin-bottom: 5px;
+    height: 40px;
+    background-color: white;
+    border: 1px solid black;
+}
+:host ::ng-deep .mat-select {
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    font-weight: bolder;
+}
+
+:host ::ng-deep .mat-option {
+    border-bottom: 1px solid #ddd;
+    font-size: .92rem !important;
+    font-family: consolas,"Liberation Mono",courier,monospace;
+}
+
+:host ::ng-deep label.mat-form-field-label {
+    margin-top: 5px;
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    font-style: italic;
+    padding-left: 5px;
+}
+:host ::ng-deep label.mat-form-field-label:not(.mat-empty) {
+    display: none;
+}
+
+:host ::ng-deep .ddOption {
+    height: 40px;
+    padding: 3px;
+}
+:host ::ng-deep .ddOption:hover {
+    font-weight: bolder;
+    background-color: #FDFDFD;
+}
+:host ::ng-deep .selectedAssetCode {
+    height: 38px;
+    width: 140px;
+    line-height: 38px;
+    background-position: 4px 50%;
+    background-repeat: no-repeat;
+    background-size: 32px 32px;
+}
+:host ::ng-deep .selectedIssuerOption {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 5px;
+}
