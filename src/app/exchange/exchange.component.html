@@ -75,7 +75,7 @@
 <div class="row">
     <div class="col-lg-2 col-md-12 col-sm-12">
         <br/><br/>
-        <app-orderbook [exchange]="exchange" [lastPrice]="lastPrice" [lastTradeType]="lastTradeType"></app-orderbook>
+        <app-orderbook [exchange]="exchange" [lastPrice]="lastPrice" [lastTradeType]="lastTradeType" [lastTradeTime]="lastTradeTime"></app-orderbook>
     </div>
     <div class="col-lg-7 col-md-8 col-sm-8" id="candleChartPanel" style="height: 800px;">
         <div class="chartWarning" [class.error]="dataStatus === DataStatus.Error">{{chartMessage}}</div>

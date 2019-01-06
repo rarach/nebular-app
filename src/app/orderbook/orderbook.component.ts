@@ -26,6 +26,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     }
     @Input() readonly lastPrice: number = 0.0;
     @Input() readonly lastTradeType: string = "";
+    @Input() readonly lastTradeTime: Date = null;
     orderbook: Orderbook = new Orderbook();
     maxCumulativeAmount: number;
     DataStatus=DataStatus/*template access*/; dataStatus: DataStatus = DataStatus.NoData;

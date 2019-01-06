@@ -34,6 +34,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     DataStatus=DataStatus/*ngCrap*/; dataStatus: DataStatus = DataStatus.OK;
     lastPrice: number = 0.0;
     lastTradeType: string = "";
+    lastTradeTime: Date = null;
     chartMessage: string = "Loading chart...";
 
     assetCodeOptions: DropdownOption[] = [];
@@ -278,6 +279,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 this.titleService.setTitle(this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code);
                 this.lastPrice = 0.0;
                 this.lastTradeType = "";
+                this.lastTradeTime = null;
             }
             else {
                 const pageTitle = this.currentPriceTitle(data._embedded.records[0]);
@@ -354,6 +356,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         const sellPrice = record.price.n / record.price.d;
         this.lastPrice = sellPrice;
         this.lastTradeType = record.base_is_seller ? "buy" : "sell"
+        this.lastTradeTime = new Date(record.ledger_close_time);
         return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
     }
 

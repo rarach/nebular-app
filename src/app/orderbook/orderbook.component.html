@@ -22,11 +22,12 @@
     </tbody>
 </table>
 <div id="currentPrice">
-    <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{_exchange.counterAsset.code}}">{{Utils.formatPrice(lastPrice)}}</span>
+    <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{_exchange.counterAsset.code}}
+Date: {{lastTradeTime | date:'d MMM'}}">{{Utils.formatPrice(lastPrice)}}</span>
 </div>
 <table>
     <tbody id="orderBookBids">
-        <!--TODO: use this.message is dataStatus is error -->
+        <!--TODO: use this.message if dataStatus is error -->
         <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
             <tr></tr>
             <tr><td>Loading data...</td></tr>
