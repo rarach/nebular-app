@@ -12,6 +12,7 @@ import { CustomExchangeComponent } from './custom-exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExchangeThumbnailComponent } from '../exchange-thumbnail/exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { DropdownOption } from '../model/dropdown-option';
 
 
 describe('CustomExchangeComponent', () => {
@@ -54,6 +55,14 @@ describe('CustomExchangeComponent', () => {
         component.removeExchange();
         expect(assetService.removeCalled).toBe(true);
     });
+    it("#issuerChanged calls service.UpdateCustomExchange with correct inputs", () => {
+        const assetService = TestBed.get(AssetService);
+        component.selectedBaseAssetCode = new DropdownOption("ABC", null, null);
+        component.selectedBaseIssuer = new DropdownOption("GARGAMELLL", null, null);
+        component.selectedCounterAssetCode = new DropdownOption("CHF", null, null);
+        component.selectedCounterIssuer = new DropdownOption("(native)", null, null);
+        component.issuerChanged(null);
+    });
 });
 
 class AssetServiceStub {
@@ -75,7 +84,12 @@ class AssetServiceStub {
 
     UpdateCustomExchange(id: string, baseAssetCode: string, baseIssuerAddress: string,
                          counterAssetCode: string, counterIssuerAddress: string): ExchangePair {
-        return null;
+        if ("cust_ex96984" === id && "ABC" === baseAssetCode && "GARGAMELLL" === baseIssuerAddress &&
+            "CHF" === counterAssetCode && "(native)" === counterIssuerAddress)
+        {
+            return null;
+        }
+        throw new Error("No data prepared for given inputs (exchange id=" + id + ")");
     }
 
     removeCalled = false;
