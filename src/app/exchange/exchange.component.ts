@@ -97,13 +97,32 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 break;
             }
         }
+        //User provided unknown asset code in URL
+        if (null === baseCodeDdOption) {
+            const code: string = this.exchange.baseAsset.code;
+            baseCodeDdOption = new DropdownOption(code, code, code + " (custom)");
+            this.assetCodeOptions.splice(0, 0, baseCodeDdOption);
+        }
         this.selectedBaseAssetCode = baseCodeDdOption;
-        //and counter code drop-down
+
+        //Selected option in counter code drop-down
         let counCodeDdOption: DropdownOption = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.counterAsset.code) {
                 counCodeDdOption = option;
                 break;
+            }
+        }
+        //Unknown counter asset code in URL
+        if (null === counCodeDdOption && this.exchange.baseAsset.code != this.exchange.counterAsset.code) {
+            if (this.exchange.baseAsset.code === this.exchange.counterAsset.code) {
+                //but it's the same as base asset
+                counCodeDdOption = baseCodeDdOption;
+            }
+            else {
+                const code: string = this.exchange.counterAsset.code;
+                counCodeDdOption = new DropdownOption(code, code, code + " (custom)");
+                this.assetCodeOptions.splice(0, 0, counCodeDdOption);
             }
         }
         this.selectedCounterAssetCode = counCodeDdOption;
@@ -352,9 +371,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 }
             }
 
-            this.assetCodeOptions.push(
-                new DropdownOption(assetCode, assetCode, assetFullName)
-            );
+            this.assetCodeOptions.push(new DropdownOption(assetCode, assetCode, assetFullName));
         }
 
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
@@ -382,7 +399,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         //Some unknown address, probably from manual URL
         if (!found) {
             //Insert at the beginning
-            const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address, "", "unknown (" + this.exchange.baseAsset.issuer.address + ")");
+            const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address,
+                                                this.exchange.baseAsset.issuer.domain,
+                                                "unknown (" + this.exchange.baseAsset.issuer.address + ")");
             this.baseIssuerOptions.splice(0, 0, ddOption);
             this.selectedBaseIssuer = ddOption;
         }
@@ -413,7 +432,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         //Some unknown address, probably from manual URL
         if (!found) {
             //Insert at the beginning
-            const ddOption = new DropdownOption(this.exchange.counterAsset.issuer.address, "", "unknown (" + this.exchange.counterAsset.issuer.address + ")");
+            const ddOption = new DropdownOption(this.exchange.counterAsset.issuer.address,
+                                                this.exchange.counterAsset.issuer.domain,
+                                                "unknown (" + this.exchange.counterAsset.issuer.address + ")");
             this.counterIssuerOptions.splice(0, 0, ddOption);
             this.selectedCounterIssuer = ddOption;
         }
