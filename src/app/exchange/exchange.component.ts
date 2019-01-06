@@ -10,11 +10,11 @@ import { AssetService } from '../services/asset.service';
 import { CandlestickChartData } from '../model/candlestick-chart-data';
 import { Constants, GETParams } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
+import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { Utils } from '../utils';
-import { DropdownOption } from '../model/dropdown-option';
 
 
 @Component({
@@ -338,7 +338,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         return this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code + " - " + Utils.formatPrice(sellPrice);
     }
 
+    /*********************************** Asset code/issuer drop-downs ***********************************/
 
+    /** Load available asset codes for the drop-downs */
     private loadAssetCodes() {
         for (let assetCode of this.assetService.getAssetCodesForExchange()) {
             //Search for asset full name among know assets
@@ -358,24 +360,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
-    baseAssetCodeChanged(event) {
-        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value) {
-            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
-        }
-        else {
-            this.changeBaseAsset(false);
-        }
-    }
-
-    counterAssetCodeChanged(event) {
-        if ("ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
-            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
-        }
-        else {
-            this.changeCounterAsset(false);
-        }
-    }
-
+    /** Load list of valid anchors for selected base/counter asset codes */
     private loadBaseIssuers() {
         this.baseIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
@@ -438,6 +423,25 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
     }
 
+    
+    baseAssetCodeChanged(event) {
+        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value) {
+            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
+        }
+        else {
+            this.changeBaseAsset(false);
+        }
+    }
+
+    counterAssetCodeChanged(event) {
+        if ("ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
+            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
+        }
+        else {
+            this.changeCounterAsset(false);
+        }
+    }
+
     issuerChanged(event) {
         if ("ADD_CUSTOM"  === this.selectedBaseIssuer.value) {
             const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + this.selectedBaseAssetCode.value;
@@ -487,4 +491,5 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
         this.router.navigateByUrl(newUrl);
     }
+    /**********************************************************************************************/
 }

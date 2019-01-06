@@ -3,10 +3,36 @@
         <div class="assetsSelection" onclick="return false;">
             <div class="removeExchButton" (click)="removeExchange()">X</div>
             <div class="assetDropDowns">
-                <div id="baseAssetCodeDropDown{{exchange.id}}" style="width: 100px;">Asset code drop-down here</div>
-                <div id="baseAssetAnchorDropDown{{exchange.id}}">Anchor drop-down here</div>
-                <div id="counterAssetCodeDropDown{{exchange.id}}" style="width: 100px;">Asset code drop-down here</div>
-                <div id="counterAssetAnchorDropDown{{exchange.id}}">Anchor drop-down here</div>
+                <mat-form-field style="width: 100px;">
+                    <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode"
+                                (selectionChange)="baseAssetCodeChanged($event)" [title]="selectedBaseAssetCode.tooltip">
+                        <mat-option class="ddOption" *ngFor="let assetCode of assetCodeOptions" [value]="assetCode" title="{{assetCode.tooltip}}">
+                            {{assetCode.text}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: calc(50% - 100px);" [title]="selectedBaseIssuer.tooltip">
+                    <mat-select [(value)]="selectedBaseIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)">
+                        <mat-option class="ddOption" *ngFor="let issuer of this.baseIssuerOptions" [value]="issuer" title="{{issuer.tooltip}}">
+                            {{issuer.text}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: 100px;">
+                    <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode"
+                                (selectionChange)="counterAssetCodeChanged($event)" [title]="selectedCounterAssetCode.tooltip">
+                        <mat-option class="ddOption" *ngFor="let assetCode of assetCodeOptions" [value]="assetCode" title="{{assetCode.tooltip}}">
+                            {{assetCode.text}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                <mat-form-field style="width: calc(50% - 100px);" [title]="selectedCounterIssuer.tooltip">
+                    <mat-select [(value)]="selectedCounterIssuer" class="selectedIssuerOption" (selectionChange)="issuerChanged($event)">
+                        <mat-option class="ddOption" *ngFor="let issuer of this.counterIssuerOptions" [value]="issuer" title="{{issuer.tooltip}}">
+                            {{issuer.text}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
             </div>
         </div>
         <div id="customExchangeChart{{exchange.id}}" class="exchange-link-chart">

@@ -1,9 +1,8 @@
-import { Component, OnInit, Input, AfterViewInit } from '@angular/core';
-import { Account } from "../model/account.model";
+import { Component, OnInit, Input } from '@angular/core';
 import { AssetService } from '../services/asset.service';
+import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
-
-declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
+import { KnownAssets } from '../model/asset.model';
 
 
 @Component({
@@ -11,97 +10,132 @@ declare var jQuery: any;  //Supporting jQuery's plugin ddSlick
     templateUrl: './custom-exchange.component.html',
     styleUrls: ['./custom-exchange.component.css']
 })
-export class CustomExchangeComponent implements OnInit, AfterViewInit {
-    private _baseAssetCodeDropDownId: string;
-    private _baseAnchorDropDownId: string;
-    private _counterAssetCodeDropDownId: string;
-    private _counterAnchorDropDownId: string;
-
+export class CustomExchangeComponent implements OnInit {
     @Input() exchange: ExchangePair;
 
+    assetCodeOptions: DropdownOption[] = [];            
+    selectedBaseAssetCode: DropdownOption = null;
+    selectedCounterAssetCode: DropdownOption = null;
+    baseIssuerOptions: DropdownOption[] = [];       //TODO: could be directly Account[] ?
+    counterIssuerOptions: DropdownOption[] = []
+    selectedBaseIssuer: DropdownOption = null;
+    selectedCounterIssuer: DropdownOption = null;
 
-    constructor(private assetService: AssetService) { }
+
+    constructor(private assetService: AssetService) {
+        this.loadAssetCodes();
+    }
 
     ngOnInit() {
-        this._baseAssetCodeDropDownId = "baseAssetCodeDropDown" + this.exchange.id;
-        this._baseAnchorDropDownId = "baseAssetAnchorDropDown" + this.exchange.id;
-        this._counterAssetCodeDropDownId = "counterAssetCodeDropDown" + this.exchange.id;
-        this._counterAnchorDropDownId = "counterAssetAnchorDropDown" + this.exchange.id;
-    }
-    
-    ngAfterViewInit() {
-        this.setupAssetCodesDropDown(this._baseAssetCodeDropDownId, this._baseAnchorDropDownId, this.exchange.baseAsset.code);
-        this.setupAnchorDropDown(this._baseAnchorDropDownId, this.exchange.baseAsset.code, this.exchange.baseAsset.issuer);
-        this.setupAssetCodesDropDown(this._counterAssetCodeDropDownId, this._counterAnchorDropDownId, this.exchange.counterAsset.code);
-        this.setupAnchorDropDown(this._counterAnchorDropDownId, this.exchange.counterAsset.code, this.exchange.counterAsset.issuer);
+        this.setupUi();
     }
 
-    private setupAssetCodesDropDown(dropDownId: string, anchorDropDownId: string, selectedAssetCode: string) {
-        const assetList = new Array();
-        this.assetService.getAssetCodesForExchange().forEach(function(assetCode) {
-            assetList.push({
-                text: assetCode,
-                value: assetCode,
-                selected: assetCode === selectedAssetCode
-            });
-        });
 
-        const that = this;
-        jQuery("#" + dropDownId).ddslick({
-            data: assetList,
-            width: 100,
-            onSelected: function (data) {
-                that.setupAnchorDropDown(anchorDropDownId, data.selectedData.value, null);
+    private setupUi(){
+        //Set selected option in base asset code drop-down
+        let baseCodeDdOption: DropdownOption = null;
+        for (let option of this.assetCodeOptions) {
+            if (option.value === this.exchange.baseAsset.code) {
+                baseCodeDdOption = option;
+                break;
             }
-        });
-    }
-
-    private setupAnchorDropDown(dropDownId: string, assetCode: string, assetIssuer: Account) {
-        //In case this is re-init after asset code change, destroy previous instance
-        jQuery('div[id^="' + dropDownId + '"]').ddslick('destroy');
-
-        const issuersArray = this.assetService.GetIssuersByAssetCode(assetCode);
-        const issuerAccount = assetIssuer != null ? this.assetService.GetIssuerByAddress(assetIssuer.address) : null;
-        const assetIssuersDdData = new Array();
-        for (let i=0; i<issuersArray.length; i++) {
-            assetIssuersDdData.push({
-                text: issuersArray[i].shortName,
-                description: issuersArray[i].domain,
-                value: issuersArray[i].address,
-                selected: null != issuerAccount && issuersArray[i].address === issuerAccount.address
-            });
         }
-
-        const that = this;
-        jQuery("#" + dropDownId).ddslick({
-            data: assetIssuersDdData,
-            width: "calc(50% - 100px)",
-            onSelected: function (data) {
-                that.updateExchange();
+        this.selectedBaseAssetCode = baseCodeDdOption;
+        //and counter code drop-down
+        let counCodeDdOption: DropdownOption = null;
+        for (let option of this.assetCodeOptions) {
+            if (option.value === this.exchange.counterAsset.code) {
+                counCodeDdOption = option;
+                break;
             }
-        });
-
-        if (null == issuerAccount) {
-            jQuery('div[id^="' + dropDownId + '"]').ddslick('select', {index: 0 });
         }
+        this.selectedCounterAssetCode = counCodeDdOption;
+
+        this.loadBaseIssuers();
+        this.loadCounterIssuers();
     }
 
     private updateExchange() {
-        const baseAssetCodeData = $('div[id^="' + this._baseAssetCodeDropDownId + '"]').data("ddslick");
-        const baseIssuerData = $('div[id^="' + this._baseAnchorDropDownId + '"]').data("ddslick");
-        const counterAssetCodeData = $('div[id^="' + this._counterAssetCodeDropDownId + '"]').data("ddslick");
-        const counterIssuerData = $('div[id^="' + this._counterAnchorDropDownId + '"]').data("ddslick");
+        const baseAssetCode = this.selectedBaseAssetCode.value;
+        const baseIssuerAddress = this.selectedBaseIssuer.value;
+        const counterAssetCode = this.selectedCounterAssetCode.value;
+        const counterIssuerAddress = this.selectedCounterIssuer.value;
 
-        if (!counterAssetCodeData || !counterIssuerData) {
-            //Happens when change is fired during drop-downs setup
-            return;
-        }
-        const exchange = this.assetService.UpdateCustomExchange(this.exchange.id,
-                                                                baseAssetCodeData.selectedData.value, baseIssuerData.selectedData.value,
-                                                                counterAssetCodeData.selectedData.value, counterIssuerData.selectedData.value);
+        this.assetService.UpdateCustomExchange(this.exchange.id, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress);
     }
 
     removeExchange() {
         this.assetService.RemoveCustomExchange(this.exchange.id);
+    }
+
+
+    /*********************************** Asset code/issuer drop-downs ***********************************/
+
+    /** Load available asset codes for the drop-downs */
+    private loadAssetCodes() {
+        for (let assetCode of this.assetService.getAssetCodesForExchange()) {
+            //Search for asset full name among know assets
+            let assetFullName: string = assetCode + " (custom)";
+            for (let asset in KnownAssets) {
+                if (KnownAssets[asset].code === assetCode) {
+                    assetFullName = KnownAssets[asset].fullName;
+                    break;
+                }
+            }
+
+            this.assetCodeOptions.push(new DropdownOption(assetCode, assetCode, assetFullName));
+        }
+    }
+
+    /** Load list of valid anchors for selected base/counter asset codes */
+    private loadBaseIssuers() {
+        this.baseIssuerOptions = [];
+        const issuersArray = this.assetService.GetIssuersByAssetCode(/*DEL? this.exchange.baseAsset.code*/this.selectedBaseAssetCode.value);
+        const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
+
+        for (let i=0; i<issuersArray.length; i++) {
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            this.baseIssuerOptions.push(ddOption);
+            //By default, pre-select the first option
+            if (0 === i) {
+                this.selectedBaseIssuer = ddOption;
+            }
+            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                this.selectedBaseIssuer = ddOption;
+            }
+        }
+    }
+
+    private loadCounterIssuers() {
+        this.counterIssuerOptions = [];
+        const issuersArray = this.assetService.GetIssuersByAssetCode(/*DEL? this.exchange.counterAsset.code*/ this.selectedCounterAssetCode.value);
+        const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
+
+        for (let i=0; i<issuersArray.length; i++) {
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            this.counterIssuerOptions.push(ddOption);
+            //By default, pre-select the first option
+            if (0 === i) {
+                this.selectedCounterIssuer = ddOption;
+            }
+            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                this.selectedCounterIssuer = ddOption;
+            }
+        }
+    }
+
+    baseAssetCodeChanged(event) {
+        this.loadBaseIssuers();
+        this.updateExchange();
+    }
+
+    counterAssetCodeChanged(event) {
+        this.loadCounterIssuers();
+        this.updateExchange();
+    }
+
+    issuerChanged(event)
+    {
+        this.updateExchange();
     }
 }

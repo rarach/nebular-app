@@ -1,5 +1,9 @@
 import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { MatRippleModule, MatSelectModule } from '@angular/material';
+import { OverlayModule } from '@angular/cdk/overlay';
 import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { Asset } from '../model/asset.model';
@@ -8,7 +12,6 @@ import { CustomExchangeComponent } from './custom-exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExchangeThumbnailComponent } from '../exchange-thumbnail/exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { Observable } from 'rxjs';
 
 
 describe('CustomExchangeComponent', () => {
@@ -17,6 +20,7 @@ describe('CustomExchangeComponent', () => {
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
+            imports: [ BrowserAnimationsModule, MatRippleModule, MatSelectModule, OverlayModule ],
             declarations: [ CustomExchangeComponent, ExchangeThumbnailComponent ],
             providers: [
                 { provide: AssetService, useClass: AssetServiceStub },
@@ -54,7 +58,7 @@ describe('CustomExchangeComponent', () => {
 
 class AssetServiceStub {
     getAssetCodesForExchange(): string[] {
-        return ["MXN"];
+        return [ "BONY", "MXN", "RRR", "XLM" ];
     }
 
     GetIssuersByAssetCode(code: string): Account[] {
