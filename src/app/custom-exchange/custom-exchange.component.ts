@@ -90,7 +90,7 @@ export class CustomExchangeComponent implements OnInit {
     /** Load list of valid anchors for selected base/counter asset codes */
     private loadBaseIssuers() {
         this.baseIssuerOptions = [];
-        const issuersArray = this.assetService.GetIssuersByAssetCode(/*DEL? this.exchange.baseAsset.code*/this.selectedBaseAssetCode.value);
+        const issuersArray = this.assetService.GetIssuersByAssetCode(this.selectedBaseAssetCode.value);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
 
         for (let i=0; i<issuersArray.length; i++) {
@@ -108,7 +108,7 @@ export class CustomExchangeComponent implements OnInit {
 
     private loadCounterIssuers() {
         this.counterIssuerOptions = [];
-        const issuersArray = this.assetService.GetIssuersByAssetCode(/*DEL? this.exchange.counterAsset.code*/ this.selectedCounterAssetCode.value);
+        const issuersArray = this.assetService.GetIssuersByAssetCode(this.selectedCounterAssetCode.value);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
 
         for (let i=0; i<issuersArray.length; i++) {

@@ -46,8 +46,6 @@ describe('CustomExchangeComponent', () => {
         expect(component.exchange.id).toBe("cust_ex96984");
         expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null, null)));
     });
-    //TODO: aaaand so on. (BTW this is not really a unit test, full page is loaded. DYOR)
-
 
     it("#removeCustomExchange deletes the exchange from repository", () => {
         const assetService = TestBed.get(AssetService);
@@ -55,19 +53,41 @@ describe('CustomExchangeComponent', () => {
         component.removeExchange();
         expect(assetService.removeCalled).toBe(true);
     });
+    it("#baseAssetCodeChanged loads base asset issuers", () => {
+        expect(component.selectedBaseIssuer.value).not.toBe("GOTO");
+        component.exchange = new ExchangePair("k85u56ww56",
+                                              new Asset("CKLL", null, null, new Account("GOTO", null, null)),
+                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry", null)));
+        component.selectedBaseAssetCode = new DropdownOption("CKLL", "CKLL", null);
+        component.baseAssetCodeChanged(null);
+        expect(component.selectedBaseIssuer).toEqual(new DropdownOption("GOTO", "www.go.to", "Go to test"));
+    });
+    it("#counterAssetCodeChanged loads counter asset issuers", () => {
+        expect(component.selectedCounterIssuer.value).toBe("GULIWER");
+        component.exchange = new ExchangePair("k85u56ww56",
+                                              new Asset("CKLL", null, null, new Account("GOTO", null, null)),
+                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry", null)));
+        component.selectedCounterAssetCode = new DropdownOption("MNO", "MNO", "monaco-in");
+        component.counterAssetCodeChanged(null);
+        expect(component.selectedCounterIssuer).toEqual(new DropdownOption("GARIBALDI7845", "GariBal.dii", "Garry"));
+    });
     it("#issuerChanged calls service.UpdateCustomExchange with correct inputs", () => {
-        const assetService = TestBed.get(AssetService);
+        expect(component.exchange.baseAsset.code).toBe("RRR");
+        expect(component.exchange.counterAsset.issuer.address).toBe("G014");
         component.selectedBaseAssetCode = new DropdownOption("ABC", null, null);
         component.selectedBaseIssuer = new DropdownOption("GARGAMELLL", null, null);
         component.selectedCounterAssetCode = new DropdownOption("CHF", null, null);
         component.selectedCounterIssuer = new DropdownOption("(native)", null, null);
+        const assetService = TestBed.get(AssetService);
+        expect(assetService.updateCalled).toBeFalsy();
         component.issuerChanged(null);
+        expect(assetService.updateCalled).toBeTruthy();
     });
 });
 
 class AssetServiceStub {
     getAssetCodesForExchange(): string[] {
-        return [ "BONY", "MXN", "RRR", "XLM" ];
+        return [ "XLM", "BONY", "MXN", "RRR" ];
     }
 
     GetIssuersByAssetCode(code: string): Account[] {
@@ -75,18 +95,38 @@ class AssetServiceStub {
         {
             return [ new Account("GULIWER", "guli", "gu.li") ];
         }
-        throw new Error("No data prepared for given input (asset code='" + code + "'");
+        if ("CKLL" ===  code) {
+            return [ new Account("GOTO", "Go to test", "www.go.to"), new Account("GBBshouldntBeUsed", null, null) ];
+        }
+        if ("MNO" === code) {
+            return [ new Account("GARIBALDI7845", "Garry", "GariBal.dii"), new Account("GAuseless", null, "") ];
+        }
+        throw new Error("No data prepared for given input (asset code='" + code + "')");
     }
 
     GetIssuerByAddress(address: string): Account {
-        return null;
+        if ("GABRIELASABATINI" === address || "G014" === address) {
+            return null;
+        }
+        if ("GOTO" === address) {
+            return new Account("GOTO", "Go to test", "www.go.to" );
+        }
+        if ("GARIBALDI7845" === address) {
+            return new Account("GARIBALDI7845", "Garry", "GariBal.dii");
+        }
+        throw new Error("No data prepared for given input (address=" + address + ")");
     }
 
+    updateCalled = false;
     UpdateCustomExchange(id: string, baseAssetCode: string, baseIssuerAddress: string,
                          counterAssetCode: string, counterIssuerAddress: string): ExchangePair {
         if ("cust_ex96984" === id && "ABC" === baseAssetCode && "GARGAMELLL" === baseIssuerAddress &&
             "CHF" === counterAssetCode && "(native)" === counterIssuerAddress)
         {
+            this.updateCalled = true;
+            return null;
+        }
+        if ("k85u56ww56" === id) {
             return null;
         }
         throw new Error("No data prepared for given inputs (exchange id=" + id + ")");
