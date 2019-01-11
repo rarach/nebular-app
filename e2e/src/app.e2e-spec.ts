@@ -14,3 +14,6 @@ describe('workspace-project App', () => {
     });
 });
 */
+describe("fail", () => {
+    it("should fail", () => { fail(); });
+});
