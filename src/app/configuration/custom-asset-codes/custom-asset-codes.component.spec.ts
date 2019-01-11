@@ -25,6 +25,8 @@ describe('CustomAssetCodesComponent', () => {
         fixture.detectChanges();
     });
 
+it("Unit test fail", () => { fail(); });
+
     it('should contain list of custom asset codes', () => {
         expect(component.customAssetCodes).toEqual(["ASDF", "JKL;"]);
     });
