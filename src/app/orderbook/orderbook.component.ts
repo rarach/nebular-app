@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 
 import { Constants } from '../model/constants';
@@ -34,7 +34,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     Utils = Utils;
 
 
-    constructor(private readonly horizonService: HorizonRestService){}
+    constructor(private readonly ngZone: NgZone, private readonly horizonService: HorizonRestService){}
 
     ngOnInit() {
         this._isActive = true;
@@ -213,9 +213,12 @@ export class OrderbookComponent implements OnInit, OnDestroy {
         }
         this.fillOrderBook();
 
-        setTimeout(() => {
-            this.initOrderBookStream();
-        }, Constants.ORDERBOOK_INTERVAL);
+        //NOTE: Angular zones trick to prevent Protractor timeouts
+        this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.ngZone.run(() => { this.initOrderBookStream(); });
+            }, Constants.ORDERBOOK_INTERVAL);
+        });
     }
 
     /** Set background of an offer item to visually indicate its volume (amount) relatively to cumulative volume of whole orderbook */

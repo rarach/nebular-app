@@ -459,7 +459,7 @@ export class AssetService {
             if (e>0) {
                 cookieText += ",";
             }
-            //Format 99012367=ABC-GGGGGGGGGG/XYZ-GA2222222222222222
+            //Format 99012367#ABC-GGGGGGGGGG/XYZ-GA2222222222222222
             cookieText += exchange.id + "#" + exchange.baseAsset.code;
             if (!exchange.baseAsset.IsNative()) {
                 cookieText += "-" + exchange.baseAsset.issuer.address;

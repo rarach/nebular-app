@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
 import zingchart from "zingchart";
@@ -30,7 +30,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     private _isActive = false;
     private _lineChart: LineChartData = null;
 
-    constructor(private router: Router, private horizonService: HorizonRestService) { }
+    constructor(private readonly ngZone: NgZone, private readonly router: Router, private horizonService: HorizonRestService) { }
 
     getUrl(): string {
         return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
@@ -84,7 +84,6 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             let lastPrice = -999999;
             let startPrice;
 
-            const that = this;
             for(let record of data._embedded.records) {
                 if (record.timestamp < yesterday) {
                     break;    //Break at first value older than 24hrs
@@ -105,8 +104,8 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
                 }
 
                 const point = [record.timestamp, avgValue];
-                that._lineChart.addPointData(point);
-                that._lineChart.setStartTime(record.timestamp);
+                this._lineChart.addPointData(point);
+                this._lineChart.setStartTime(record.timestamp);
             }
 
             //Special case: if we have only one point in the chart, use trick and add artificial starting point
@@ -120,11 +119,13 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             this.setPriceStatistics(startPrice, lastPrice);
             this._lineChart.setPriceScale(minPrice, maxPrice);
             zingchart.THEME=null;
-            zingchart.render({
-                id : this.chartPlaceholderId,
-                data : this._lineChart.getData(),
-                height: "100%",
-                width: "100%"
+            this.ngZone.runOutsideAngular(() => {
+                zingchart.render({
+                    id : this.chartPlaceholderId,
+                    data : this._lineChart.getData(),
+                    height: "100%",
+                    width: "100%"
+                });
             });
         },
         error => {
@@ -159,8 +160,11 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
         }
         this.renderLineChart();
 
-        setTimeout(() => {
-            this.initChartStream();
-        }, Constants.CHART_INTERVAL);
+        //NOTE: Angular zones trick to prevent Protractor timeouts
+        this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.ngZone.run(() => { this.initChartStream(); });
+            }, Constants.CHART_INTERVAL);
+        });
     }
 }

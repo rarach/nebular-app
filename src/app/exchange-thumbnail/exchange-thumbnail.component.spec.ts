@@ -1,4 +1,5 @@
-import { async, ComponentFixture, TestBed, inject } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
+import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { ExchangeThumbnailComponent } from './exchange-thumbnail.component';
@@ -24,8 +25,8 @@ describe('ExchangeThumbnailComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(inject([Router, HorizonRestService], (router, horizonService) => {
-        component = new ExchangeThumbnailComponent(router, horizonService);
+    beforeEach(inject([NgZone, Router, HorizonRestService], (zone, router, horizonService) => {
+        component = new ExchangeThumbnailComponent(zone, router, horizonService);
         component.exchange = exchange;
     }));
 

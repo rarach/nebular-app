@@ -1,4 +1,5 @@
 import { async, TestBed, inject } from '@angular/core/testing';
+import { NgZone } from '@angular/core';
 import { Observable, of } from 'rxjs';
 
 import { ExchangePair } from '../model/exchange-pair.model';
@@ -21,8 +22,8 @@ describe('OrderbookComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(inject([HorizonRestService], (horizonService) => {
-        component = new OrderbookComponent(horizonService);
+    beforeEach(inject([NgZone, HorizonRestService], (zone, horizonService) => {
+        component = new OrderbookComponent(zone, horizonService);
     }));
 
     it('should create instance', () => {
