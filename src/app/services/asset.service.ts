@@ -401,14 +401,14 @@ export class AssetService {
             let dashIndex = baseAssetText.indexOf("-");
             const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
             const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
-            const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);           //BUG: what if the user removed the issuer on Configuration? TODO
+            const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);
             const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
             //Counter asset
             const counterAssetText = exchangeText.substr(slashIndex+1);
             dashIndex = counterAssetText.indexOf("-");
             const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
             const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
-            const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);     //BUG: what if the user removed the issuer on Configuration? TODO
+            const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);
             const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
 
             userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));

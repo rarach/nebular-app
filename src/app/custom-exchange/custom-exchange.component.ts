@@ -40,13 +40,32 @@ export class CustomExchangeComponent implements OnInit {
                 break;
             }
         }
+        //We got asset code that we don't recognize (most likely zombie asset from cookie)
+        if (null === baseCodeDdOption) {
+            const code: string = this.exchange.baseAsset.code;
+            baseCodeDdOption = new DropdownOption(code, code, code + " (custom)");
+            this.assetCodeOptions.splice(0, 0, baseCodeDdOption);
+        }
         this.selectedBaseAssetCode = baseCodeDdOption;
-        //and counter code drop-down
+
+        //Selected option in counter code drop-down
         let counCodeDdOption: DropdownOption = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.counterAsset.code) {
                 counCodeDdOption = option;
                 break;
+            }
+        }
+        //Unknown counter asset code
+        if (null === counCodeDdOption && this.exchange.baseAsset.code != this.exchange.counterAsset.code) {
+            if (this.exchange.baseAsset.code === this.exchange.counterAsset.code) {
+                //but it's the same as base asset
+                counCodeDdOption = baseCodeDdOption;
+            }
+            else {
+                const code: string = this.exchange.counterAsset.code;
+                counCodeDdOption = new DropdownOption(code, code, code + " (custom)");
+                this.assetCodeOptions.splice(0, 0, counCodeDdOption);
             }
         }
         this.selectedCounterAssetCode = counCodeDdOption;
@@ -92,6 +111,7 @@ export class CustomExchangeComponent implements OnInit {
         this.baseIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.selectedBaseAssetCode.value);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
+        let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
 
         for (let i=0; i<issuersArray.length; i++) {
             const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
@@ -101,8 +121,19 @@ export class CustomExchangeComponent implements OnInit {
                 this.selectedBaseIssuer = ddOption;
             }
             if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                found = true;
                 this.selectedBaseIssuer = ddOption;
             }
+        }
+
+        //Some unknown address, probably a zombie from cookie storage
+        if (!found) {
+            //Insert at the beginning
+            const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address,
+                                                this.exchange.baseAsset.issuer.domain,
+                                                "unknown (" + this.exchange.baseAsset.issuer.address + ")");
+            this.baseIssuerOptions.splice(0, 0, ddOption);
+            this.selectedBaseIssuer = ddOption;
         }
     }
 
@@ -110,6 +141,7 @@ export class CustomExchangeComponent implements OnInit {
         this.counterIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.selectedCounterAssetCode.value);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
+        let found = this.exchange.counterAsset.issuer.IsNativeIssuer();
 
         for (let i=0; i<issuersArray.length; i++) {
             const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
@@ -119,8 +151,19 @@ export class CustomExchangeComponent implements OnInit {
                 this.selectedCounterIssuer = ddOption;
             }
             if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
+                found = true;
                 this.selectedCounterIssuer = ddOption;
             }
+        }
+
+        //Some unknown address, probably a zombie from cookie
+        if (!found) {
+            //Insert at the beginning
+            const ddOption = new DropdownOption(this.exchange.counterAsset.issuer.address,
+                                                this.exchange.counterAsset.issuer.domain,
+                                                "unknown (" + this.exchange.counterAsset.issuer.address + ")");
+            this.counterIssuerOptions.splice(0, 0, ddOption);
+            this.selectedCounterIssuer = ddOption;
         }
     }
 

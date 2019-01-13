@@ -386,6 +386,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
         let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
+
         for (let i=0; i<issuersArray.length; i++) {
             const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
             this.baseIssuerOptions.push(ddOption);
@@ -419,6 +420,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.counterAsset.code);
         const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.counterAsset.issuer.address);
         let found = this.exchange.counterAsset.issuer.IsNativeIssuer();
+
         for (let i=0; i<issuersArray.length; i++) {
             const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
             this.counterIssuerOptions.push(ddOption);

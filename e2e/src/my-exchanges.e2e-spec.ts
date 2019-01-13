@@ -73,8 +73,8 @@ describe('My Exchanges', () => {
         expect(dropDown.getText()).toBe("XCN");
 
         dropDown = element.all(by.css("div#customExchange88888888 mat-form-field:nth-child(2)")).first();
-        expect(dropDown.getAttribute("title")).toBe("GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY");
-        expect(dropDown.getText()).toBe("GCNY5OXYSY...");
+        expect(dropDown.getAttribute("title")).toBe("unknown (GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY)");
+        expect(dropDown.getText()).toBe("GCNY5OXYSY4FKHOP...");
 
         dropDown = element.all(by.css("div#customExchange88888888 mat-form-field:nth-child(3) mat-select.selectedAssetCode")).first();
         expect(dropDown.getAttribute("title")).toBe("Hong Kong Dollar");
