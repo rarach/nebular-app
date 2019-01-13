@@ -115,16 +115,10 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             }
         }
         //Unknown counter asset code in URL
-        if (null === counCodeDdOption && this.exchange.baseAsset.code != this.exchange.counterAsset.code) {
-            if (this.exchange.baseAsset.code === this.exchange.counterAsset.code) {
-                //but it's the same as base asset
-                counCodeDdOption = baseCodeDdOption;
-            }
-            else {
-                const code: string = this.exchange.counterAsset.code;
-                counCodeDdOption = new DropdownOption(code, code, code + " (custom)");
-                this.assetCodeOptions.splice(0, 0, counCodeDdOption);
-            }
+        if (null === counCodeDdOption) {
+            const code: string = this.exchange.counterAsset.code;
+            counCodeDdOption = new DropdownOption(code, code, code + " (custom)");
+            this.assetCodeOptions.splice(0, 0, counCodeDdOption);
         }
         this.selectedCounterAssetCode = counCodeDdOption;
 

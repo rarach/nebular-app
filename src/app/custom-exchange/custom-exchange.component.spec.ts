@@ -46,7 +46,6 @@ describe('CustomExchangeComponent', () => {
         expect(component.exchange.id).toBe("cust_ex96984");
         expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null, null)));
     });
-
     it("#removeCustomExchange deletes the exchange from repository", () => {
         const assetService = TestBed.get(AssetService);
         expect(assetService.removeCalled).toBe(false);
@@ -63,7 +62,7 @@ describe('CustomExchangeComponent', () => {
         expect(component.selectedBaseIssuer).toEqual(new DropdownOption("GOTO", "www.go.to", "Go to test"));
     });
     it("#counterAssetCodeChanged loads counter asset issuers", () => {
-        expect(component.selectedCounterIssuer.value).toBe("GULIWER");
+        expect(component.selectedCounterIssuer.value).toBe("G014");
         component.exchange = new ExchangePair("k85u56ww56",
                                               new Asset("CKLL", null, null, new Account("GOTO", null, null)),
                                               new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry", null)));
@@ -85,6 +84,37 @@ describe('CustomExchangeComponent', () => {
     });
 });
 
+describe("CustomExchangeComponent", () => {
+    let component: CustomExchangeComponent;
+    let fixture: ComponentFixture<CustomExchangeComponent>;
+
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+            imports: [ BrowserAnimationsModule, MatRippleModule, MatSelectModule, OverlayModule ],
+            declarations: [ CustomExchangeComponent, ExchangeThumbnailComponent ],
+            providers: [
+                { provide: AssetService, useClass: AssetServiceStub },
+                { provide: Router, useValue: {} },
+                { provide: HorizonRestService, useClass: HorizonRestServiceStub }
+            ]
+        })
+        .compileComponents();
+    }));
+
+    it("loads available assets codes - unknown (custom) codes", () => {
+        fixture = TestBed.createComponent(CustomExchangeComponent);
+        component = fixture.componentInstance;
+        component.exchange = new ExchangePair("768y4-sdf1",
+                                              new Asset("altte", "alternative", null, new Account("GCD5DG453SER745C415CG", "china-coin.cn", null)),
+                                              new Asset("UNITA", "Unity coin", null, new Account("GORE", "gore.xyz", null)));
+        fixture.detectChanges();
+
+        expect(component.selectedBaseAssetCode).toEqual(new DropdownOption("altte", "altte", "altte (custom)"));
+        expect(component.selectedCounterAssetCode).toEqual(new DropdownOption("UNITA", "UNITA", "UNITA (custom)"));
+    });
+});
+
+
 class AssetServiceStub {
     getAssetCodesForExchange(): string[] {
         return [ "XLM", "BONY", "MXN", "RRR" ];
@@ -101,11 +131,14 @@ class AssetServiceStub {
         if ("MNO" === code) {
             return [ new Account("GARIBALDI7845", "Garry", "GariBal.dii"), new Account("GAuseless", null, "") ];
         }
+        if ("altte" === code || "UNITA" === code) {
+            return [ ];
+        }
         throw new Error("No data prepared for given input (asset code='" + code + "')");
     }
 
     GetIssuerByAddress(address: string): Account {
-        if ("GABRIELASABATINI" === address || "G014" === address) {
+        if ("GABRIELASABATINI" === address || "G014" === address || "GCD5DG453SER745C415CG" === address || "GORE" === address) {
             return null;
         }
         if ("GOTO" === address) {
