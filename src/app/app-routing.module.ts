@@ -7,6 +7,7 @@ import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analyt
 import { MyExchangesComponent } from "./my-exchanges/my-exchanges.component";
 import { ConfigurationComponent } from "./configuration/configuration.component";
 import { PageNotFoundComponent } from "./not-found.component";
+import { LiveTradesComponent } from './live-trades/live-trades.component';
 
 
 const appRoutes: Routes = [
@@ -15,6 +16,7 @@ const appRoutes: Routes = [
   { path: 'analyze/:baseAssetId/:counterAssetId', component: ExchangeAnalyticsComponent },
   { path: 'myExchanges', component: MyExchangesComponent },
   { path: "configuration", component: ConfigurationComponent },
+  { path: "liveTrades", component: LiveTradesComponent },
   { path: '', redirectTo: '/overview', pathMatch: 'full' },
   { path: '**', component: PageNotFoundComponent } //TODO: 404 page
 ];
