@@ -14,6 +14,7 @@ const appRoutes: Routes = [
   { path: 'overview', component: OverviewComponent },
   { path: 'exchange/:baseAssetId/:counterAssetId', component: ExchangeComponent },
   { path: 'analyze/:baseAssetId/:counterAssetId', component: ExchangeAnalyticsComponent },
+  { path: 'analyze', component: ExchangeAnalyticsComponent },
   { path: 'myExchanges', component: MyExchangesComponent },
   { path: "configuration", component: ConfigurationComponent },
   { path: "liveTrades", component: LiveTradesComponent },

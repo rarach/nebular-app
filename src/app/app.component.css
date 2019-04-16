@@ -3,9 +3,13 @@ ul
 	list-style:none;
     display:none;
 	position: absolute;
-	top:100%;
-	right:0;
-	padding-right:20px;
+	top: 50px;  /*50px is height of the top menu bar*/
+    right:0;
+    z-index: 1;
+    margin-right:30px;
+    background-color: rgb(246, 246, 246);
+    border: 1px solid #8396a0;
+    padding: 0;
 }
 ul a
 {
