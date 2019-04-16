@@ -1,0 +1,10 @@
+
+<ul>
+    <li *ngFor="let item of items">
+        {{item.actionName }}
+        {{ item.baseAmount }} <a class="link inline-link" href="{{item.baseLink}}" target="exchTab">{{item.baseAssetCode}}</a>
+        for
+        {{item.counterAmount}} <a class="link inline-link" href="{{item.counterLink}}" target="exchTab">{{item.counterAssetCode}}</a>
+        {{item.note}}
+    </li>
+</ul>

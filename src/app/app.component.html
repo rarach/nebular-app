@@ -1,14 +1,21 @@
 <div class="container-fluid">
     <div class="row" style="margin: 5px;">
-        <div class="col-lg-3 col-md-3 col-sm-3 col-12">
+        <div class="col-lg-2 col-md-2 col-sm-2 col-12">
             <a routerLink="/overview" id="logo" class="link" title="Nebular">
                 <div class="homeLink">Nebular</div>
                 <span id="logoSubtitle" style="font-size: .8em">Stellar charts</span>
             </a>
         </div>
-        <div class="col-lg-9 col-md-9 col-sm-9 col-12 headerLinks">
-            <a routerLink="/configuration" class="link" id="configurationLink">Configuration</a>
-            <a routerLink="/myExchanges" class="link" id="myExchangesLink">My Exchanges</a>
+        <div class="col-lg-10 col-md-10 col-sm-10 col-12 headerLinks">
+            <nav id="tools_nav_wrap">
+                <a class="link top-menu-link" id="toolsLink">Tools</a>
+                <ul>
+                    <li><a routerLink="/liveTrades" class="link">Live Trades</a></li>
+                    <li><a routerLink="/analyze" class="link">Exchange Analytics</a></li>
+                </ul>
+            </nav>
+            <a routerLink="/configuration" class="link top-menu-link" id="configurationLink">Configuration</a>
+            <a routerLink="/myExchanges" class="link top-menu-link" id="myExchangesLink">My Exchanges</a>
         </div>
     </div>
 
@@ -20,6 +27,6 @@
 <footer id="footer">
     <div class="container">
         <span>Only for information. Accuracy of data is not guaranteed. No investment or trading decision should be made based on this page.<br/>
-                Got something to say? Send me a MEMO to GASJBQBTC4C5J7X24C4Q7S6IKMMK3HKWBX4WMJYEQUW7OKMKNNDRK3J7. v19.01.13</span>
+                Got something to say? Send me a MEMO to GASJBQBTC4C5J7X24C4Q7S6IKMMK3HKWBX4WMJYEQUW7OKMKNNDRK3J7. v19.04.16</span>
     </div>
 </footer>

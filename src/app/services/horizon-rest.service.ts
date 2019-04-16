@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { ExchangePair } from '../model/exchange-pair.model';
+import { Trade } from '../model/trade.model';
 
 
 @Injectable({
@@ -46,6 +47,19 @@ export class HorizonRestService {
 
         const response = this.http.get(url);
         return response;
+    }
+
+    /** Stream current trades without limitations on assets */
+    streamTradeHistory(): Observable<Trade> {
+        const url = this.getApiUrl() + "/trades?cursor=now&order=asc";
+        return new Observable<Trade>(obs => {
+            const es = new EventSource(url);
+            es.addEventListener('message', (evt: MessageEvent) => {
+                const trade: Trade = JSON.parse(evt.data) as Trade;
+                obs.next(trade);
+            });
+            return () => es.close();
+        });
     }
 
     getOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {

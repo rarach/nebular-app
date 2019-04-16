@@ -1,3 +1,5 @@
+import { Constants } from "./model/constants";
+
 export class Utils {
     /**
      * Get precision as number of decimal digits based on given amount or price
@@ -44,6 +46,16 @@ export class Utils {
 
     static formatPrice(price: number): string {
         return this.formatAmount(price);
+    }
+
+    /** Compose valid URL to the Exchange page from given base/counter assets */
+    static getExchangeUrl(baseAssetCode: string, baseIssuerAddress: string, counterAssetCode: string, counterIssuerAddress: string) {
+        let url: string = Constants.EXCHANGE_URL + "/";
+        url += (baseIssuerAddress ? baseAssetCode + "-" + baseIssuerAddress : Constants.NATIVE_ASSET_CODE);
+        url += "/";
+        url += (counterIssuerAddress ? counterAssetCode + "-" + counterIssuerAddress : Constants.NATIVE_ASSET_CODE);
+
+        return url;
     }
 
     private static formatNumber(value: number, decimals: number): string {
