@@ -1,4 +1,9 @@
-ul
+#tools_nav_wrap:hover > ul
+{
+	display:block
+}
+
+#tools_nav_wrap > ul
 {
 	list-style:none;
     display:none;
@@ -11,7 +16,7 @@ ul
     border: 1px solid #8396a0;
     padding: 0;
 }
-ul a
+#tools_nav_wrap > ul a
 {
 	display:block;
 	text-decoration:none;
@@ -20,16 +25,10 @@ ul a
     padding:0 15px;
     float:right;
 }
-ul li
+#tools_nav_wrap > ul li
 {
 	float:none;
 }
-
-#tools_nav_wrap:hover > ul
-{
-	display:block
-}
-
 
 a.top-menu-link {
     float: right;    
