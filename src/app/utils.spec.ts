@@ -70,4 +70,13 @@ describe('Utils', () => {
     it('#formatPrice(1.0) gives "1"', () => {
         expect(Utils.formatPrice(1.0)).toBe("1");
     });
+
+    it("#getExchangeUrl('XLM', null, 'BTC', 'GARAYE') gives '/exchange/XLM/BTC-GARAYE'", () => {
+        const url = Utils.getExchangeUrl("XLM", null, "BTC", "GARAYE");
+        expect(url).toBe("/exchange/XLM/BTC-GARAYE");
+    })
+    it("#getExchangeUrl('astr0', 'GASTRO', 'XLM', null) gives '/exchange/astro-GASTRO/XLM'", () => {
+        const url = Utils.getExchangeUrl("astro", "GASTRO", "XLM", null);
+        expect(url).toBe("/exchange/astro-GASTRO/XLM");
+    })
 });

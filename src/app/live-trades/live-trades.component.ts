@@ -41,7 +41,7 @@ export class LiveTradeItem {
     public counterLink: string;
     public note: string;
 
-    constructor(public fromTrade: Trade){
+    constructor(private fromTrade: Trade){
         this.actionName = fromTrade.base_is_seller ? "Sold " : "Bought ";
         this.baseAmount = fromTrade.base_amount;
         this.baseAssetCode = fromTrade.base_asset_code || Constants.NATIVE_ASSET_CODE;
