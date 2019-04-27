@@ -2,6 +2,7 @@ import { async, TestBed, inject } from '@angular/core/testing';
 
 import { ConfigurationComponent } from './configuration.component';
 import { Title } from '@angular/platform-browser';
+import { TitleStub } from '../testing/stubs';
 
 
 describe('ConfigurationComponent', () => {
@@ -19,11 +20,3 @@ describe('ConfigurationComponent', () => {
         expect(titleService.title).toBe("Nebular - Configuration");
     }));
 });
-
-class TitleStub {
-    title: string = null;
-
-    setTitle(value: string) {
-        this.title = value;
-    }
-}

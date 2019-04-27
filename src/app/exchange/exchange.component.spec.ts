@@ -11,6 +11,7 @@ import { ExchangeComponent } from './exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { KnownAssets } from '../model/asset.model';
+import { TitleStub } from '../testing/stubs';
 
 
 describe('ExchangeComponent', () => {
@@ -79,11 +80,6 @@ class AssetServiceStub {
     GetIssuerByAddress(address: string): Account {
         return null;
     }
-}
-
-class TitleStub {
-    title: string = null;
-    setString(value: string) { this.title = value; }
 }
 
 class HorizonRestServiceStub {

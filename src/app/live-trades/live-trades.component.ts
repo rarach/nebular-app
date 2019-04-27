@@ -1,5 +1,6 @@
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from "rxjs";
+import { Title } from '@angular/platform-browser';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { Trade } from '../model/trade.model';
 import { Constants } from '../model/constants';
@@ -16,7 +17,9 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 
     items = new Array<LiveTradeItem>();
 
-    constructor(private horizonService: HorizonRestService) { }
+    constructor(titleService: Title, private horizonService: HorizonRestService) {
+        titleService.setTitle("Live Trades");
+    }
 
     ngOnInit() {
         this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {

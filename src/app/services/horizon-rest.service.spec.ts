@@ -1,4 +1,4 @@
-import { TestBed, getTestBed, inject } from '@angular/core/testing';
+import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
 import { HorizonRestService } from './horizon-rest.service';
@@ -39,6 +39,7 @@ describe('HorizonRestService', () => {
         expect(req.request.method).toBe('GET');
         req.flush({ asdf: "jkl;", or:123});
     });
+
     it("#getTradeAggregations(exch) performs GET request to correct API URL with default limit", () => {
         service.getTradeAggregations(exchange, 550000).subscribe(data => {
             expect(data).toEqual({ a:"b", c:9 });
