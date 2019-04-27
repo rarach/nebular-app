@@ -39,8 +39,8 @@ export class IssuerConfiguration {
                 //Empty line or comment shouldn't be possible in correct stellar.toml but one never knows...
                 continue;
             }
-            const key: string = tokens[0].trimRight();
-            const value: string = tokens[1].trimLeft().replace(new RegExp('"', "g"), '');
+            const key: string = tokens[0].trim();
+            const value: string = tokens[1].trim().replace(new RegExp('"', "g"), '');
             switch(key) {
                 case "code":
                     code = value;
