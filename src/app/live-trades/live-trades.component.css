@@ -1,3 +1,21 @@
+div.live-trades-wrapper {
+    margin-top: 20px;
+}
+
+div.trade-stream {
+    border: 1px solid blue;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+
 a.inline-link {
     font-size: .92rem;
+}
+
+@keyframes animateGreen {
+    from { background-color: #46B446; }
+    to { background-color: inherit; }
+}
+:host ::ng-deep li.highlight {
+    animation: animateGreen 1s linear 1;
 }
