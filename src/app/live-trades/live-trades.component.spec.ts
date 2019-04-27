@@ -1,9 +1,11 @@
-import { async, TestBed } from '@angular/core/testing';
+import { async, TestBed, inject } from '@angular/core/testing';
 import { Observable } from 'rxjs';
 
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { LiveTradesComponent, LiveTradeItem } from './live-trades.component';
 import { Trade } from '../model/trade.model';
+import { Title } from '@angular/platform-browser';
+import { TitleStub } from '../testing/stubs';
 
 
 describe('LiveTradesComponent', () => {
@@ -12,15 +14,23 @@ describe('LiveTradesComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             declarations: [ LiveTradesComponent ],
-            providers: [ { provide: HorizonRestService, useClass: HorizonRestServiceStub } ]
+            providers: [
+                { provide: Title, useClass: TitleStub },
+                { provide: HorizonRestService, useClass: HorizonRestServiceStub }
+            ]
         })
         .compileComponents();
     }));
 
     beforeEach(() => {
+        const titleService = TestBed.get(Title);
         const horizonService = TestBed.get(HorizonRestService);
-        component = new LiveTradesComponent(horizonService);
+        component = new LiveTradesComponent(titleService, horizonService);
     });
+
+    it('should have window title "Live Trades"', inject([Title], (titleService) => {
+        expect(titleService.title).toBe("Live Trades");
+    }));
 
     it('should contain 2 trades fetched from data API', () => {
         component.ngOnInit();
