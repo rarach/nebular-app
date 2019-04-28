@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription } from "rxjs";
 import { Title } from '@angular/platform-browser';
 import { HorizonRestService } from '../services/horizon-rest.service';
@@ -15,11 +15,12 @@ import { Utils } from '../utils';
 export class LiveTradesComponent implements OnInit, OnDestroy {
     private tradesStream: Subscription;
     private streamStart: Date;
+    private readonly TIMER_INTERVAL = 5000;
 
-    public duration = "0s";    //TODO: No! Do it as template pipe that gets the timespan as number
+    public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
     public items = new Array<LiveTradeItem>();
 
-    constructor(titleService: Title, private horizonService: HorizonRestService) {
+    constructor(private readonly ngZone: NgZone, titleService: Title, private horizonService: HorizonRestService) {
         titleService.setTitle("Live Trades");
     }
 
@@ -29,6 +30,13 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             this.calculateStatistics();
         });
         this.streamStart = new Date();
+
+        //NOTE: Angular zones trick to prevent Protractor timeouts
+        this.ngZone.runOutsideAngular(() => {
+            setInterval(() => {
+                this.ngZone.run(() => { this.updateTime(); });
+            }, this.TIMER_INTERVAL);
+        });
     }
 
     ngOnDestroy() {
@@ -37,7 +45,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private calculateStatistics() {     //TODO: to formatting pipe
+    private updateTime() {     //TODO: to formatting pipe
         let timeDiff = new Date().getTime() - this.streamStart.getTime();
         const hours = Math.floor(timeDiff / 1000 / 60 / 60);
         timeDiff -= hours * 1000 * 60 * 60;
@@ -56,28 +64,32 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             this.duration = `${seconds}s`;
         }
     }
+
+    private calculateStatistics() { 
+        //TODO
+    }
 }
 
 export class LiveTradeItem {
     public actionName: string;
-    public baseAmount: string;
-    public baseAssetCode: string;
-    public baseLink: string;
-    public counterAmount: string;
-    public counterAssetCode: string;
-    public counterLink: string;
+    public linkText: string;
+    public linkHref: string;
     public note: string;
+
+    private baseAmount: number;
+    private counterAmount: number;
+    private counterAssetCode: string;
+
 
     constructor(fromTrade: Trade){
         this.actionName = fromTrade.base_is_seller ? "Sold " : "Bought ";
-        this.baseAmount = fromTrade.base_amount;
-        this.baseAssetCode = fromTrade.base_asset_code || Constants.NATIVE_ASSET_CODE;
-        this.baseLink = Utils.getExchangeUrl(fromTrade.base_asset_code, fromTrade.base_asset_issuer,
-                                             fromTrade.counter_asset_code, fromTrade.counter_asset_issuer);
-        this.counterAmount = fromTrade.counter_amount;
+        this.baseAmount = parseFloat(fromTrade.base_amount);
+        this.counterAmount = parseFloat(fromTrade.counter_amount);
         this.counterAssetCode = fromTrade.counter_asset_code || Constants.NATIVE_ASSET_CODE;
-        this.counterLink = Utils.getExchangeUrl(fromTrade.counter_asset_code, fromTrade.counter_asset_issuer,
-                                                fromTrade.base_asset_code, fromTrade.base_asset_issuer);
+        this.linkText = Utils.formatAmount(this.baseAmount) + " " + (fromTrade.base_asset_code || Constants.NATIVE_ASSET_CODE) +
+                        " for " + Utils.formatAmount(this.counterAmount) + " " + this.counterAssetCode;
+        this.linkHref = Utils.getExchangeUrl(fromTrade.base_asset_code, fromTrade.base_asset_issuer,
+                                             fromTrade.counter_asset_code, fromTrade.counter_asset_issuer);
         this.note = " (price " + Utils.formatPrice(fromTrade.price.n / fromTrade.price.d) + " " + this.counterAssetCode + ")";
     }
 }

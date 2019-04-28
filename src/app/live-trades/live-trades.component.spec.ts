@@ -1,4 +1,5 @@
 import { async, TestBed, inject } from '@angular/core/testing';
+import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { HorizonRestService } from '../services/horizon-rest.service';
@@ -22,11 +23,9 @@ describe('LiveTradesComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(() => {
-        const titleService = TestBed.get(Title);
-        const horizonService = TestBed.get(HorizonRestService);
-        component = new LiveTradesComponent(titleService, horizonService);
-    });
+    beforeEach(inject([NgZone, Title, HorizonRestService], (zone, titleService, horizonService) => {
+        component = new LiveTradesComponent(zone, titleService, horizonService);
+    }));
 
     it('should have window title "Live Trades"', inject([Title], (titleService) => {
         expect(titleService.title).toBe("Live Trades");
@@ -35,8 +34,8 @@ describe('LiveTradesComponent', () => {
     it('should contain 2 trades fetched from data API', () => {
         component.ngOnInit();
         expect(component.items.length).toBe(2);
-        expect(component.items[0].baseAssetCode).toBe("XLM");
-        expect(component.items[1].baseAssetCode).toBe("zero-coin");
+        expect(component.items[0].linkHref).toBe("/exchange/zero-coin-GAZERO/GTN-GBETLEHEM");
+        expect(component.items[1].linkHref).toBe("/exchange/XLM/ASDF-GASDF");
     });
 });
 
@@ -44,12 +43,9 @@ describe("LiveTradeItem", () => {
     it("should create instance with correct properties", () => {
         const item = new LiveTradeItem(new HorizonRestServiceStub().fakeTrades[0]);
         expect(item.actionName).toBe("Sold ");
-        expect(item.baseAmount).toBe("1.0");
-        expect(item.baseAssetCode).toBe("XLM");
-        expect(item.baseLink).toBe("/exchange/XLM/ASDF-GASDF");
-        expect(item.counterAmount).toBe("123.456");
-        expect(item.counterAssetCode).toBe("ASDF");
-        expect(item.counterLink).toBe("/exchange/ASDF-GASDF/XLM");
+        expect(item.linkText).toBe("1 XLM for 123.456 ASDF");
+        expect(item.linkHref).toBe("/exchange/XLM/ASDF-GASDF");
+        expect(item.note).toBe(" (price 0.0081 ASDF)");
     });
 });
 
