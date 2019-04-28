@@ -3,7 +3,7 @@ import { NgZone } from '@angular/core';
 import { Observable } from 'rxjs';
 
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { LiveTradesComponent, LiveTradeItem } from './live-trades.component';
+import { LiveTradesComponent } from './live-trades.component';
 import { Trade } from '../model/trade.model';
 import { Title } from '@angular/platform-browser';
 import { TitleStub } from '../testing/stubs';
@@ -39,18 +39,8 @@ describe('LiveTradesComponent', () => {
     });
 });
 
-describe("LiveTradeItem", () => {
-    it("should create instance with correct properties", () => {
-        const item = new LiveTradeItem(new HorizonRestServiceStub().fakeTrades[0]);
-        expect(item.actionName).toBe("Sold ");
-        expect(item.linkText).toBe("1 XLM for 123.456 ASDF");
-        expect(item.linkHref).toBe("/exchange/XLM/ASDF-GASDF");
-        expect(item.note).toBe(" (price 0.0081 ASDF)");
-    });
-});
 
-
-class HorizonRestServiceStub {
+export class HorizonRestServiceStub {
     public fakeTrades = [
         {
             id: "trade-01",
