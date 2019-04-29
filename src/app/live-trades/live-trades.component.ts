@@ -2,9 +2,7 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription } from "rxjs";
 import { Title } from '@angular/platform-browser';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { Trade } from '../model/trade.model';
-import { Constants } from '../model/constants';
-import { Utils } from '../utils';
+import { LiveTradeItem } from './live-trade-item';
 
 
 @Component({
@@ -67,29 +65,5 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 
     private calculateStatistics() { 
         //TODO
-    }
-}
-
-export class LiveTradeItem {
-    public actionName: string;
-    public linkText: string;
-    public linkHref: string;
-    public note: string;
-
-    private baseAmount: number;
-    private counterAmount: number;
-    private counterAssetCode: string;
-
-
-    constructor(fromTrade: Trade){
-        this.actionName = fromTrade.base_is_seller ? "Sold " : "Bought ";
-        this.baseAmount = parseFloat(fromTrade.base_amount);
-        this.counterAmount = parseFloat(fromTrade.counter_amount);
-        this.counterAssetCode = fromTrade.counter_asset_code || Constants.NATIVE_ASSET_CODE;
-        this.linkText = Utils.formatAmount(this.baseAmount) + " " + (fromTrade.base_asset_code || Constants.NATIVE_ASSET_CODE) +
-                        " for " + Utils.formatAmount(this.counterAmount) + " " + this.counterAssetCode;
-        this.linkHref = Utils.getExchangeUrl(fromTrade.base_asset_code, fromTrade.base_asset_issuer,
-                                             fromTrade.counter_asset_code, fromTrade.counter_asset_issuer);
-        this.note = " (price " + Utils.formatPrice(fromTrade.price.n / fromTrade.price.d) + " " + this.counterAssetCode + ")";
     }
 }

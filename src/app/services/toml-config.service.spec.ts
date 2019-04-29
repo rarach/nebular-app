@@ -11,10 +11,7 @@ describe('TomlConfigService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [
-                { provide: TomlConfigService, useClass: TomlConfigService },
-                { provide: String, useValue: "google.com/.well-known/stellar.toml"}
-            ]
+            providers: [ { provide: TomlConfigService, useClass: TomlConfigService } ]
         });
         injector = getTestBed();
         service = injector.get(TomlConfigService);
@@ -22,7 +19,7 @@ describe('TomlConfigService', () => {
     });
 
     it("#getIssuerConfig() should retrieve and parse TOML data of an anchor", () => {
-        service.getIssuerConfig().subscribe(data => {
+        service.getIssuerConfig("google.com/.well-known/stellar.toml").subscribe(data => {
             expect(data.currencies.length).toBe(2);
             expect(data.currencies[0].code).toBe("WSD");
             expect(data.currencies[1].desc).toBe("The White Standard Euro is a stable coin 100% backed by and redeemable for EURO");
