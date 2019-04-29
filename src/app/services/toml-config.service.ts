@@ -9,10 +9,10 @@ import { IssuerConfiguration } from '../model/toml/issuer-configuration';
     providedIn: 'root'
 })
 export class TomlConfigService {
-    constructor(private tomlFileUrl: string, private http: HttpClient) { }
+    constructor(private http: HttpClient) { }
 
-    public getIssuerConfig() : Observable<IssuerConfiguration> {
-        const obser = this.http.get(this.tomlFileUrl, {responseType: 'text'})
+    public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
+        const obser = this.http.get(tomlFileUrl, {responseType: 'text'})
                                .pipe(map(data => new IssuerConfiguration(data)));
         return obser;
     }
