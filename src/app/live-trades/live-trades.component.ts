@@ -93,8 +93,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     }
 }
 
-
-export class AssetStatistics {
+export class AssetStatistics {    //TODO: to its own file
     public assetIcon: string;
     public numTrades: number = 0;
     public volume: number = 0.0;
