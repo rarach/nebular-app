@@ -1,5 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { map } from "rxjs/operators";
 import { Observable } from 'rxjs';
 
 import { ExchangePair } from '../model/exchange-pair.model';
@@ -68,5 +69,21 @@ export class HorizonRestService {
 
         const response = this.http.get(url);
         return response;
+    }
+
+    /**
+     * Get URL of issuer configuration (usually a TOML file) containing given asset definition
+     */
+    getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
+        const horizonUrl = this.getApiUrl[0];   //TODO: this is awkward but the endpoint doesn't work on horizon-mon. We need more reliable Horizon servers
+        const url = horizonUrl + `/assets?asset_code=${assetCode}&asset_issuer=${assetIssuer}`;
+
+        return this.http.get<string>(url).pipe(map<any, string>(data => {
+            data = JSON.parse(data);
+            if (data._embedded && data._embedded.records && data._embedded.records.length) {
+                return data._embedded.records[0]._links.toml.href;
+            }
+            else return null;
+        }));
     }
 }

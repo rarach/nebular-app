@@ -1,8 +1,13 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription } from "rxjs";
 import { Title } from '@angular/platform-browser';
+
+import { Constants } from '../model/constants';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { IssuerConfiguration } from '../model/toml/issuer-configuration';
 import { LiveTradeItem } from './live-trade-item';
+import { TomlConfigService } from '../services/toml-config.service';
+import { Trade } from '../model/trade.model';
 
 
 @Component({
@@ -16,16 +21,21 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     private readonly TIMER_INTERVAL = 5000;
 
     public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
-    public items = new Array<LiveTradeItem>();
+    public trades = new Array<LiveTradeItem>();
+    public stats = new Map<string, AssetStatistics>();
 
-    constructor(private readonly ngZone: NgZone, titleService: Title, private horizonService: HorizonRestService) {
+
+    constructor(private readonly ngZone: NgZone,
+                titleService: Title,
+                private horizonService: HorizonRestService,
+                private tomlService: TomlConfigService) {
         titleService.setTitle("Live Trades");
     }
 
     ngOnInit() {
         this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
-            this.items.splice(0, 0, new LiveTradeItem(trade));
-            this.calculateStatistics();
+            this.trades.splice(0, 0, new LiveTradeItem(trade));
+            this.calculateStatistics(trade);
         });
         this.streamStart = new Date();
 
@@ -63,7 +73,55 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private calculateStatistics() { 
-        //TODO
+    private calculateStatistics(trade: Trade) { 
+        if (trade.base_asset_type != Constants.NATIVE_ASSET_TYPE) {
+            const key = trade.base_asset_code + "-" + trade.base_asset_issuer;
+            const stat = this.stats.has(key) ?
+                            this.stats.get(key) :
+                            new AssetStatistics(this.horizonService, this.tomlService, trade.base_asset_code, trade.base_asset_issuer);
+            const amount = parseFloat(trade.base_amount);
+            stat.feedData(amount);
+        }
+        if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
+            const key = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
+            const stat = this.stats.has(key) ?
+                            this.stats.get(key) :
+                            new AssetStatistics(this.horizonService, this.tomlService, trade.counter_asset_code, trade.counter_asset_issuer);
+            const amount = parseFloat(trade.counter_amount);
+            stat.feedData(amount);
+        }
+    }
+}
+
+export class AssetStatistics {    //TODO: to its own file
+    public assetIcon: string;
+    public numTrades: number = 0;
+    public volume: number = 0.0;
+
+    constructor(private horizonSerice: HorizonRestService,
+                private configService: TomlConfigService,
+                public assetCode: string, public issuer: string) {
+        horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
+            configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
+                this.loadAssetData(issuerConfig);
+            });
+        });
+    }
+
+    public feedData(amount: number) {
+        this.numTrades++;
+        this.volume += amount;
+    }
+
+
+    private loadAssetData(issuerConfig: IssuerConfiguration) {
+        const theAsset = issuerConfig.currencies.find(asset => {
+            return asset.code === this.assetCode && asset.issuer === this.issuer;
+        });
+        this.assetIcon = theAsset.image;
+        if (!this.assetIcon) {
+            //If no icon was provided, try our basic database
+            this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
+        }
     }
 }

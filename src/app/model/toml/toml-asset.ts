@@ -4,4 +4,6 @@ export class TomlAsset {
 
     public name: string;
     public desc: string;
+    /** Asset Icon URL */
+    public image: string;
 }

@@ -115,4 +115,73 @@ describe('HorizonRestService', () => {
         expect(req.request.method).toBe('GET');
         req.flush({ called: "order-book", float:854125.1515 });
     });
+
+    it("#getIssuerConfigUrl() returns location of TOML file when present", () => {
+        service.getIssuerConfigUrl("GTN", "GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46").subscribe(data => {
+            expect(data).toBe("https://glitzkoin.com/.well-known/stellar.toml");
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=GTN&asset_issuer=GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_links": {
+              "self": {
+                "href": "https://horizon.stellar.org/assets?asset_code=GTN\u0026asset_issuer=GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46\u0026cursor=\u0026limit=10\u0026order=asc"
+              },
+              "next": {
+                "href": "https://horizon.stellar.org/assets?asset_code=GTN\u0026asset_issuer=GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46\u0026cursor=GTN_GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46_credit_alphanum4\u0026limit=10\u0026order=asc"
+              },
+              "prev": {
+                "href": "https://horizon.stellar.org/assets?asset_code=GTN\u0026asset_issuer=GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46\u0026cursor=GTN_GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46_credit_alphanum4\u0026limit=10\u0026order=desc"
+              }
+            },
+            "_embedded": {
+              "records": [
+                {
+                  "_links": {
+                    "toml": {
+                      "href": "https://glitzkoin.com/.well-known/stellar.toml"
+                    }
+                  },
+                  "asset_type": "credit_alphanum4",
+                  "asset_code": "GTN",
+                  "asset_issuer": "GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46",
+                  "paging_token": "GTN_GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46_credit_alphanum4",
+                  "amount": "998999327.9096000",
+                  "num_accounts": 13794,
+                  "flags": {
+                    "auth_required": false,
+                    "auth_revocable": false,
+                    "auth_immutable": false
+                  }
+                }
+              ]
+            }
+          }`);
+    });
+    it("#getIssuerConfigUrl() returns null if asset is not found", () => {
+        service.getIssuerConfigUrl("ASDF", "GASDF").subscribe(data => {
+            expect(data).toBeNull();
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=ASDF&asset_issuer=GASDF"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_links": {
+              "self": {
+                "href": "https://horizon.stellar.org/assets?asset_code=ASDF\u0026asset_issuer=GASDF\u0026cursor=\u0026limit=10\u0026order=asc"
+              },
+              "next": {
+                "href": "https://horizon.stellar.org/assets?asset_code=ASDF\u0026asset_issuer=GASDF\u0026cursor=ASDF_GASDF_credit_alphanum4\u0026limit=10\u0026order=asc"
+              },
+              "prev": {
+                "href": "https://horizon.stellar.org/assets?asset_code=ASDF\u0026asset_issuer=GASDF\u0026cursor=ASDF_GASDF_credit_alphanum4\u0026limit=10\u0026order=desc"
+              }
+            },
+            "_embedded": {
+              "records": [
+              ]
+            }
+          }`);
+    });
 });

@@ -1,7 +1,7 @@
 <div class="live-trades-wrapper">
     <div class="trade-stream col-lg-6 col-md-6 col-sm-12">
         <ul>
-            <li *ngFor="let item of items" class="highlight">
+            <li *ngFor="let item of trades" class="highlight">
                 {{item.actionName }}
                 <a class="link inline-link" href="{{item.linkHref}}" target="exchTab">{{item.linkText}}</a>
                 {{item.note}}
