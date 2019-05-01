@@ -1,12 +1,13 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { LiveTradesComponent } from './live-trades.component';
 import { Trade } from '../model/trade.model';
 import { Title } from '@angular/platform-browser';
-import { TitleStub } from '../testing/stubs';
+import { TitleStub, TomlConfigServiceStub } from '../testing/stubs';
+import { TomlConfigService } from '../services/toml-config.service';
 
 
 describe('LiveTradesComponent', () => {
@@ -17,14 +18,32 @@ describe('LiveTradesComponent', () => {
             declarations: [ LiveTradesComponent ],
             providers: [
                 { provide: Title, useClass: TitleStub },
-                { provide: HorizonRestService, useClass: HorizonRestServiceStub }
+                { provide: HorizonRestService, useClass: HorizonRestServiceStub },
+                { provide: TomlConfigService, useValue: new TomlConfigServiceStub(`[[CURRENCIES]]
+code = "zero-coin"
+desc = "a test token"
+display_decimals = 2
+issuer = "GAZERO"
+name = "O test token"
+[[CURRENCIES]]
+code = "ASDF"
+desc = "another test token"
+display_decimals = 2
+issuer = "GASDF"
+name = "asdf cash"
+[[CURRENCIES]]
+code = "GTN"
+desc = "glitz koin"
+display_decimals = 4
+issuer = "GBETLEHEM"
+name = "glance token (or something)"`) }
             ]
         })
         .compileComponents();
     }));
 
-    beforeEach(inject([NgZone, Title, HorizonRestService], (zone, titleService, horizonService) => {
-        component = new LiveTradesComponent(zone, titleService, horizonService);
+    beforeEach(inject([NgZone, Title, HorizonRestService, TomlConfigService], (zone, titleService, horizonService, configService) => {
+        component = new LiveTradesComponent(zone, titleService, horizonService, configService);
     }));
 
     it('should have window title "Live Trades"', inject([Title], (titleService) => {
@@ -33,9 +52,9 @@ describe('LiveTradesComponent', () => {
 
     it('should contain 2 trades fetched from data API', () => {
         component.ngOnInit();
-        expect(component.items.length).toBe(2);
-        expect(component.items[0].linkHref).toBe("/exchange/zero-coin-GAZERO/GTN-GBETLEHEM");
-        expect(component.items[1].linkHref).toBe("/exchange/XLM/ASDF-GASDF");
+        expect(component.trades.length).toBe(2);
+        expect(component.trades[0].linkHref).toBe("/exchange/zero-coin-GAZERO/GTN-GBETLEHEM");
+        expect(component.trades[1].linkHref).toBe("/exchange/XLM/ASDF-GASDF");
     });
 });
 
@@ -74,5 +93,9 @@ export class HorizonRestServiceStub {
                 obs.next(trade);
             }
         });
+    }
+
+    getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
+        return of("asdf.com/stellar.toml");
     }
 }

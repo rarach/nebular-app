@@ -29,6 +29,7 @@ export class IssuerConfiguration {
         let desc: string = null;
         let issuer: string = null;
         let decimals: number = null;
+        let image: string = null;
 
         for(let i = startLine+1; ; i++) {
             if (!tomlLines[i] || tomlLines[i].startsWith('[')) {
@@ -57,6 +58,9 @@ export class IssuerConfiguration {
                 case "display_decimals":
                     decimals = Number(value);
                 break;
+                case "image":
+                    image = value;
+                break;
             }
         }
 
@@ -64,6 +68,7 @@ export class IssuerConfiguration {
             const asset = new TomlAsset(code, issuer, decimals);
             asset.name = name;
             asset.desc = desc;
+            asset.image = image;
 
             return asset;
         }

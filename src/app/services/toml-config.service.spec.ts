@@ -1,5 +1,6 @@
 import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
 import { TestBed, getTestBed } from "@angular/core/testing";
+import { HorizonRestService } from "./horizon-rest.service";
 import { TomlConfigService } from "./toml-config.service";
 
 
@@ -11,7 +12,10 @@ describe('TomlConfigService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [ { provide: TomlConfigService, useClass: TomlConfigService } ]
+            providers: [
+                { provide: TomlConfigService, useClass: TomlConfigService },
+                { provide: HorizonRestService, useClass: HorizonRestServiceStub }
+            ]
         });
         injector = getTestBed();
         service = injector.get(TomlConfigService);
@@ -67,3 +71,8 @@ name ="Simply nope"
 `);
     });
 });
+
+
+class HorizonRestServiceStub {
+    
+}
