@@ -10,5 +10,8 @@
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid red;">
         Assets traded in past {{duration}}:<br/>
+        <div *ngFor="let stat of stats | keyvalue" class="asset-stat">
+            <img class="asset-icon" src="{{stat.value.assetIcon}}"/> asset={{stat.value.assetTitle}}
+        </div>
     </div>
 </div>

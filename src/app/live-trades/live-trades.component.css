@@ -19,3 +19,12 @@ a.inline-link {
 :host ::ng-deep li.highlight {
     animation: animateGreen 1s linear 1;
 }
+
+div.asset-stat {
+    margin-top: 5px;
+}
+
+ img.asset-icon {
+    width: 32px;
+    height: 32px;
+}

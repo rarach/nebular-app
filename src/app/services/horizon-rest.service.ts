@@ -11,14 +11,14 @@ import { Trade } from '../model/trade.model';
     providedIn: 'root'
 })
 export class HorizonRestService {
+    private readonly API_URLS = [ "https://horizon.stellar.org", "https://horizon-mon.stellar-ops.com" ];
 
     constructor(private http: HttpClient) { }
 
 
     private getApiUrl(): string {
-        const apiUrls = [ "https://horizon.stellar.org", "https://horizon-mon.stellar-ops.com" ];
-        const random = (new Date()).getTime() % apiUrls.length;
-        return apiUrls[random];
+        const random = (new Date()).getTime() % this.API_URLS.length;
+        return this.API_URLS[random];
     }
 
 
@@ -75,11 +75,13 @@ export class HorizonRestService {
      * Get URL of issuer configuration (usually a TOML file) containing given asset definition
      */
     getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
-        const horizonUrl = this.getApiUrl[0];   //TODO: this is awkward but the endpoint doesn't work on horizon-mon. We need more reliable Horizon servers
+        const horizonUrl = this.API_URLS[0];   //TODO: this is awkward but the endpoint doesn't work on horizon-mon. We need more reliable Horizon servers
         const url = horizonUrl + `/assets?asset_code=${assetCode}&asset_issuer=${assetIssuer}`;
 
         return this.http.get<string>(url).pipe(map<any, string>(data => {
-            data = JSON.parse(data);
+            if (typeof(data) == "string") {
+                data = JSON.parse(data);
+            }
             if (data._embedded && data._embedded.records && data._embedded.records.length) {
                 return data._embedded.records[0]._links.toml.href;
             }
