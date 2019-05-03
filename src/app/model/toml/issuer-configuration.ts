@@ -32,11 +32,11 @@ export class IssuerConfiguration {
         let image: string = null;
 
         for(let i = startLine+1; ; i++) {
-            if (!tomlLines[i] || tomlLines[i].startsWith('[')) {
+            if (!tomlLines[i] || tomlLines[i].startsWith('[') || tomlLines[i].indexOf("=") < 0) {
                 break;
             }
             const tokens = tomlLines[i].split('=');
-            if (!tokens || !tokens.length || tokens[0].indexOf("=") < 0) {
+            if (!tokens || !tokens.length || tokens[0] == "") {
                 //Empty line or comment shouldn't be possible in correct stellar.toml but one never knows...
                 continue;
             }
