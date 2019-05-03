@@ -76,17 +76,21 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     private calculateStatistics(trade: Trade) { 
         if (trade.base_asset_type != Constants.NATIVE_ASSET_TYPE) {
             const key = trade.base_asset_code + "-" + trade.base_asset_issuer;
-            const stat = this.stats.has(key) ?
-                            this.stats.get(key) :
-                            new AssetStatistics(this.horizonService, this.tomlService, trade.base_asset_code, trade.base_asset_issuer);
+            if (!this.stats.has(key)) {
+                const stat = new AssetStatistics(this.horizonService, this.tomlService, trade.base_asset_code, trade.base_asset_issuer);
+                this.stats.set(key, stat);
+            }
+            const stat = this.stats.get(key);
             const amount = parseFloat(trade.base_amount);
             stat.feedData(amount);
         }
         if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
             const key = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
-            const stat = this.stats.has(key) ?
-                            this.stats.get(key) :
-                            new AssetStatistics(this.horizonService, this.tomlService, trade.counter_asset_code, trade.counter_asset_issuer);
+            if (!this.stats.has(key)) {
+                const stat = new AssetStatistics(this.horizonService, this.tomlService, trade.counter_asset_code, trade.counter_asset_issuer);
+                this.stats.set(key, stat);
+            }
+            const stat = this.stats.get(key);
             const amount = parseFloat(trade.counter_amount);
             stat.feedData(amount);
         }
@@ -94,17 +98,29 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 }
 
 export class AssetStatistics {    //TODO: to its own file
+    public assetTitle: string;
     public assetIcon: string;
     public numTrades: number = 0;
     public volume: number = 0.0;
 
-    constructor(private horizonSerice: HorizonRestService,
-                private configService: TomlConfigService,
-                public assetCode: string, public issuer: string) {
+    constructor(horizonSerice: HorizonRestService,
+                configService: TomlConfigService,
+                private assetCode: string,
+                private issuer: string) {
         horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
-            configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
-                this.loadAssetData(issuerConfig);
-            });
+            if (configUrl) {
+                configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
+                    this.loadAssetData(issuerConfig);
+                });
+
+                //Derive asset's domain from config URL
+                const domain = this.parseDomain(configUrl);
+                this.assetTitle = this.assetCode + "-" + domain;
+            }
+            else {
+                this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 6) + "..." + this.issuer.substring(50);
+                this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
+            }
         });
     }
 
@@ -118,10 +134,21 @@ export class AssetStatistics {    //TODO: to its own file
         const theAsset = issuerConfig.currencies.find(asset => {
             return asset.code === this.assetCode && asset.issuer === this.issuer;
         });
-        this.assetIcon = theAsset.image;
+        this.assetIcon = theAsset ? theAsset.image : null;
         if (!this.assetIcon) {
             //If no icon was provided, try our basic database
             this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
         }
+    }
+
+    private parseDomain(configUrl: string): string {
+        const chunks = configUrl.split("/");
+        for (let i = 1; i < chunks.length; i++) {
+            if (chunks[i]) {
+                return chunks[i];
+            }
+        }
+
+        return null;
     }
 }
