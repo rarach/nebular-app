@@ -2,7 +2,7 @@ import { IssuerConfiguration } from "./issuer-configuration";
 
 
 describe('IssuerConfiguration', () => {
-    it("should parse currencies from source data", () => {
+    it("should parse currencies from source data #1", () => {
         const tomlData = `
 # Federation service provided by StellarID.io
 FEDERATION_SERVER="https://stellarid.io/federation/"
@@ -134,5 +134,198 @@ name ="Simply nope"
         expect(issuerConfig.currencies[1].name).toBe("White Standard Euro");
         expect(issuerConfig.currencies[2].issuer).toBe("GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V");
         expect(issuerConfig.currencies[3].display_decimals).toBe(5);
+    });
+
+    it("should parse currencies from source data #2", () => {
+        const tomlData = `# ----- Hope Coin Issuer <hopecoin.org> -----
+
+ACCOUNTS=["GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO", "GCBPAV743BDUT5R3LHYOL6OSW3WRS4HKV27NMQ33ATQC6OSVZ5AABHCU", "GBUO5QHPC6HAWBW7SLCQLSED2SNH6KUWC5A4WQKF5QPVXCVI3TF4XFYY", "GDMADR66BLZDYNRT77JSTAMYXKR2VLTQZEVRXMR6QUMBT6PC4DRIN5P2", "GCU6JBLHU6AIJ7LDOHKMUWKMPX3MZTFY5SN4ZTCOAQCWV4OZADHLCM5X", "GDWHWNAYZWZWJLYCD2V2OFTWJLNIE7ICZVVGGMIH4Z7N5IWTLWMNFKK6"]
+
+[DOCUMENTATION]
+ORG_NAME="Hope Coin Org"
+ORG_URL="https://hopecoin.org"
+ORG_LOGO="https://hopecoin.org/hopecoin-logo.png"
+ORG_OFFICIAL_EMAIL="hope@hopecoin.org"
+ORG_TWITTER="hopecoin_org"
+ORG_DESCRIPTION="Hope Coin Org is the organization behind Hope Coin. We are an independent team dedicated to spreading more Hope around the world."
+
+[[PRINCIPALS]]
+name="Mark"
+email="mark@hopecoin.org"
+
+[[CURRENCIES]]
+code="HOPE"
+issuer="GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO"
+status="live"
+is_asset_anchored=false
+display_decimals=2
+name="Hope Coin"
+fixed_number=7600000000
+desc="Hope Coin is a digital token that gives you and lets you share Hope."
+image="https://hopecoin.org/hopecoin-icon.png"
+
+# ----- To live without hope is to cease to live! -----`;
+        const issuerConfig = new IssuerConfiguration(tomlData);
+
+        expect(issuerConfig.currencies.length).toBe(1);
+        expect(issuerConfig.currencies[0].code).toBe("HOPE");
+        expect(issuerConfig.currencies[0].desc).toBe("Hope Coin is a digital token that gives you and lets you share Hope.");
+        expect(issuerConfig.currencies[0].name).toBe("Hope Coin");
+        expect(issuerConfig.currencies[0].issuer).toBe("GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO");
+        expect(issuerConfig.currencies[0].image).toBe("https://hopecoin.org/hopecoin-icon.png");
+        expect(issuerConfig.currencies[0].display_decimals).toBe(2);
+    });
+
+    it("should parse currencies from source data #3", () => {
+        const tomlData = `# Sample stellar.toml
+
+#   The endpoint which clients should query to resolve stellar addresses
+#   for users on your domain.
+FEDERATION_SERVER="https://stellarid.io/federation/"
+
+# asset with meta info
+[[CURRENCIES]]
+code="ETX"
+issuer="GCEFMSNWXTALXQPRQFIXOMWJHZFDEQJBM26RGEDZUDFMU32JB6WJGRJX"
+display_decimals=2
+name="Ethereum X"
+desc="Bringing Ethereum to the XLM blockchain"
+conditions="100 million coins"
+image="https://etxco.com/etx.png"
+
+# optional extra information for humans
+# Useful place for anchors to detail various policies and required info
+
+###################################
+# Required compliance fields:
+#      name=<recipient name>
+#      addr=<recipient address>
+# Federation Format:
+#        <phone number>*anchor.com
+#        Forwarding supported by sending to: forward*anchor.com
+#           forward_type=bank_account
+#           swift=<swift code of receiving bank>
+#           acct=<recipient account number at receiving bank>
+# Minimum Amount Forward: $2 USD
+# Maximum Amount Forward: $10000 USD`;
+        const issuerConfig = new IssuerConfiguration(tomlData);
+
+        expect(issuerConfig.currencies.length).toBe(1);
+        expect(issuerConfig.currencies[0].code).toBe("ETX");
+        expect(issuerConfig.currencies[0].desc).toBe("Bringing Ethereum to the XLM blockchain");
+        expect(issuerConfig.currencies[0].name).toBe("Ethereum X");
+        expect(issuerConfig.currencies[0].issuer).toBe("GCEFMSNWXTALXQPRQFIXOMWJHZFDEQJBM26RGEDZUDFMU32JB6WJGRJX");
+        expect(issuerConfig.currencies[0].image).toBe("https://etxco.com/etx.png");
+        expect(issuerConfig.currencies[0].display_decimals).toBe(2);
+    });
+
+    it("should parse currencies from source data #4", () => {
+        const tomlData = `# ----- Stronghold's Public Stellar Anchor <stronghold.co> -----
+
+ACCOUNTS=[
+"GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK",
+"GCSTRNZDFRJEHYI3JIVZEO4DHXI2HBRRSZG7OVRT4BAM2SYHBGNGL5T2",
+"GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH",
+"GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG",
+"GBSTRXRPA7ALGIXDYBHQ6WYWY2NAHLSF64Q3W5DKAPZNMRHKQL6FYXUA",
+"GCSTRLTC73UVXIYPHYTTQUUSDTQU2KQW5VKCE4YCMEHWF44JKDMQAL23"]
+
+[DOCUMENTATION]
+ORG_NAME="Stronghold Anchor Limited"
+ORG_DBA="Stronghold"
+ORG_URL="https://stronghold.co/shx"
+ORG_LOGO="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+ORG_OFFICIAL_EMAIL="happiness@stronghold.co"
+
+[[CURRENCIES]]
+code="SHX"
+issuer="GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH"
+display_decimals=0
+name="Stronghold Token"
+desc="The Stronghold token."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+
+[[CURRENCIES]]
+code="USD"
+issuer="GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK"
+display_decimals=2
+anchor_asset_type="fiat"
+name="Retired - Redeem Immeadiately (USD)"
+desc="This asset has been retired. Please redeem this asset immeadiately."
+redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+
+[[CURRENCIES]]
+code="BTC"
+issuer="GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG"
+display_decimals=7
+anchor_asset="BTC"
+name="Retired - Redeem Immeadiately (BTC)"
+desc="This asset has been retired. Please redeem this asset immeadiately."
+redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+
+[[CURRENCIES]]
+code="ETH"
+issuer="GBSTRH4QOTWNSVA6E4HFERETX4ZLSR3CIUBLK7AXYII277PFJC4BBYOG"
+display_decimals=7
+name="Retired - Redeem Immeadiately (ETH)"
+desc="This asset has been retired. Please redeem this asset immeadiately."
+redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+
+[[CURRENCIES]]
+code="XRP"
+issuer="GBSTRXRPA7ALGIXDYBHQ6WYWY2NAHLSF64Q3W5DKAPZNMRHKQL6FYXUA"
+display_decimals=7
+anchor_asset="XRP"
+name="Retired - Redeem Immeadiately (XRP)"
+desc="This asset has been retired. Please redeem this asset immeadiately."
+redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+
+[[CURRENCIES]]
+code="LTC"
+issuer="GCSTRLTC73UVXIYPHYTTQUUSDTQU2KQW5VKCE4YCMEHWF44JKDMQAL23"
+display_decimals=7
+anchor_asset="LTC"
+name="Retired - Redeem Immeadiately (LTC)"
+desc="This asset has been retired. Please redeem this asset immeadiately."
+redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
+image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
+        const issuerConfig = new IssuerConfiguration(tomlData);
+
+        expect(issuerConfig.currencies.length).toBe(6);
+        expect(issuerConfig.currencies[0].code).toBe("SHX");
+        expect(issuerConfig.currencies[0].name).toBe("Stronghold Token");
+        expect(issuerConfig.currencies[0].issuer).toBe("GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH");
+        expect(issuerConfig.currencies[0].image).toBe("https://stronghold.co/img/Stronghold-Logo-100x100.png");
+        expect(issuerConfig.currencies[0].display_decimals).toBe(0);
+    });
+    
+    it("should parse currencies from source data #5", () => {
+        const tomlData = `[[CURRENCIES]]
+        code="DICENS"
+        issuer="GDNCVZVHMIZNXA3O6XNES42PHVAFKYO4XC2N7EQOJ54GR5VJPYJJEKFU"
+        status="live"
+        display_decimals=7
+        name="Dicens.co"
+        fixed_number=27000000
+        desc="Dicens is a publishing platform where content creators can monetize their works . You can start today to monetize your stories."
+        image="http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936"
+        
+        [DOCUMENTATION]
+        ORG_NAME="Dicens"
+        ORG_URL="https://www.dicens.co/"
+        ORG_LOGO="http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936"
+        ORG_DESCRIPTION="You can start today to monetize your stories."
+        ORG_OFFICIAL_EMAIL="sathosi@dicens.co"
+        ORG_TWITTER="Dicens7"`;
+        const issuerConfig = new IssuerConfiguration(tomlData);
+
+        expect(issuerConfig.currencies.length).toBe(1);
+        expect(issuerConfig.currencies[0].code).toBe("DICENS");
+        expect(issuerConfig.currencies[0].image).toBe("http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936");
+        expect(issuerConfig.currencies[0].display_decimals).toBe(7);
     });
 });

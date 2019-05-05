@@ -20,11 +20,37 @@ a.inline-link {
     animation: animateGreen 1s linear 1;
 }
 
-div.asset-stat {
-    margin-top: 5px;
+
+h4 {
+    margin-bottom: 15px;
 }
 
- img.asset-icon {
+div.assets-stats-panel {
+    border: 1px solid green;
+    height: calc(100vh - 150px);
+    overflow-y: auto;
+}
+
+div.asset-stat {
+    margin-top: 5px;
+    display: table;
+}
+
+div.asset-icon-wrapper {
+    display: table-cell;
+}
+
+img.asset-icon {
     width: 32px;
     height: 32px;
+}
+
+span.asset-title {
+    font-weight: bold;
+}
+
+div.asset-stat-data {
+    display: table-cell;
+    padding-left: 10px;
+    vertical-align: top;
 }

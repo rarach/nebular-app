@@ -52,6 +52,7 @@ export class IssuerConfiguration {
                 break;
                 case "desc":
                     desc = value;
+                break;
                 case "issuer":
                     issuer = value;
                 break;
@@ -64,7 +65,7 @@ export class IssuerConfiguration {
             }
         }
 
-        if (code && issuer && decimals) {
+        if (code && issuer && decimals != null) {
             const asset = new TomlAsset(code, issuer, decimals);
             asset.name = name;
             asset.desc = desc;
