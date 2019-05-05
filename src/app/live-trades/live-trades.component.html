@@ -8,10 +8,16 @@
             </li>
         </ul>
     </div>
-    <div class="col-lg-6 col-md-6 col-sm-12" style="border: 1px solid red;">
-        Assets traded in past {{duration}}:<br/>
+    <div class="assets-stats-panel col-lg-6 col-md-6 col-sm-12">
+        <h4>Assets traded in past {{duration}}:</h4>
         <div *ngFor="let stat of stats | keyvalue" class="asset-stat">
-            <img class="asset-icon" src="{{stat.value.assetIcon}}"/> asset={{stat.value.assetTitle}}
+            <div class="asset-icon-wrapper">
+                <img class="asset-icon" src="{{stat.value.assetIcon}}"/>
+            </div>
+            <div class="asset-stat-data">
+                <span class="asset-title">{{stat.value.assetTitle}}</span><br/>
+                Trades: {{stat.value.numTrades}}; volume: {{Utils.formatAmount(stat.value.volume)}} {{stat.value.assetCode}}
+            </div>
         </div>
     </div>
 </div>

@@ -2,12 +2,13 @@ import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { Subscription } from "rxjs";
 import { Title } from '@angular/platform-browser';
 
+import { AssetStatistics } from '../model/asset-statistics';
 import { Constants } from '../model/constants';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { IssuerConfiguration } from '../model/toml/issuer-configuration';
 import { LiveTradeItem } from './live-trade-item';
 import { TomlConfigService } from '../services/toml-config.service';
 import { Trade } from '../model/trade.model';
+import { Utils } from '../utils';
 
 
 @Component({
@@ -20,6 +21,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     private streamStart: Date;
     private readonly TIMER_INTERVAL = 5000;
 
+    Utils = Utils;          //Template access
     public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
     public trades = new Array<LiveTradeItem>();
     public stats = new Map<string, AssetStatistics>();
@@ -94,61 +96,5 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             const amount = parseFloat(trade.counter_amount);
             stat.feedData(amount);
         }
-    }
-}
-
-export class AssetStatistics {    //TODO: to its own file
-    public assetTitle: string;
-    public assetIcon: string;
-    public numTrades: number = 0;
-    public volume: number = 0.0;
-
-    constructor(horizonSerice: HorizonRestService,
-                configService: TomlConfigService,
-                private assetCode: string,
-                private issuer: string) {
-        horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
-            if (configUrl) {
-                configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
-                    this.loadAssetData(issuerConfig);
-                });
-
-                //Derive asset's domain from config URL
-                const domain = this.parseDomain(configUrl);
-                this.assetTitle = this.assetCode + "-" + domain;
-            }
-            else {
-                this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 6) + "..." + this.issuer.substring(50);
-                this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
-            }
-        });
-    }
-
-    public feedData(amount: number) {
-        this.numTrades++;
-        this.volume += amount;
-    }
-
-
-    private loadAssetData(issuerConfig: IssuerConfiguration) {
-        const theAsset = issuerConfig.currencies.find(asset => {
-            return asset.code === this.assetCode && asset.issuer === this.issuer;
-        });
-        this.assetIcon = theAsset ? theAsset.image : null;
-        if (!this.assetIcon) {
-            //If no icon was provided, try our basic database
-            this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
-        }
-    }
-
-    private parseDomain(configUrl: string): string {
-        const chunks = configUrl.split("/");
-        for (let i = 1; i < chunks.length; i++) {
-            if (chunks[i]) {
-                return chunks[i];
-            }
-        }
-
-        return null;
     }
 }

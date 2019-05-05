@@ -1,0 +1,64 @@
+import { HorizonRestService } from "../services/horizon-rest.service";
+import { IssuerConfiguration } from "./toml/issuer-configuration";
+import { TomlConfigService } from "../services/toml-config.service";
+
+
+export class AssetStatistics {
+    public assetTitle: string;
+    public assetIcon: string;
+    public numTrades: number = 0;
+    public volume: number = 0.0;
+
+    constructor(horizonSerice: HorizonRestService,
+                configService: TomlConfigService,
+                public assetCode: string,
+                private issuer: string) {
+        horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
+            if (configUrl) {
+                configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
+                    this.loadAssetData(issuerConfig);
+                },
+                error => {
+                    //Usually a request blocked by the browser due to missing CORS header allowing cross-domain request
+                    this.assetIcon = `./assets/images/asset_icons/unknown.png`;
+                });
+
+                //Derive asset's domain from config URL
+                const domain = this.parseDomain(configUrl);
+                this.assetTitle = this.assetCode + "-" + domain;
+            }
+            else {
+                this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 6) + "..." + this.issuer.substring(50);
+                this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
+            }
+        });
+    }
+
+    public feedData(amount: number) {
+        this.numTrades++;
+        this.volume += amount;
+    }
+
+
+    private loadAssetData(issuerConfig: IssuerConfiguration) {
+        const theAsset = issuerConfig.currencies.find(asset => {
+            return asset.code === this.assetCode && asset.issuer === this.issuer;
+        });
+        this.assetIcon = theAsset ? theAsset.image : null;
+        if (!this.assetIcon) {
+            //If no icon was provided, try our basic database
+            this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
+        }
+    }
+
+    private parseDomain(configUrl: string): string {
+        const chunks = configUrl.split("/");
+        for (let i = 1; i < chunks.length; i++) {
+            if (chunks[i]) {
+                return chunks[i];
+            }
+        }
+
+        return null;
+    }
+}
