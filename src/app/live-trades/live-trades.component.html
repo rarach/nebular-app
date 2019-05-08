@@ -17,6 +17,7 @@
             <div class="asset-stat-data">
                 <span class="asset-title">{{stat.value.assetTitle}}</span><br/>
                 Trades: {{stat.value.numTrades}}; volume: {{Utils.formatAmount(stat.value.volume)}} {{stat.value.assetCode}}
+                <span *ngIf="stat.value.volumeInNative > 0">(~ {{Utils.formatAmount(stat.value.volumeInNative)}} XLM)</span>
             </div>
         </div>
     </div>
