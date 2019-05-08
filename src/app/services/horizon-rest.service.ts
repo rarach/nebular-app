@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { ExchangePair } from '../model/exchange-pair.model';
 import { Trade } from '../model/trade.model';
+import { Asset, KnownAssets } from '../model/asset.model';
 
 
 @Injectable({
@@ -48,6 +49,21 @@ export class HorizonRestService {
 
         const response = this.http.get(url);
         return response;
+    }
+
+    /** Get latest price of given asset in XLM */
+    getLastPriceInNative(asset: Asset): Observable<number> {
+        const dummyExchange = new ExchangePair("temp", asset, KnownAssets.XLM);
+        return this.getTradeHistory(dummyExchange, 1).pipe(
+            map<any, number>(data => {
+                if (typeof(data) === "string") {
+                    data = JSON.parse(data);
+                }
+                const trades = data._embedded.records;
+                return trades.length
+                    ? trades[0].price.n / trades[0].price.d
+                    : -1;
+            }))
     }
 
     /** Stream current trades without limitations on assets */

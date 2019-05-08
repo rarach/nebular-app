@@ -8,6 +8,7 @@ import { Trade } from '../model/trade.model';
 import { Title } from '@angular/platform-browser';
 import { TitleStub, TomlConfigServiceStub } from '../testing/stubs';
 import { TomlConfigService } from '../services/toml-config.service';
+import { Asset } from '../model/asset.model';
 
 
 describe('LiveTradesComponent', () => {
@@ -97,5 +98,13 @@ export class HorizonRestServiceStub {
 
     getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
         return of("asdf.com/stellar.toml");
+    }
+
+    getLastPriceInNative(asset: Asset) : Observable<number> {
+        if (asset.code === "ASDF") {
+            return of(22.222);
+        }
+
+        return of(-50505.0505);
     }
 }

@@ -9,6 +9,8 @@ import { LiveTradeItem } from './live-trade-item';
 import { TomlConfigService } from '../services/toml-config.service';
 import { Trade } from '../model/trade.model';
 import { Utils } from '../utils';
+import { Asset } from '../model/asset.model';
+import { Account } from '../model/account.model';
 
 
 @Component({
@@ -84,7 +86,10 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             }
             const stat = this.stats.get(key);
             const amount = parseFloat(trade.base_amount);
-            stat.feedData(amount);
+            const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null, null));
+            this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
+                stat.feedData(amount, xlmPrice);
+            });
         }
         if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
             const key = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
@@ -94,7 +99,10 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             }
             const stat = this.stats.get(key);
             const amount = parseFloat(trade.counter_amount);
-            stat.feedData(amount);
+            const dummyAsset = new Asset(trade.counter_asset_code, null, null, new Account(trade.counter_asset_issuer, null, null));
+            this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
+                stat.feedData(amount, xlmPrice);
+            })
         }
     }
 }

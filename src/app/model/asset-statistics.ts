@@ -8,6 +8,7 @@ export class AssetStatistics {
     public assetIcon: string;
     public numTrades: number = 0;
     public volume: number = 0.0;
+    public volumeInNative: number = 0.0;
 
     constructor(horizonSerice: HorizonRestService,
                 configService: TomlConfigService,
@@ -19,7 +20,7 @@ export class AssetStatistics {
                     this.loadAssetData(issuerConfig);
                 },
                 error => {
-                    //Usually a request blocked by the browser due to missing CORS header allowing cross-domain request
+                    //Usually a request blocked by the browser or proxy
                     this.assetIcon = `./assets/images/asset_icons/unknown.png`;
                 });
 
@@ -28,15 +29,16 @@ export class AssetStatistics {
                 this.assetTitle = this.assetCode + "-" + domain;
             }
             else {
-                this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 6) + "..." + this.issuer.substring(50);
+                this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 8) + "..." + this.issuer.substring(48);
                 this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
             }
         });
     }
 
-    public feedData(amount: number) {
+    public feedData(amount: number, lastPriceInXlm: number) {
         this.numTrades++;
         this.volume += amount;
+        this.volumeInNative = this.volume * lastPriceInXlm;
     }
 
 

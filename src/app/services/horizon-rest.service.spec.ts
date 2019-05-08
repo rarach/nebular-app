@@ -83,7 +83,56 @@ describe('HorizonRestService', () => {
                                        "&order=desc&limit=40"));
         expect(req.request.method).toBe('GET');
         req.flush({ asdf: "get trade history", xxx:958584041 });
-    }); 
+    });
+
+    it("#getLastPriceInNative() returns last trade price", () => {
+        service.getLastPriceInNative(KnownAssets.XIR).subscribe(priceInXlm => {
+            expect(priceInXlm).toBe(1234);
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
+                                        "?base_asset_code=XIR&base_asset_type=credit_alphanum4" +
+                                        "&base_asset_issuer=GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5" +
+                                        "&counter_asset_code=XLM&counter_asset_type=native" +
+                                        "&counter_asset_issuer=null" +
+                                        "&order=desc&limit=1"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_links": {
+            },
+            "_embedded": {
+              "records": [
+                  {
+                      "price": {
+                          "n": 1234,
+                          "d": 1
+                      }
+                  }
+              ]
+            }
+          }`);
+    });
+    it("#getLastPriceInNative() returns -1 if there's no trade for the asset", () => {
+        service.getLastPriceInNative(KnownAssets.XIR).subscribe(priceInXlm => {
+            expect(priceInXlm).toBe(-1);
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
+                                        "?base_asset_code=XIR&base_asset_type=credit_alphanum4" +
+                                        "&base_asset_issuer=GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5" +
+                                        "&counter_asset_code=XLM&counter_asset_type=native" +
+                                        "&counter_asset_issuer=null" +
+                                        "&order=desc&limit=1"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_links": {
+            },
+            "_embedded": {
+              "records": [
+              ]
+            }
+          }`);
+    });
 
     it("#getOrderbook(exch, 4) performs GET request to correct API URL", () => {
         const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets.WSE);
