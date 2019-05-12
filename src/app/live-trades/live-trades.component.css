@@ -31,26 +31,15 @@ div.assets-stats-panel {
     overflow-y: auto;
 }
 
-div.asset-stat {
-    margin-top: 5px;
-    display: table;
+#assetStatisticsTable td {
+    padding-right: 10px;
 }
 
-div.asset-icon-wrapper {
-    display: table-cell;
+#assetStatisticsTable tr:nth-child(even) {
+    background-color: white;
 }
 
-img.asset-icon {
+#assetStatisticsTable img.asset-icon {
     width: 32px;
     height: 32px;
-}
-
-span.asset-title {
-    font-weight: bold;
-}
-
-div.asset-stat-data {
-    display: table-cell;
-    padding-left: 10px;
-    vertical-align: top;
 }

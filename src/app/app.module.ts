@@ -4,7 +4,7 @@ import { FormsModule }   from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule } from '@angular/material';
+import { MatSelectModule, MatSortModule } from '@angular/material';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -50,6 +50,7 @@ import { LiveTradesComponent } from './live-trades/live-trades.component';
         FormsModule,
         HttpClientModule,
         MatSelectModule,
+        MatSortModule,
         AppRoutingModule,
         CookieModule.forRoot()
     ],

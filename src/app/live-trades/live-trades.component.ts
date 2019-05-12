@@ -1,4 +1,5 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Sort } from '@angular/material';
 import { Subscription } from "rxjs";
 import { Title } from '@angular/platform-browser';
 
@@ -22,11 +23,13 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     private tradesStream: Subscription;
     private streamStart: Date;
     private readonly TIMER_INTERVAL = 5000;
+    private stats = new Map<string, AssetStatistics>();
 
     Utils = Utils;          //Template access
     public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
     public trades = new Array<LiveTradeItem>();
-    public stats = new Map<string, AssetStatistics>();
+    public sortedStatistics: AssetStatistics[];
+    private currentSort: Sort = { active: "asset", direction: "asc" };
 
 
     constructor(private readonly ngZone: NgZone,
@@ -39,7 +42,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     ngOnInit() {
         this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
             this.trades.splice(0, 0, new LiveTradeItem(trade));
-            this.calculateStatistics(trade);
+            this.updateStatistics(trade);
         });
         this.streamStart = new Date();
 
@@ -77,7 +80,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         }
     }
 
-    private calculateStatistics(trade: Trade) { 
+    private updateStatistics(trade: Trade) { 
         if (trade.base_asset_type != Constants.NATIVE_ASSET_TYPE) {
             const key = trade.base_asset_code + "-" + trade.base_asset_issuer;
             if (!this.stats.has(key)) {
@@ -89,6 +92,9 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null, null));
             this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
                 stat.feedData(amount, xlmPrice);
+                if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {  //No need to do it twice
+                    this.sortStatistics(this.currentSort);
+                }
             });
         }
         if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
@@ -102,7 +108,33 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             const dummyAsset = new Asset(trade.counter_asset_code, null, null, new Account(trade.counter_asset_issuer, null, null));
             this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
                 stat.feedData(amount, xlmPrice);
-            })
+                this.sortStatistics(this.currentSort);
+            });
         }
+    }
+
+    sortStatistics(sort: Sort) {
+        this.currentSort = sort;
+        const data = new Array<AssetStatistics>();
+        //Slightly cumbersome way of converting hash-set values into array
+        this.stats.forEach(assetStat => data.push(assetStat));
+
+        if (!sort.active || sort.direction === '') {
+            return;
+        }
+
+        this.sortedStatistics = data.sort((a, b) => {
+            const isAsc = sort.direction === 'asc';
+            switch (sort.active) {
+                case 'asset': return this.compare(a.assetTitle, b.assetTitle, isAsc);
+                case 'trades': return this.compare(a.numTrades, b.numTrades, isAsc);
+                case 'volume': return this.compare(a.volumeInNative, b.volumeInNative, isAsc);
+                default: return 0;
+            }
+        });
+    }
+
+    private compare(a: number | string, b: number | string, isAsc: boolean): number {
+        return (a < b ? -1 : 1) * (isAsc ? 1 : -1);
     }
 }
