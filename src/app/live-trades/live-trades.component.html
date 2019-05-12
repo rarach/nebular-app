@@ -9,16 +9,25 @@
         </ul>
     </div>
     <div class="assets-stats-panel col-lg-6 col-md-6 col-sm-12">
-        <h4>Assets traded in past {{duration}}:</h4>
-        <div *ngFor="let stat of stats | keyvalue" class="asset-stat">
-            <div class="asset-icon-wrapper">
-                <img class="asset-icon" src="{{stat.value.assetIcon}}"/>
-            </div>
-            <div class="asset-stat-data">
-                <span class="asset-title">{{stat.value.assetTitle}}</span><br/>
-                Trades: {{stat.value.numTrades}}; volume: {{Utils.formatAmount(stat.value.volume)}} {{stat.value.assetCode}}
-                <span *ngIf="stat.value.volumeInNative > 0">(~ {{Utils.formatAmount(stat.value.volumeInNative)}} XLM)</span>
-            </div>
-        </div>
+        <h4>Currencies traded in past {{duration}}:</h4>
+
+        <table id="assetStatisticsTable" matSort (matSortChange)="sortStatistics($event)">
+            <tr>
+              <th>&nbsp;</th>
+              <th mat-sort-header="asset">Currency</th>
+              <th mat-sort-header="trades">Trades</th>
+              <th mat-sort-header="volume">Volume</th>
+            </tr>
+          
+            <tr *ngFor="let stat of sortedStatistics">
+              <td><img class="asset-icon" src="{{stat.assetIcon}}" title="{{stat.assetCode}}"/></td>
+              <td>{{stat.assetTitle}}</td>
+              <td>{{stat.numTrades}}</td>
+              <td>
+                  {{Utils.formatAmount(stat.volume)}} {{stat.assetCode}}
+                  <span *ngIf="stat.volumeInNative > 0">(~{{Utils.formatAmount(stat.volumeInNative)}} XLM)</span>
+              </td>
+            </tr>
+        </table>
     </div>
 </div>
