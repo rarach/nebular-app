@@ -1,20 +1,25 @@
-<div class="live-trades-wrapper">
+
+<div class="row">
+    <div class="col-lg-6 col-md-6 col-sm-12">
+        <h4 *ngIf="trades.length <= 0">Waiting for trade stream...</h4>
+    </div>
+    <div class="col-lg-6 col-md-6 col-sm-12 duration-header">
+        <h4>Currencies traded in past {{duration}}:</h4>
+    </div>
+</div>
+<div class="row">
     <div class="trade-stream col-lg-6 col-md-6 col-sm-12">
-        <ul>
-            <li *ngFor="let item of trades" class="highlight">
-                {{item.actionName }}
-                <a class="link inline-link" href="{{item.linkHref}}" target="exchTab">{{item.linkText}}</a>
-                {{item.note}}
-            </li>
-        </ul>
+        <div id="trade-stream-divider"></div>
+        <div *ngFor="let item of trades" class="trade-item highlight {{item.isEven ? '' : 'odd'}}">
+            {{item.actionName }}
+            <a class="link inline-link" href="{{item.linkHref}}" target="exchTab">{{item.linkText}}</a>
+            {{item.note}}
+        </div>
     </div>
     <div class="assets-stats-panel col-lg-6 col-md-6 col-sm-12">
-        <h4>Currencies traded in past {{duration}}:</h4>
-
         <table id="assetStatisticsTable" matSort (matSortChange)="sortStatistics($event)">
             <tr>
-              <th>&nbsp;</th>
-              <th mat-sort-header="asset">Currency</th>
+              <th mat-sort-header="asset" colspan="2">Currency</th>
               <th mat-sort-header="trades">Trades</th>
               <th mat-sort-header="volume">Volume</th>
             </tr>

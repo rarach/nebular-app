@@ -41,7 +41,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 
     ngOnInit() {
         this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
-            this.trades.splice(0, 0, new LiveTradeItem(trade));
+            this.trades.splice(0, 0, new LiveTradeItem(trade, this.trades.length % 2 == 0));
             this.updateStatistics(trade);
         });
         this.streamStart = new Date();

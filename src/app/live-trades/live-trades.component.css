@@ -1,11 +1,22 @@
-div.live-trades-wrapper {
-    margin-top: 20px;
+.duration-header {
+    border-left: 1px solid #AAAAAA;
 }
 
 div.trade-stream {
-    border: 1px solid blue;
     height: calc(100vh - 150px);
     overflow-y: auto;
+}
+#trade-stream-divider {
+    height: 28px;
+    border-bottom: 1px solid #AAAAAA;
+}
+
+.trade-item {
+    border-bottom: 1px solid #f6f6f6;
+    background-color: white;
+}
+.trade-item.odd {
+    background-color: #f6f6f6;
 }
 
 a.inline-link {
@@ -16,22 +27,22 @@ a.inline-link {
     from { background-color: #46B446; }
     to { background-color: inherit; }
 }
-:host ::ng-deep li.highlight {
+:host ::ng-deep .highlight {
     animation: animateGreen 1s linear 1;
 }
 
-h4 {
-    margin-bottom: 15px;
-}
-
 div.assets-stats-panel {
-    border: 1px solid green;
     height: calc(100vh - 150px);
+    border-left: 1px solid #AAAAAA;
     overflow-y: auto;
 }
 
 #assetStatisticsTable td {
     padding-right: 10px;
+}
+#assetStatisticsTable th {
+    padding: 5px;
+    border-bottom: 1px solid #AAAAAA;
 }
 
 #assetStatisticsTable tr:nth-child(even) {

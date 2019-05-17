@@ -14,7 +14,7 @@ export class LiveTradeItem {
     private counterAssetCode: string;
 
 
-    constructor(fromTrade: Trade){
+    constructor(fromTrade: Trade, public isEven: boolean){
         this.actionName = fromTrade.base_is_seller ? "Sold " : "Bought ";
         this.baseAmount = parseFloat(fromTrade.base_amount);
         this.counterAmount = parseFloat(fromTrade.counter_amount);
