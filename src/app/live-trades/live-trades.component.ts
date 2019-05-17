@@ -28,7 +28,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     Utils = Utils;          //Template access
     public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
     public trades = new Array<LiveTradeItem>();
-    public sortedStatistics: AssetStatistics[];
+    public sortedStatistics: AssetStatistics[] = null;
     private currentSort: Sort = { active: "asset", direction: "asc" };
 
 

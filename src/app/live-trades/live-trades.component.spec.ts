@@ -57,6 +57,11 @@ name = "glance token (or something)"`) }
         expect(component.trades[0].linkHref).toBe("/exchange/zero-coin-GAZERO/GTN-GBETLEHEM");
         expect(component.trades[1].linkHref).toBe("/exchange/XLM/ASDF-GASDF");
     });
+
+    it("should not sort statistics when direction isn't given", () => {
+        component.sortStatistics({ active: "trades", direction: "" });
+        expect(component.sortedStatistics).toBeNull();
+    });
 });
 
 
