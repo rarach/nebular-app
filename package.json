@@ -28,7 +28,7 @@
     "@angular/platform-browser-dynamic": "^6.1.0",
     "@angular/router": "^6.1.0",
     "core-js": "^2.5.4",
-    "jquery": "^3.3.1",
+    "jquery": "^3.4.1",
     "ngx-cookie": "^4.0.2",
     "npm": "^6.9.0",
     "rxjs": "^6.0.0",
