@@ -3,9 +3,10 @@ import { Injectable } from '@angular/core';
 import { map } from "rxjs/operators";
 import { Observable } from 'rxjs';
 
+import { Asset, KnownAssets } from '../model/asset.model';
+import { AssetData } from '../model/asset-data.model';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { Trade } from '../model/trade.model';
-import { Asset, KnownAssets } from '../model/asset.model';
 
 
 @Injectable({
@@ -85,6 +86,27 @@ export class HorizonRestService {
 
         const response = this.http.get(url);
         return response;
+    }
+
+    /** Get first 200 anchors issuing given asset */
+    getAssetIssuers(assetCode: string): Observable<AssetData[]> {
+        const horizonUrl = this.API_URLS[0];   //TODO: this is awkward but the endpoint doesn't work on horizon-mon. We need more reliable Horizon servers
+        const url = horizonUrl + `/assets?asset_code=${assetCode}&limit=200`;
+
+        return this.http.get<string>(url).pipe(map<any, AssetData[]>(data => {
+            if (typeof(data) == "string") {
+                data = JSON.parse(data);
+            }
+            if (!data._embedded || !data._embedded.records || data._embedded.records.length === 0) {
+                return null;
+            }
+
+            const assetData = new Array<AssetData>();
+            for(let record of data._embedded.records) {
+                assetData.push(new AssetData(record._links.toml.href, record.asset_type, record.asset_code, record.asset_issuer, record.num_accounts));
+            }
+            return assetData;
+        }));
     }
 
     /**

@@ -58,6 +58,18 @@ export class Utils {
         return url;
     }
 
+    /** Get domain name from a URL */
+    static parseDomain(fullUrl: string): string {
+        const chunks = fullUrl.split("/");
+        for (let i = 1; i < chunks.length; i++) {
+            if (chunks[i]) {
+                return chunks[i];
+            }
+        }
+
+        return null;
+    }
+
     private static formatNumber(value: number, decimals: number): string {
         const numString: string = value.toFixed(decimals);
         return Utils.trimZeros(numString);
