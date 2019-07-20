@@ -3,7 +3,7 @@
 }
 
 div.trade-stream {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 165px);
     overflow-y: auto;
 }
 #trade-stream-divider {
@@ -32,7 +32,7 @@ a.inline-link {
 }
 
 div.assets-stats-panel {
-    height: calc(100vh - 150px);
+    height: calc(100vh - 165px);
     border-left: 1px solid #AAAAAA;
     overflow-y: auto;
 }

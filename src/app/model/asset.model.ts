@@ -6,8 +6,8 @@ import { Constants } from "./constants";
 export class Asset {
     constructor(public readonly code: string, public readonly fullName: string, public readonly type: string, public readonly issuer: Account) {
         this.code = code || Constants.NATIVE_ASSET_CODE;
-        if (null === type ) {
-            if (this.code === Constants.NATIVE_ASSET_CODE) {
+        if (null === type) {
+            if (this.code === Constants.NATIVE_ASSET_CODE && (!issuer || !issuer.address)) {
                 this.type = Constants.NATIVE_ASSET_TYPE;
             }
             else {
