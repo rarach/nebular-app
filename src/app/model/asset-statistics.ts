@@ -11,11 +11,11 @@ export class AssetStatistics {
     public volume: number = 0.0;
     public volumeInNative: number = 0.0;
 
-    constructor(horizonSerice: HorizonRestService,
+    constructor(horizonService: HorizonRestService,
                 configService: TomlConfigService,
                 public assetCode: string,
                 private issuer: string) {
-        horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
+        horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
             if (configUrl) {
                 configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
                     this.loadAssetData(issuerConfig);

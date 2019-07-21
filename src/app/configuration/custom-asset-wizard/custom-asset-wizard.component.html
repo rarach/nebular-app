@@ -12,10 +12,23 @@
 </form>
 
 <div *ngIf="searchStatus && !foundAssets">
-    <br/>
+    <br/><br/>
     There's currently no asset <b>{{newAssetCode.value}}</b> on the stellar ledger. Try different asset code.
 </div>
-<div *ngFor="let asset of foundAssets" id="{{asset.code}}-{{asset.issuerAddress}}" class="customItemRow">
-    <div class="itemTitle" title="issuer address: {{asset.issuerAddress}}">{{asset.code}}-{{asset.domain}}</div>
-    <span (click)="addAsset(asset.code, asset.issuer.address)">Add</span>
-</div>
+
+<table id="foundAssetsTable">
+    <tr>
+        <th style="width: 30px;"></th>
+        <th></th>
+        <th style="width: 50px;"></th>
+    </tr>
+    <tr *ngFor="let asset of foundAssets" id="{{asset.code}}-{{asset.issuerAddress}}" class="asset-item">
+        <td>
+            <img class="asset-icon" src="{{asset.iconUrl}}"/>
+        </td>
+        <td title="issuer address: {{asset.issuerAddress}}">{{asset.code}}-{{asset.domain}}</td>
+        <td>
+            <button type="button" class="addButton" (click)="addAsset(asset.code, asset.issuerAddress, asset.domain)">Add</button>
+        </td>
+    </tr>
+</table>

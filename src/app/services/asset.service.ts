@@ -205,9 +205,10 @@ export class AssetService {
      * Add new asset with given code and issuer's address
      * @param assetCode - existing asset code
      * @param issuerAddress - address of an anchor
+     * @param issuerDomain - anchor web domain
      * @returns - returns newly created asset in case of success, otherwise null
      */
-    AddCustomAsset(assetCode: string, issuerAddress: string): Asset {
+    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null): Asset {
         //Don't add if it's already there
         for (let i=0; i<this.customAssets.length; i++) {
             if (assetCode === this.customAssets[i].code && issuerAddress === this.customAssets[i].issuer.address) {
@@ -226,7 +227,7 @@ export class AssetService {
 
         //Not a problem if issuer's not found (user might have deleted anchor meanwhile), simply crate a dummy
         if (null === issuer) {
-            issuer = new Account(issuerAddress, null, null);
+            issuer = new Account(issuerAddress, null, issuerDomain);
         }
 
         const newAsset = new Asset(assetCode, assetCode, null, issuer);

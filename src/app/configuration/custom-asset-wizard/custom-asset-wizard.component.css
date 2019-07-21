@@ -1,0 +1,18 @@
+#foundAssetsTable {
+    width: 100%;
+}
+#foundAssetsTable tr:nth-child(even) {
+    background-color: white;
+}
+#foundAssetsTable tr.asset-item:hover {
+    background-color: #e0e0e0;
+}
+
+img.asset-icon {
+    width: 24px;
+    height: 24px;
+}
+
+button.addButton {
+    background-color: #46B446;
+}
