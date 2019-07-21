@@ -12,7 +12,7 @@
             [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
             [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
             <td>
-                <img class="asset-icon" src="./assets/images/asset_icons/unknown.png"/>
+                <img class="asset-icon" src="{{asset.imageUrl}}"/>
             </td>
             <td title="issuer address: {{asset.issuer.address}}">{{asset.code}}-{{asset.issuer.domain}}</td>
             <td>

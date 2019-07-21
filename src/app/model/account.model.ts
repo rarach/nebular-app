@@ -1,5 +1,5 @@
 export class Account {
-    constructor(public readonly address: string, public readonly shortName: string, public readonly domain: string){
+    constructor(public readonly address: string, public readonly shortName: string, public domain: string){
         if ((shortName || "").length <= 0 && null != address) {
             this.shortName = address.substring(0, 16) + "...";
         }

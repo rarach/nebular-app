@@ -55,17 +55,17 @@ export class CustomAssetWizardComponent implements OnInit, OnDestroy {
         });
     }
 
-    addAsset(code: string, issuerAddress: string, issuerDomain: string) {
-        const asset = this.assetService.AddCustomAsset(code, issuerAddress, issuerDomain);
+    addAsset(newAsset: AssetData) {
+        const asset = this.assetService.AddCustomAsset(newAsset.code, newAsset.issuerAddress, newAsset.domain, newAsset.iconUrl);
         if (asset !== null) {
-            this.assetAdded.emit({newAssetCode: code, newAssetIssuer: issuerAddress});
+            this.assetAdded.emit({newAssetCode: newAsset.code, newAssetIssuer: newAsset.issuerAddress});
         }
         else {
-            this.addAssetFailed.emit({assetCode: code, assetIssuer: issuerAddress});
+            this.addAssetFailed.emit({assetCode: newAsset.code, assetIssuer: newAsset.issuerAddress});
         }
 
         for (let i=0; i<this.foundAssets.length; i++) {
-            if (this.foundAssets[i].code === code && this.foundAssets[i].issuerAddress === issuerAddress) {
+            if (this.foundAssets[i].code === newAsset.code && this.foundAssets[i].issuerAddress === newAsset.issuerAddress) {
                 this.foundAssets.splice(i, 1);
                 break;
             }

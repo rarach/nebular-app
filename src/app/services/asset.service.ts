@@ -208,7 +208,7 @@ export class AssetService {
      * @param issuerDomain - anchor web domain
      * @returns - returns newly created asset in case of success, otherwise null
      */
-    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null): Asset {
+    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset {
         //Don't add if it's already there
         for (let i=0; i<this.customAssets.length; i++) {
             if (assetCode === this.customAssets[i].code && issuerAddress === this.customAssets[i].issuer.address) {
@@ -230,7 +230,7 @@ export class AssetService {
             issuer = new Account(issuerAddress, null, issuerDomain);
         }
 
-        const newAsset = new Asset(assetCode, assetCode, null, issuer);
+        const newAsset = new Asset(assetCode, assetCode, null, issuer, imageUrl);
         this.customAssets.push(newAsset);
         this.serializeToCookie();
 
@@ -369,11 +369,14 @@ export class AssetService {
                 continue;
             }
             const assetText = assets[a].trim();
-            const dashIndex = assetText.indexOf("-");
-            const assetCode = assetText.substr(0, dashIndex);
-            const issuerAddress = assetText.substr(dashIndex+1);
+            const parts = assetText.split("|");
+            const assetCode = parts[0];
+            const issuerAddress = parts[1];
+            const domain = parts[2];
+            const imageUrl = parts[3];
             const issuer = this.getAnchorByAddress(issuerAddress);
-            customAssets.push(new Asset(assetCode, assetCode, null, issuer));
+            issuer.domain = domain;         //TODO: is this necessary if we've been able to retrieve the anchor from database?
+            customAssets.push(new Asset(assetCode, assetCode, null, issuer, imageUrl));
         }
 
         return customAssets;
@@ -448,8 +451,8 @@ export class AssetService {
             if (i>0) {
                 cookieText += ",";
             }
-            //Format "asset_code"-"issuer_address"
-            cookieText += asset.code + "-" + asset.issuer.address;
+            //Format "asset_code|issuer_address|ussuer_domain|asset_image"
+            cookieText += asset.code + "|" + asset.issuer.address + "|" + asset.issuer.domain + "|" + asset.imageUrl;
         }
         this.setCookieValue("ass", cookieText);
 
