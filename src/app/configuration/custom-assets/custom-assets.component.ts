@@ -71,6 +71,22 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
         this.loadAnchors()
     }
 
+    highlightLastAddedAsset(eventData) {
+        for (let asset of this.customAssets) {
+            if (asset.code === eventData.newAssetCode && asset.issuer.address === eventData.newAssetIssuer)
+            {
+                this.lastAddedAsset = asset;
+                this.duplicateAsset = null;
+                break;
+            }
+        }
+    }
+
+    highlightDuplicateAsset(eventData) {
+        this.duplicateAsset = eventData.assetCode + "-" + eventData.assetIssuer;
+        this.lastAddedAsset = null;
+    }
+
     private loadAssetCodes() {
         this.assetCodes = new Array<DropdownOption>();
         const codes: string[] = this.assetService.getAllAssetCodes();

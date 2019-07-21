@@ -6,7 +6,7 @@
 <form (submit)="searchAssetCodes(assetCodeForm)" #assetCodeForm="ngForm">
     <label for="newAssetCode">Asset code:</label>
     <input type="text" id="newAssetCode" placeholder="JPY, LTC..." maxlength="12" (keydown)="searchStatus=''"
-           ngModel #newAssetCode="ngModel" name="newAssetCode" pattern="^[a-zA-Z0-9]{1,12}$"/>
+           [(ngModel)]="inputAssetCode" #newAssetCode="ngModel" name="newAssetCode" pattern="^[a-zA-Z0-9]{1,12}$"/>
     <button type="submit" id="findAssetCodeBtn" [disabled]="!assetCodeForm.form.valid">Search</button>
     <div *ngIf="newAssetCode.errors?.pattern" class="dataHint">Up to 12 characters, only letters and digits.</div>
 </form>

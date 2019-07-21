@@ -4,7 +4,11 @@ import { Constants } from "./constants";
 
 
 export class Asset {
-    constructor(public readonly code: string, public readonly fullName: string, public readonly type: string, public readonly issuer: Account) {
+    constructor(public readonly code: string,
+                public readonly fullName: string,
+                public readonly type: string,
+                public readonly issuer: Account,
+                public readonly imageUrl: string = "./assets/images/asset_icons/unknown.png") {     //TODO: put the url in constant
         this.code = code || Constants.NATIVE_ASSET_CODE;
         if (null === type) {
             if (this.code === Constants.NATIVE_ASSET_CODE && (!issuer || !issuer.address)) {
@@ -65,7 +69,7 @@ export class Asset {
 }
 
 
-/** "Database" of currently knwon assets on the Stellar network. Subject to change anytime. */
+/** "Database" of currently knwon assets on the Stellar network. TODO: load this from backend! */
 export const KnownAssets = {
     "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, "(native)", null)),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),

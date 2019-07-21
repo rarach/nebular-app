@@ -1,6 +1,28 @@
-<h3>Custom assets</h3>
+<h3>My assets</h3>
 <hr/>
 <div id="customAssetsList" class="valueList">
+
+    <table id="customAssetsTable">
+        <tr>
+            <th style="width: 30px;"></th>
+            <th></th>
+            <th style="width: 50px;"></th>
+        </tr>
+        <tr *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="asset-item"
+            [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
+            [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
+            <td>
+                <img class="asset-icon" src="./assets/images/asset_icons/unknown.png"/>
+            </td>
+            <td title="issuer address: {{asset.issuer.address}}">{{asset.code}}-{{asset.issuer.domain}}</td>
+            <td>
+                <button type="button" class="removeButton" (click)="removeAsset(asset.code, asset.issuer.address)">Remove</button>
+            </td>
+        </tr>
+    </table>
+
+
+
     <div *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="customItemRow"
          [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
          [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
