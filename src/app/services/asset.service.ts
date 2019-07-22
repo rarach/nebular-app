@@ -10,35 +10,25 @@ import { ExchangePair } from '../model/exchange-pair.model';
     providedIn: 'root'
 })
 export class AssetService {
-    private readonly _commonAssets: Asset[] = [
+    private readonly _commonAssets: Asset[] = [         //TODO: load from backend, just very short basic list
         KnownAssets.XLM,
         KnownAssets["BTC-NaoBTC"],
         KnownAssets["BTC-Papaya"],
-        KnownAssets["BTC-Stronghold"],
-        KnownAssets["BTC-vcbear"],
         KnownAssets["CNY-RippleFox"],
         KnownAssets["ETH-Papaya"],
-        KnownAssets["ETH-Stronghold"],
         KnownAssets.EURT,
-        KnownAssets.HKDT,
-        KnownAssets["LTC-Papaya"],
         KnownAssets.MOBI,
-        KnownAssets.NGNT,
-        KnownAssets.PHP,
-        KnownAssets.REPO,
         KnownAssets.RMT,
-        KnownAssets.SLT,
-        KnownAssets["USD-Golix"],
-        KnownAssets["USD-Stonghold"]
+        KnownAssets.SLT
     ];
     private _commonAssetCodes: string[] = new Array<string>();
     private _commonAnchors: Account[] = new Array<Account>();
     /** User's custom defined assets */
     readonly customAssets: Asset[];
     /** User's custom defined asset codes */
-    readonly customAssetCodes: string[];
+    readonly customAssetCodes: string[];        //TODO: extract from customAssets
     /** Custom anchors defined by the user */
-    readonly customAnchors: Account[];
+    readonly customAnchors: Account[];          //TODO: extract from customAssets
     /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     readonly customExchanges: ExchangePair[];
 
@@ -58,7 +48,7 @@ export class AssetService {
             }
         }
 
-        this.customAssetCodes = this.loadAssetCodes();
+        this.customAssetCodes = this.loadAssetCodes();  //TODO: delete these 2 lines
         this.customAnchors = this.loadAnchors();
         this.customAssets = this.loadAssets();
         this.customExchanges = this.loadExchanges();
@@ -142,7 +132,7 @@ export class AssetService {
      * @param assetCode up to 12 chars of new asset code
      * @returns {boolean} - true on success, false if given asset type already exists
      */
-    AddCustomAssetCode(assetCode: string): boolean {
+    AddCustomAssetCode(assetCode: string): boolean {            //TODO: delete. The codes must be extracted from custom assets.
         //Don't add if it's already there
         for (let i=0; i < this.customAssetCodes.length; i++) {
             if (this.customAssetCodes[i] === assetCode) {
@@ -154,7 +144,7 @@ export class AssetService {
         return true;
     }
 
-    RemoveCustomAssetCode(assetCode: string): boolean {
+    RemoveCustomAssetCode(assetCode: string): boolean {         //TODO: delete. The codes must be extracted from custom assets.
         for (let i=0; i < this.customAssetCodes.length; i++) {
             if (this.customAssetCodes[i] === assetCode) {
                 this.customAssetCodes.splice(i, 1);
@@ -172,7 +162,7 @@ export class AssetService {
      * @param domain - optional domain or any name describing the anchor
      * @returns {boolean} - true on success, false if an issuer with given address already exists
      */
-    AddCustomAnchor(address: string, domain: string): boolean {
+    AddCustomAnchor(address: string, domain: string): boolean {     //TODO: delete this
         //Don't add if it's already there
         for (let i=0; i < this.customAnchors.length; i++) {
             if (this.customAnchors[i].address === address) {
@@ -189,7 +179,7 @@ export class AssetService {
      * Remove custom issuer by their address
      * @param address - anchor's issuing address
      */
-    RemoveCustomAnchor(address: string): boolean {
+    RemoveCustomAnchor(address: string): boolean {      //TODO: delete this
         for (let i=0; i < this.customAnchors.length; i++) {
             if (this.customAnchors[i].address === address) {
                 this.customAnchors.splice(i, 1);
@@ -317,7 +307,7 @@ export class AssetService {
         return new Account(issuerAddress, null, null);
     }
 
-    private loadAssetCodes(): string[] {
+    private loadAssetCodes(): string[] {        //TODO: delete. The codes must be extracted from custom assets.
         const COOKIE_NAME = "aco";
         const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
         const customCodes = new Array();
@@ -337,7 +327,7 @@ export class AssetService {
      * Load and return user's custom anchor accounts (name+domain).
      * @return Array of Account instances
      */
-    private loadAnchors(): Account[] {
+    private loadAnchors(): Account[] {      //TODO: delete this method. The accounts must be extracted from custom assets.
         const COOKIE_NAME = "iss";
         const customIssuers = new Array();
         const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
@@ -423,6 +413,8 @@ export class AssetService {
 
     private serializeToCookie() {
         let cookieText = "";
+
+//TODO: delete next 2 blocks
         //Asset codes
         var i = 0;
         for (i = 0; i<this.customAssetCodes.length; i++) {
