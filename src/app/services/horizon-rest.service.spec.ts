@@ -13,7 +13,7 @@ describe('HorizonRestService', () => {
     let httpMock: HttpTestingController;
     const exchange = new ExchangePair("gyuhjk,",
                                       KnownAssets["XRP-Interstellar"],
-                                      new Asset("HUHU", null, null, new Account("GDENIM784152", "g-denim", "denim.ggg")));
+                                      new Asset("HUHU", null, null, new Account("GDENIM784152", "denim.ggg")));
 
     beforeEach(() => {
         TestBed.configureTestingModule({

@@ -36,15 +36,15 @@ describe('CustomExchangeComponent', () => {
         fixture = TestBed.createComponent(CustomExchangeComponent);
         component = fixture.componentInstance;
         component.exchange = new ExchangePair("cust_ex96984",
-                                              new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null, null)),
-                                              new Asset("BONY", "bony", null, new Account("G014", null, null)));
+                                              new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null)),
+                                              new Asset("BONY", "bony", null, new Account("G014", null)));
         fixture.detectChanges();
     });
 
     it('should initialize', () => {
         expect(component).toBeTruthy();
         expect(component.exchange.id).toBe("cust_ex96984");
-        expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null, null)));
+        expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null)));
     });
     it("#removeCustomExchange deletes the exchange from repository", () => {
         const assetService = TestBed.get(AssetService);
@@ -55,20 +55,20 @@ describe('CustomExchangeComponent', () => {
     it("#baseAssetCodeChanged loads base asset issuers", () => {
         expect(component.selectedBaseIssuer.value).not.toBe("GOTO");
         component.exchange = new ExchangePair("k85u56ww56",
-                                              new Asset("CKLL", null, null, new Account("GOTO", null, null)),
-                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry", null)));
+                                              new Asset("CKLL", null, null, new Account("GOTO", null)),
+                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry.gal")));
         component.selectedBaseAssetCode = new DropdownOption("CKLL", "CKLL", null);
         component.baseAssetCodeChanged(null);
-        expect(component.selectedBaseIssuer).toEqual(new DropdownOption("GOTO", "www.go.to", "Go to test"));
+        expect(component.selectedBaseIssuer).toEqual(new DropdownOption("GOTO", "www.go.to", "www.go.to"));
     });
     it("#counterAssetCodeChanged loads counter asset issuers", () => {
         expect(component.selectedCounterIssuer.value).toBe("G014");
         component.exchange = new ExchangePair("k85u56ww56",
-                                              new Asset("CKLL", null, null, new Account("GOTO", null, null)),
-                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry", null)));
+                                              new Asset("CKLL", null, null, new Account("GOTO", null)),
+                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry")));
         component.selectedCounterAssetCode = new DropdownOption("MNO", "MNO", "monaco-in");
         component.counterAssetCodeChanged(null);
-        expect(component.selectedCounterIssuer).toEqual(new DropdownOption("GARIBALDI7845", "GariBal.dii", "Garry"));
+        expect(component.selectedCounterIssuer).toEqual(new DropdownOption("GARIBALDI7845", "Garry.gal", "Garry.gal"));
     });
     it("#issuerChanged calls service.UpdateCustomExchange with correct inputs", () => {
         expect(component.exchange.baseAsset.code).toBe("RRR");
@@ -105,8 +105,8 @@ describe("CustomExchangeComponent", () => {
         fixture = TestBed.createComponent(CustomExchangeComponent);
         component = fixture.componentInstance;
         component.exchange = new ExchangePair("768y4-sdf1",
-                                              new Asset("altte", "alternative", null, new Account("GCD5DG453SER745C415CG", "china-coin.cn", null)),
-                                              new Asset("UNITA", "Unity coin", null, new Account("GORE", "gore.xyz", null)));
+                                              new Asset("altte", "alternative", null, new Account("GCD5DG453SER745C415CG", "china-coin.cn")),
+                                              new Asset("UNITA", "Unity coin", null, new Account("GORE", "gore.xyz")));
         fixture.detectChanges();
 
         expect(component.selectedBaseAssetCode).toEqual(new DropdownOption("altte", "altte", "altte (custom)"));
@@ -123,13 +123,13 @@ class AssetServiceStub {
     GetIssuersByAssetCode(code: string): Account[] {
         if ("RRR" === code || "BONY" === code)
         {
-            return [ new Account("GULIWER", "guli", "gu.li") ];
+            return [ new Account("GULIWER", "gu.li") ];
         }
         if ("CKLL" ===  code) {
-            return [ new Account("GOTO", "Go to test", "www.go.to"), new Account("GBBshouldntBeUsed", null, null) ];
+            return [ new Account("GOTO", "www.go.to"), new Account("GBBshouldntBeUsed", null) ];
         }
         if ("MNO" === code) {
-            return [ new Account("GARIBALDI7845", "Garry", "GariBal.dii"), new Account("GAuseless", null, "") ];
+            return [ new Account("GARIBALDI7845", "Garry.gal"), new Account("GAuseless", null) ];
         }
         if ("altte" === code || "UNITA" === code) {
             return [ ];
@@ -142,10 +142,10 @@ class AssetServiceStub {
             return null;
         }
         if ("GOTO" === address) {
-            return new Account("GOTO", "Go to test", "www.go.to" );
+            return new Account("GOTO", "www.go.to" );
         }
         if ("GARIBALDI7845" === address) {
-            return new Account("GARIBALDI7845", "Garry", "GariBal.dii");
+            return new Account("GARIBALDI7845", "GariBal.dii");
         }
         throw new Error("No data prepared for given input (address=" + address + ")");
     }

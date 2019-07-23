@@ -22,7 +22,7 @@ describe('TradeHistoryComponent', () => {
         component = fixture.componentInstance;
         component.exchange = new ExchangePair("84512",
                                               KnownAssets["LTC-Interstellar"],
-                                              new Asset("XXXOR", "xor token", null, new Account("GBRITVA", "<unknown>", "what-ever.home")));
+                                              new Asset("XXXOR", "xor token", null, new Account("GBRITVA", "what-ever.home")));
         fixture.detectChanges();
     });
 

@@ -5,6 +5,7 @@ export class Constants {
     static readonly CHART_INTERVAL: number = 8 * 60 * 1000;
     static readonly NATIVE_ASSET_CODE: string = "XLM";
     static readonly NATIVE_ASSET_TYPE: string = "native";
+    static readonly NATIVE_ASSET_IMAGE: string = "./assets/images/asset_icons/XLM.png";
     static readonly DEFAULT_AMOUNT_DECIMALS: number = 4;
     static readonly Style = {
         FONT: 'consolas,"Liberation Mono",courier,monospace',

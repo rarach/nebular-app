@@ -17,8 +17,8 @@ describe('CustomAssetsComponent', () => {
                 {
                     provide: AssetService, useValue: {
                     customAssets: [
-                        new Asset("GBP", "Sterling pound", null, new Account("GBPPPPPPPPPPPPPPPPP752", null, null)),
-                        new Asset("ETC", "Ethereum classic", null, new Account("GORRILA", null, null))
+                        new Asset("GBP", "Sterling pound", null, new Account("GBPPPPPPPPPPPPPPPPP752", null)),
+                        new Asset("ETC", "Ethereum classic", null, new Account("GORRILA", null))
                     ]}
                 }
             ]
@@ -151,8 +151,8 @@ class AssetServiceStub {
 
     getAllAnchors(): Account[] {
         return [
-            new Account(null, null, "stellar.org"),
-            new Account("GALAPAGESSS", "Test issuer Galapag", "gala.pages"),
+            new Account(null, "stellar.org"),
+            new Account("GALAPAGESSS", "gala.pages"),
             KnownAccounts.SureRemit
         ]
     }

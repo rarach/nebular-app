@@ -108,7 +108,7 @@ export class CustomExchangeComponent implements OnInit {
         let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
 
         for (let i=0; i<issuersArray.length; i++) {
-            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].domain);
             this.baseIssuerOptions.push(ddOption);
             //By default, pre-select the first option
             if (0 === i) {
@@ -138,7 +138,7 @@ export class CustomExchangeComponent implements OnInit {
         let found = this.exchange.counterAsset.issuer.IsNativeIssuer();
 
         for (let i=0; i<issuersArray.length; i++) {
-            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].shortName);
+            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].domain);
             this.counterIssuerOptions.push(ddOption);
             //By default, pre-select the first option
             if (0 === i) {

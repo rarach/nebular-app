@@ -169,7 +169,7 @@ export class AssetService {
                 return false;
             }
         }
-        this.customAnchors.push(new Account(address, domain, domain));
+        this.customAnchors.push(new Account(address, domain));
         this.serializeToCookie();
 
         return true;
@@ -217,7 +217,7 @@ export class AssetService {
 
         //Not a problem if issuer's not found (user might have deleted anchor meanwhile), simply crate a dummy
         if (null === issuer) {
-            issuer = new Account(issuerAddress, null, issuerDomain);
+            issuer = new Account(issuerAddress, issuerDomain);
         }
 
         const newAsset = new Asset(assetCode, assetCode, null, issuer, imageUrl);
@@ -304,7 +304,7 @@ export class AssetService {
         }
 
         //Anchor not found among know issuers. Don't give up and create a dummy one
-        return new Account(issuerAddress, null, null);
+        return new Account(issuerAddress, null);
     }
 
     private loadAssetCodes(): string[] {        //TODO: delete. The codes must be extracted from custom assets.
@@ -341,7 +341,7 @@ export class AssetService {
             const dashIndex = anchorText.indexOf("/");
             const address = anchorText.substr(0, dashIndex);
             const domain = anchorText.substr(dashIndex+1);
-            customIssuers.push(new Account(address, domain, domain));
+            customIssuers.push(new Account(address, domain));
         }
 
         return customIssuers;

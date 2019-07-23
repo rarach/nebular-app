@@ -14,6 +14,7 @@ export class Asset {
         if (null === type) {
             if (this.code === Constants.NATIVE_ASSET_CODE && (!issuer || !issuer.address)) {
                 this.type = Constants.NATIVE_ASSET_TYPE;
+                this.imageUrl = Constants.NATIVE_ASSET_IMAGE;
             }
             else {
                 this.type = code.length <= 4 ? "credit_alphanum4" : "credit_alphanum12";
@@ -65,24 +66,24 @@ export class Asset {
             issuerAddress = assetUrlParam.substring(index + 1);
         }
     
-        return new Asset(assetCode, null, assetType, new Account(issuerAddress, null, null));
+        return new Asset(assetCode, null, assetType, new Account(issuerAddress, null));
     }
 }
 
 
 /** "Database" of currently knwon assets on the Stellar network. TODO: load this from backend! */
 export const KnownAssets = {
-    "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, "(native)", null)),
+    "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, null)),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
     "BTC-Interstellar" : new Asset("BTC", "Bitcoin", null, KnownAccounts.Interstellar),
     "BTC-NaoBTC" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.NaoBTC),
     "BTC-Papaya" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Papaya2),
     "CNY-RippleFox" : new Asset("CNY", "Chinese Yuan", "credit_alphanum4", KnownAccounts.RippleFox),
-    "ETH-fchain" : new Asset("ETH", "Ethereum", null, new Account("GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU", "fchain.io", null)),
+    "ETH-fchain" : new Asset("ETH", "Ethereum", null, new Account("GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU", "fchain.io")),
     "ETH-Papaya" : new Asset("ETH", "Ethereum", "credit_alphanum4", KnownAccounts.Papaya1),
     "EURT" : new Asset("EURT", "Euro", "credit_alphanum4", KnownAccounts.Tempo),
-    "GTN" : new Asset("GTN", "Glitzkoin", null, new Account("GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46", "Glitzkoin.com", null)),
-    "GRAT" : new Asset("GRAT", "Gratz token", null, new Account("GAJ7V3EMD3FRWAPBEJAP7EC4223XI5EACDZ46RFMY5DYOMCIMWEFR5II", "gratz.io", null)),
+    "GTN" : new Asset("GTN", "Glitzkoin", null, new Account("GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46", "Glitzkoin.com")),
+    "GRAT" : new Asset("GRAT", "Gratz token", null, new Account("GAJ7V3EMD3FRWAPBEJAP7EC4223XI5EACDZ46RFMY5DYOMCIMWEFR5II", "gratz.io")),
     "LTC-Interstellar" : new Asset("LTC", "Litecoin", null, KnownAccounts.Interstellar),
     "LTC-Papaya" : new Asset("LTC", "Litecoin", "credit_alphanum4", KnownAccounts.Papaya3),
     "MOBI" : new Asset("MOBI", "Mobius", "credit_alphanum4", KnownAccounts.Mobius),
@@ -90,7 +91,7 @@ export const KnownAssets = {
     "RMT" : new Asset("RMT", "SureRemit token", "credit_alphanum4", KnownAccounts.SureRemit),
     "SLT" : new Asset("SLT", "Smartlands token", "credit_alphanum4", KnownAccounts.SmartLands),
     "TERN" : new Asset("TERN", "Ternio.io TERN", "credit_alphanum4", KnownAccounts.Ternio),
-    "USD-AnchorUsd": new Asset("USD", "US dollar", null, new Account("GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX", "anchorusd.com", null)),
+    "USD-AnchorUsd": new Asset("USD", "US dollar", null, new Account("GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX", "anchorusd.com")),
     "WSD" : new Asset("WSD", "US dollar", null, KnownAccounts.WhiteStandard),
     "XCN" : new Asset("XCN", "Chinese Yuan", "credit_alphanum4", KnownAccounts.Firefly),
     "XRP-Interstellar" : new Asset("XRP", "XRP", null, KnownAccounts.Interstellar)

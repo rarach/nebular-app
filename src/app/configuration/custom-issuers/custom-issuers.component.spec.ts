@@ -27,8 +27,8 @@ describe('CustomIssuersComponent', () => {
 
     it('should contain custom issuers upon init', () => {
         expect(component.customAnchors).toEqual([
-            new Account("GOOGLE8458520", "google", "google.co.uk"),
-            new Account("GXXXXXXXXXXXXXX", "exampLE", "example.org")
+            new Account("GOOGLE8458520", "google.co.uk"),
+            new Account("GXXXXXXXXXXXXXX", "example.org")
         ]);
     });
 
@@ -104,8 +104,8 @@ describe('CustomIssuersComponent', () => {
 
 class AssetServiceStub {
     customAnchors: Account[] = [
-        new Account("GOOGLE8458520", "google", "google.co.uk"),
-        new Account("GXXXXXXXXXXXXXX", "exampLE", "example.org")
+        new Account("GOOGLE8458520", "google.co.uk"),
+        new Account("GXXXXXXXXXXXXXX", "example.org")
     ];
 
     AddCustomAnchor(address: string, issuerName: string): boolean {

@@ -50,30 +50,30 @@ describe('AssetService', () => {
     it('should load custom assets and exchanges', () => {
         expect(assetService.customAssetCodes).toEqual(["Asdf", "jkl77", "USD", "BeefCoin"]);
         expect(assetService.customAnchors).toEqual([
-            new Account("GA123456", "example.org", "example.org"),
-            new Account("GBBBBBBBBBBBB", "this_is IT", "this_is IT"),
-            new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{", "&$@@@_{{")
+            new Account("GA123456", "example.org"),
+            new Account("GBBBBBBBBBBBB", "this_is IT"),
+            new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{")
         ]);
-        const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415", "GGGGGGGGaposdyuh...", null);
+        const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415", "GGGGGGGGaposdyuh...");
         acc.domain = null;
         expect(assetService.customAssets).toEqual([
-            new Asset("ABC", "ABC", null, new Account("G0101010101010101", "G010101010101010...", "google.com"), "https://google.com/dog.png"),
+            new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"),
             new Asset("abcdef", "abcdef", "credit_alphanum12", acc, "asdf://vilence.jpg"),
-            new Asset("btC", "btC", null, new Account("GGGGGGK", "GGGGGGK...", "example.com"), "./assets/images/asset_icons/unknown.png"),
+            new Asset("btC", "btC", null, new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"),
             new Asset("CNY", "CNY", "credit_alphanum4",
-                      new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox", "ripplefox.com"),
+                      new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
                       "ripplefox.com/cny.png")
         ]);
         expect(assetService.customExchanges).toEqual([
             new ExchangePair("5555",
-                             new Asset("USD", "USD", null, new Account("GAAAASLIMIT", "GAAAASLIMIT...", "GAAAASLIMIT...")),
-                             new Asset("XLM", "XLM", null, new Account(/*native*/null, "(native)", "(native)"))),
+                             new Asset("USD", "USD", null, new Account("GAAAASLIMIT", "GAAAASLIMIT...")),
+                             new Asset("XLM", "XLM", null, new Account(/*native*/null, null))),
             new ExchangePair("12345",
-                             new Asset("lightcoin", "lightcoin", "credit_alphanum12", new Account("GIBRALTARRRRR458743551", "GIBRALTARRRRR458...", "GIBRALTARRRRR458...")),
-                             new Asset("XrP", "XrP", "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0...", "G0G0G0G0..."))),
+                             new Asset("lightcoin", "lightcoin", "credit_alphanum12", new Account("GIBRALTARRRRR458743551", "GIBRALTARRRRR458...")),
+                             new Asset("XrP", "XrP", "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0..."))),
             new ExchangePair("10101010",
-                             new Asset("XLM", "XLM", "native", new Account(null, "(native)", "(native)")),
-                             new Asset("xlm", "xlm", null, new Account(null, "(native)", "(native)")))
+                             new Asset("XLM", "XLM", "native", new Account(null, null), "./assets/images/asset_icons/XLM.png"),
+                             new Asset("xlm", "xlm", null, new Account(null, null)))
         ]);
     });
     it("#getAssetCodesForExchange() ", () => {
@@ -83,19 +83,19 @@ describe('AssetService', () => {
     it("#getAllAnchors() returns common+custom anchors", () => {
         const issuers = assetService.getAllAnchors();
         expect(issuers.length).toBe(12);
-        expect(issuers[0]).toEqual(new Account(null, "(native)", "(native)"));
+        expect(issuers[0]).toEqual(new Account(null, null));
         expect(issuers[1]).toEqual(KnownAccounts.NaoBTC);
         expect(issuers[2]).toEqual(KnownAccounts.Papaya2);      //etc...
-        expect(issuers).toContain(new Account("GA123456", "example.org", "example.org"));
-        expect(issuers).toContain(new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{", "&$@@@_{{"));
+        expect(issuers).toContain(new Account("GA123456", "example.org"));
+        expect(issuers).toContain(new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{"));
     });
     it("#GetIssuersByAssetCode('CNY') gives common+custom assets", () => {
         assetService.AddCustomAsset("CNY", "GBELS050505050505050505");
         const assets = assetService.GetIssuersByAssetCode("CNY");
         expect(assets).toEqual([
             KnownAccounts.RippleFox,
-            new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "RippleFox", "ripplefox.com"),
-            new Account("GBELS050505050505050505", "GBELS05050505050...", "GBELS05050505050...")
+            new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
+            new Account("GBELS050505050505050505", "GBELS05050505050...")
         ]);
     });
     it("#getFirstIssuerAddress('BTC') returns address of first BTC anchor", () => {
@@ -106,7 +106,6 @@ describe('AssetService', () => {
     });
     it("#GetIssuerByAddress('GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX') returns 'RippleFox' Account", () => {
         const anchor = assetService.GetIssuerByAddress('GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX');
-        expect(anchor.shortName).toBe("RippleFox");
         expect(anchor.domain).toBe("ripplefox.com");
     });
     it("#GetIssuerByAddress('GBDDD_NOPE') returns null", () => {
@@ -137,14 +136,14 @@ describe('AssetService', () => {
         expect(assetService.customAnchors.length).toBe(3);
         expect(assetService.AddCustomAnchor("GOLGOTHA", "golgotha.com")).toBe(true);
         expect(assetService.customAnchors.length).toBe(4);
-        expect(assetService.customAnchors).toContain(new Account("GOLGOTHA", "golgotha.com", "golgotha.com"));
+        expect(assetService.customAnchors).toContain(new Account("GOLGOTHA", "golgotha.com"));
     });
     it("#RemoveCustomAnchor() deletes existing anchor", () => {
         expect(assetService.customAnchors.length).toBe(3);
-        expect(assetService.customAnchors).toContain(new Account("GA123456", "example.org", "example.org"));
+        expect(assetService.customAnchors).toContain(new Account("GA123456", "example.org"));
         expect(assetService.RemoveCustomAnchor("GA123456")).toBe(true);
         expect(assetService.customAnchors.length).toBe(2);
-        expect(assetService.customAnchors).not.toContain(new Account("GA123456", "example.org", "example.org"));
+        expect(assetService.customAnchors).not.toContain(new Account("GA123456", "example.org"));
     });
     it("#RemoveCustomAnchor('Gnonsense') doesn't delete any anchor and returns FALSE", () => {
         expect(assetService.customAnchors.length).toBe(3);
@@ -173,10 +172,10 @@ describe('AssetService', () => {
         expect(newAsset.code).toBe("04");
         expect(newAsset.fullName).toBe("04");
         expect(newAsset.type).toBe("credit_alphanum4");
-        expect(newAsset.issuer).toEqual(new Account("GWYNETH", "GWYNETH...", "GWYNETH..."))
+        expect(newAsset.issuer).toEqual(new Account("GWYNETH", "GWYNETH..."))
     });
     it("#RemoveCustomAsset() deletes custom asset", () => {
-        assetService.customAssets.push(new Asset("TRY", "Turkish lyra", null, new Account("GOGODanceQQQ", "test you you testing test", "nebul.ar")));
+        assetService.customAssets.push(new Asset("TRY", "Turkish lyra", null, new Account("GOGODanceQQQ", "nebul.ar")));
         expect(assetService.customAssets.length).toBe(5);
         expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(true);
         expect(assetService.customAssets.length).toBe(4);
@@ -191,7 +190,7 @@ describe('AssetService', () => {
         const newPair = assetService.CreateCustomExchange();
         expect(assetService.customExchanges.length).toBe(4);
         expect(newPair.id).toBeTruthy();
-        expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, "(native)", "(native)")));
+        expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null)));
         expect(newPair.counterAsset.code).toBe("XLM");
     });
     it("#UpdateCustomExchange() updates existing pair", () => {
@@ -202,7 +201,7 @@ describe('AssetService', () => {
         const updatedExch = assetService.UpdateCustomExchange("12345", "MXN", "GUPDATED", "DDD", "GBBBBBBBBBBBB");
         expect(assetService.customExchanges.length).toBe(3);
         expect(updatedExch.id).toBe("12345");
-        expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "MXN", null, new Account("GUPDATED", "GUPDATED...", "GUPDATED...")));
+        expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "MXN", null, new Account("GUPDATED", "GUPDATED...")));
         expect(updatedExch).toBe(assetService.customExchanges[1]);
         expect(updatedExch.counterAsset.code).toBe("DDD");
     });
@@ -224,10 +223,10 @@ describe('AssetService', () => {
     });
     it("#serializeToCookie() works", () => {
         assetService.customAssetCodes.push("COOK");
-        assetService.customAnchors.push(new Account("GCookie", "Coockie string test", "cook.ie"));
+        assetService.customAnchors.push(new Account("GCookie", "cook.ie"));
         assetService.customAssets.push(KnownAssets["USD-AnchorUsd"]);
         assetService.customExchanges.push(new ExchangePair("c00k1e",
-                                                          new Asset("C00K", "Cookie token", "credit_alpanum4", new Account("G0141414", "cook-test", "asdf.org")),
+                                                          new Asset("C00K", "Cookie token", "credit_alpanum4", new Account("G0141414", "asdf.org")),
                                                           KnownAssets["ETH-fchain"]));
         //Call one of the methods that internally call serializeToCookie()
         assetService.AddCustomAssetCode("C01K");
