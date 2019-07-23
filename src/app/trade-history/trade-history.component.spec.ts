@@ -21,7 +21,7 @@ describe('TradeHistoryComponent', () => {
         fixture = TestBed.createComponent(TradeHistoryComponent);
         component = fixture.componentInstance;
         component.exchange = new ExchangePair("84512",
-                                              KnownAssets["LTC-Liquido"],
+                                              KnownAssets["LTC-Interstellar"],
                                               new Asset("XXXOR", "xor token", null, new Account("GBRITVA", "<unknown>", "what-ever.home")));
         fixture.detectChanges();
     });

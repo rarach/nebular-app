@@ -37,10 +37,10 @@ describe('OrderbookComponent', () => {
         component.ngOnDestroy();
         expect(component.fillOrderBook).toHaveBeenCalledTimes(1);
     });
-    it("assigning [exchange]=XLM/KAVA retrieves orderbook", () => {
-        component.exchange = new ExchangePair("XLM/KAVA", KnownAssets.XLM, KnownAssets.KAVA);
+    it("assigning [exchange]=XLM/GTN retrieves orderbook", () => {
+        component.exchange = new ExchangePair("XLM/GTN", KnownAssets.XLM, KnownAssets.GTN);
         expect(component._exchange.baseAsset.code).toBe("XLM");
-        expect(component._exchange.counterAsset.issuer.address).toBe(KnownAssets.KAVA.issuer.address);
+        expect(component._exchange.counterAsset.issuer.address).toBe(KnownAssets.GTN.issuer.address);
         expect(component.orderbook.bids).toEqual([
             new Offer(5524.8618785, 41.580660599658465, 41.580660599658465, false),
             new Offer(5263.1578947, 0.8047200000146331, 41.580660599658465 + 0.8047200000146331, false)
@@ -78,7 +78,7 @@ class HorizonSericeStub {
         if ("empty" === exchange.id) {
             return of({bids: [], asks: []});
         }
-        if ("XLM/KAVA" === exchange.id) {
+        if ("XLM/GTN" === exchange.id) {
             const data = {
                 "bids": [
                     {

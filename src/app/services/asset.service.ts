@@ -362,7 +362,7 @@ export class AssetService {
             const parts = assetText.split("|");
             const assetCode = parts[0];
             const issuerAddress = parts[1];
-            const domain = parts[2];
+            const domain = parts[2] || null;
             const imageUrl = parts[3];
             const issuer = this.getAnchorByAddress(issuerAddress);
             issuer.domain = domain;         //TODO: is this necessary if we've been able to retrieve the anchor from database?

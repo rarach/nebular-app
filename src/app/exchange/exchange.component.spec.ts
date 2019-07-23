@@ -40,7 +40,7 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.chartMessage).toBe("Loading chart...");
     });
     it("should display error message when base asset is missing in URL", () => {
-        exchComponent.exchange = new ExchangePair("test01", KnownAssets.XLM, KnownAssets.TELLUS);
+        exchComponent.exchange = new ExchangePair("test01", KnownAssets.XLM, KnownAssets["ETH-fchain"]);
         exchComponent.ngOnInit();
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Invalid URL: missing base asset");
