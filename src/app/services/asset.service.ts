@@ -79,7 +79,7 @@ export class AssetService {
     }
 
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
-    private getAvailableAssets(): Asset[] {
+    getAvailableAssets(): Asset[] {
         return this._commonAssets.concat(this.customAssets);
     }
 

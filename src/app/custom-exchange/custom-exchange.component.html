@@ -2,7 +2,13 @@
     <div onmouseover="$(this).find('div.removeExchButton').show();" onmouseout="$(this).find('div.removeExchButton').hide();">
         <div class="assetsSelection" onclick="return false;">
             <div class="removeExchButton" (click)="removeExchange()">X</div>
+
+
+
+
+
             <div class="assetDropDowns">
+<!--DEL?
                 <mat-form-field style="width: 100px;">
                     <mat-select [(value)]="selectedBaseAssetCode" class="selectedAssetCode"
                                 (selectionChange)="baseAssetCodeChanged($event)" [title]="selectedBaseAssetCode.tooltip">
@@ -18,6 +24,18 @@
                         </mat-option>
                     </mat-select>
                 </mat-form-field>
+-->
+                <mat-form-field style="width: 50%;">
+                    <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption">
+                        <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
+                            <img src="{{asset.imageUrl}}" style="width: 24px; height: 24px;" /> {{asset.text}}
+                        </mat-option>
+                    </mat-select>
+                </mat-form-field>
+                
+
+
+
                 <mat-form-field style="width: 100px;">
                     <mat-select [(value)]="selectedCounterAssetCode" class="selectedAssetCode"
                                 (selectionChange)="counterAssetCodeChanged($event)" [title]="selectedCounterAssetCode.tooltip">

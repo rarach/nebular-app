@@ -123,6 +123,16 @@ div.headerLinks {
     font-weight: bolder;
     background-color: #FDFDFD;
 }
+
+:host ::ng-deep .selectedAssetOption {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 15px;
+}
+
+
+
+/*TODO: delete these*/
 :host ::ng-deep .selectedAssetCode {
     height: 38px;
     width: 140px;

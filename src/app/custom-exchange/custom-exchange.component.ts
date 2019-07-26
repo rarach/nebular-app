@@ -3,6 +3,7 @@ import { AssetService } from '../services/asset.service';
 import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { KnownAssets } from '../model/asset.model';
+import { Constants } from '../model/constants';
 
 
 @Component({
@@ -22,8 +23,20 @@ export class CustomExchangeComponent implements OnInit {
     selectedCounterIssuer: DropdownOption = null;
 
 
+    assetOptions: DropdownOption[] = [];
+    selectedBaseAsset: DropdownOption = null;
+    selectedCounterAsset: DropdownOption = null;
+
+
+
     constructor(private assetService: AssetService) {
         this.loadAssetCodes();
+
+
+
+this.loadBaseAssets();
+
+
     }
 
     ngOnInit() {
@@ -67,6 +80,45 @@ export class CustomExchangeComponent implements OnInit {
         this.loadBaseIssuers();
         this.loadCounterIssuers();
     }
+
+
+
+    private setupUi2() {
+        //Set selected option in base asset code drop-down
+        let baseAssetDdOption: DropdownOption = null;
+        for (let option of this.assetOptions) {
+            const assetId = this.exchange.baseAsset.code + "-" + this.exchange.baseAsset.issuer.address;
+            if (option.value === assetId) {
+                baseAssetDdOption = option;
+                break;
+            }
+        }
+
+        //We got asset that we don't recognize (most likely zombie asset from cookie)
+        if (null === baseAssetDdOption) {
+            const assetId: string = this.exchange.baseAsset.code + "-" + this.exchange.baseAsset.issuer.address;
+            baseAssetDdOption = new DropdownOption(assetId, this.exchange.baseAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
+        }
+        this.selectedBaseAsset = baseAssetDdOption;
+
+        //Selected counter asset option
+        let counterAssetDdOption: DropdownOption = null;
+        for (let option of this.assetOptions) {
+            const assetId = this.exchange.counterAsset.code + "-" + this.exchange.counterAsset.issuer.address;
+            if (option.value === assetId) {
+                counterAssetDdOption = option;
+                break;
+            }
+        }
+
+        //Unknown counter asset
+        if (null === counterAssetDdOption) {
+            const assetId: string = this.exchange.counterAsset.code + "-" + this.exchange.counterAsset.issuer.address;
+            counterAssetDdOption = new DropdownOption(assetId, this.exchange.counterAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
+        }
+        this.selectedCounterAsset = counterAssetDdOption;
+    }
+
 
     private updateExchange() {
         const baseAssetCode = this.selectedBaseAssetCode.value;
@@ -130,6 +182,18 @@ export class CustomExchangeComponent implements OnInit {
             this.selectedBaseIssuer = ddOption;
         }
     }
+
+
+    private loadBaseAssets() {
+        for (let asset of this.assetService.getAvailableAssets()) {
+            const ddOption = new DropdownOption(asset.code+"-"+asset.issuer.address,
+                                                asset.code+"-"+asset.issuer.domain,
+                                                asset.fullName, asset.imageUrl);
+            this.assetOptions.push(ddOption);
+        }
+    }
+
+
 
     private loadCounterIssuers() {
         this.counterIssuerOptions = [];
