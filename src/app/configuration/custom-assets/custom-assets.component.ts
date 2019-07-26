@@ -15,9 +15,9 @@ import { DropdownOption } from 'src/app/model/dropdown-option';
 })
 export class CustomAssetsComponent implements OnInit, OnDestroy {
     private _getParamsSubscriber: Subscription;
-    assetCodes: DropdownOption[] = null;
+    assetCodes: DropdownOption<string>[] = null;
     selectedAssetCode: string = "";
-    assetIssuers: DropdownOption[] = null;
+    assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
@@ -88,7 +88,7 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
     }
 
     private loadAssetCodes() {
-        this.assetCodes = new Array<DropdownOption>();
+        this.assetCodes = new Array<DropdownOption<string>>();
         const codes: string[] = this.assetService.getAllAssetCodes();
         for(let assetCode of codes) {
             //Search for asset full name among know assets
@@ -105,7 +105,7 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
     }
 
     private loadAnchors() {
-        this.assetIssuers = new Array<DropdownOption>();
+        this.assetIssuers = new Array<DropdownOption<string>>();
         const anchors = this.assetService.getAllAnchors();
         for (let i=0; i<anchors.length; i++) {
             const issuerAccount = anchors[i];

@@ -37,13 +37,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     lastTradeTime: Date = null;
     chartMessage: string = "Loading chart...";
 
-    assetCodeOptions: DropdownOption[] = [];
-    selectedBaseAssetCode: DropdownOption = null;
-    selectedCounterAssetCode: DropdownOption = null;
-    baseIssuerOptions: DropdownOption[] = [];
-    counterIssuerOptions: DropdownOption[] = []
-    selectedBaseIssuer: DropdownOption = null;
-    selectedCounterIssuer: DropdownOption = null;
+    assetCodeOptions: DropdownOption<string>[] = [];
+    selectedBaseAssetCode: DropdownOption<string> = null;
+    selectedCounterAssetCode: DropdownOption<string> = null;
+    baseIssuerOptions: DropdownOption<string>[] = [];
+    counterIssuerOptions: DropdownOption<string>[] = []
+    selectedBaseIssuer: DropdownOption<string> = null;
+    selectedCounterIssuer: DropdownOption<string> = null;
 
 
     constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
@@ -91,7 +91,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
     private setupUi() {
         //Set selected option in base asset code drop-down
-        let baseCodeDdOption: DropdownOption = null;
+        let baseCodeDdOption: DropdownOption<string> = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.baseAsset.code) {
                 baseCodeDdOption = option;
@@ -107,7 +107,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.selectedBaseAssetCode = baseCodeDdOption;
 
         //Selected option in counter code drop-down
-        let counCodeDdOption: DropdownOption = null;
+        let counCodeDdOption: DropdownOption<string> = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.counterAsset.code) {
                 counCodeDdOption = option;

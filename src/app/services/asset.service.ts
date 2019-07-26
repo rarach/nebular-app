@@ -277,6 +277,23 @@ export class AssetService {
         return null;
     }
 
+
+
+    UpdateCustomExchange2(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
+        for (let i=0; i<this.customExchanges.length; i++) {
+            if (this.customExchanges[i].id === exchangeId) {
+                this.customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
+                this.serializeToCookie();
+                return this.customExchanges[i];
+            }
+        }
+
+        return null;
+    }
+
+
+
+
     /** @public Delete exchange by its ID in the array of custom exchanges */
     RemoveCustomExchange(exchangeId: string): boolean {
         for (let i=0; i<this.customExchanges.length; i++) {

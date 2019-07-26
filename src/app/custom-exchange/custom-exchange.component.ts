@@ -1,9 +1,11 @@
 import { Component, OnInit, Input } from '@angular/core';
+
+import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
+import { Constants } from '../model/constants';
 import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
-import { KnownAssets } from '../model/asset.model';
-import { Constants } from '../model/constants';
+import { Account } from '../model/account.model';
 
 
 @Component({
@@ -14,18 +16,18 @@ import { Constants } from '../model/constants';
 export class CustomExchangeComponent implements OnInit {
     @Input() exchange: ExchangePair;
 
-    assetCodeOptions: DropdownOption[] = [];            
-    selectedBaseAssetCode: DropdownOption = null;
-    selectedCounterAssetCode: DropdownOption = null;
-    baseIssuerOptions: DropdownOption[] = [];       //TODO: could be directly Account[] ?
-    counterIssuerOptions: DropdownOption[] = []
-    selectedBaseIssuer: DropdownOption = null;
-    selectedCounterIssuer: DropdownOption = null;
+    assetCodeOptions: DropdownOption<string>[] = [];            
+    selectedBaseAssetCode: DropdownOption<string> = null;
+    selectedCounterAssetCode: DropdownOption<string> = null;
+    baseIssuerOptions: DropdownOption<string>[] = [];       //TODO: could be directly Account[] ?
+    counterIssuerOptions: DropdownOption<string>[] = []
+    selectedBaseIssuer: DropdownOption<string> = null;
+    selectedCounterIssuer: DropdownOption<string> = null;
 
 
-    assetOptions: DropdownOption[] = [];
-    selectedBaseAsset: DropdownOption = null;
-    selectedCounterAsset: DropdownOption = null;
+    assetOptions: DropdownOption<Asset>[] = [];
+    selectedBaseAsset: DropdownOption<Asset> = null;
+    selectedCounterAsset: DropdownOption<Asset> = null;
 
 
 
@@ -41,12 +43,18 @@ this.loadBaseAssets();
 
     ngOnInit() {
         this.setupUi();
+
+
+
+this.setupUi2();
+
+
     }
 
 
     private setupUi(){
         //Set selected option in base asset code drop-down
-        let baseCodeDdOption: DropdownOption = null;
+        let baseCodeDdOption: DropdownOption<string> = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.baseAsset.code) {
                 baseCodeDdOption = option;
@@ -62,7 +70,7 @@ this.loadBaseAssets();
         this.selectedBaseAssetCode = baseCodeDdOption;
 
         //Selected option in counter code drop-down
-        let counCodeDdOption: DropdownOption = null;
+        let counCodeDdOption: DropdownOption<string> = null;
         for (let option of this.assetCodeOptions) {
             if (option.value === this.exchange.counterAsset.code) {
                 counCodeDdOption = option;
@@ -85,10 +93,10 @@ this.loadBaseAssets();
 
     private setupUi2() {
         //Set selected option in base asset code drop-down
-        let baseAssetDdOption: DropdownOption = null;
+        let baseAssetDdOption: DropdownOption<Asset> = null;
         for (let option of this.assetOptions) {
-            const assetId = this.exchange.baseAsset.code + "-" + this.exchange.baseAsset.issuer.address;
-            if (option.value === assetId) {
+//DEL?            const assetId = this.exchange.baseAsset.code + "-" + this.exchange.baseAsset.issuer.address;
+            if (option.value.code === this.exchange.baseAsset.code && option.value.issuer.address === this.exchange.baseAsset.issuer.address) {
                 baseAssetDdOption = option;
                 break;
             }
@@ -97,15 +105,18 @@ this.loadBaseAssets();
         //We got asset that we don't recognize (most likely zombie asset from cookie)
         if (null === baseAssetDdOption) {
             const assetId: string = this.exchange.baseAsset.code + "-" + this.exchange.baseAsset.issuer.address;
-            baseAssetDdOption = new DropdownOption(assetId, this.exchange.baseAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
+            const lostAsset = new Asset(this.exchange.baseAsset.code, this.exchange.baseAsset.code, null,
+                                        new Account(this.exchange.baseAsset.issuer.address, null));
+            baseAssetDdOption = new DropdownOption(/*assetId*/lostAsset, this.exchange.baseAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
         }
         this.selectedBaseAsset = baseAssetDdOption;
 
         //Selected counter asset option
-        let counterAssetDdOption: DropdownOption = null;
+        let counterAssetDdOption: DropdownOption<Asset> = null;
         for (let option of this.assetOptions) {
             const assetId = this.exchange.counterAsset.code + "-" + this.exchange.counterAsset.issuer.address;
-            if (option.value === assetId) {
+//DE?            if (option.value === assetId) {
+            if (option.value.code === this.exchange.counterAsset.code && option.value.issuer.address === this.exchange.counterAsset.issuer.address) {
                 counterAssetDdOption = option;
                 break;
             }
@@ -114,19 +125,29 @@ this.loadBaseAssets();
         //Unknown counter asset
         if (null === counterAssetDdOption) {
             const assetId: string = this.exchange.counterAsset.code + "-" + this.exchange.counterAsset.issuer.address;
-            counterAssetDdOption = new DropdownOption(assetId, this.exchange.counterAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
+            const lostAsset = new Asset(this.exchange.counterAsset.code, this.exchange.counterAsset.code, null,
+                                        new Account(this.exchange.counterAsset.issuer.address, null));
+            counterAssetDdOption = new DropdownOption(/*assetId*/lostAsset, this.exchange.counterAsset.code, assetId, Constants.UNKNOWN_ASSET_IMAGE);
         }
         this.selectedCounterAsset = counterAssetDdOption;
     }
 
 
     private updateExchange() {
-        const baseAssetCode = this.selectedBaseAssetCode.value;
-        const baseIssuerAddress = this.selectedBaseIssuer.value;
+/*DEL?        const baseAssetCode = this.selectedBaseAssetCode.value;
+        const baseIssuerAddress = this.selectedBaseIssuer.value; */
+/*DEL?        const baseAssetParts = this.selectedBaseAsset.value.split("-");
+        const baseAssetCode = baseAssetParts[0];
+        let baseIssuerAddress = baseAssetParts[1];
+        if ("null" === baseIssuerAddress) {         //Not nice. TODO: we should make DropDownOption.value be 'any' to get rid of this.
+            baseIssuerAddress = null;
+        } */
+
+
         const counterAssetCode = this.selectedCounterAssetCode.value;
         const counterIssuerAddress = this.selectedCounterIssuer.value;
 
-        this.assetService.UpdateCustomExchange(this.exchange.id, baseAssetCode, baseIssuerAddress, counterAssetCode, counterIssuerAddress);
+        this.assetService.UpdateCustomExchange2(this.exchange.id, this.selectedBaseAsset.value, this.selectedCounterAsset.value);
     }
 
     removeExchange() {
@@ -186,9 +207,11 @@ this.loadBaseAssets();
 
     private loadBaseAssets() {
         for (let asset of this.assetService.getAvailableAssets()) {
-            const ddOption = new DropdownOption(asset.code+"-"+asset.issuer.address,
-                                                asset.code+"-"+asset.issuer.domain,
-                                                asset.fullName, asset.imageUrl);
+            let longName = asset.code;
+            if (!asset.IsNative()) {
+                longName += "-" + asset.issuer.domain;
+            }
+            const ddOption = new DropdownOption(/*asset.code+"-"+asset.issuer.address*/asset, longName, asset.fullName, asset.imageUrl);
             this.assetOptions.push(ddOption);
         }
     }
@@ -235,7 +258,7 @@ this.loadBaseAssets();
         this.updateExchange();
     }
 
-    issuerChanged(event)
+    issuerChanged(event)            //TODO: rename updateExchange to assetChanged and delete this one.
     {
         this.updateExchange();
     }
