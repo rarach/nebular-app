@@ -73,10 +73,17 @@ describe('CustomExchangeComponent', () => {
     it("#issuerChanged calls service.UpdateCustomExchange with correct inputs", () => {
         expect(component.exchange.baseAsset.code).toBe("RRR");
         expect(component.exchange.counterAsset.issuer.address).toBe("G014");
-        component.selectedBaseAssetCode = new DropdownOption("ABC", null, null);
+
+/*DEL?        component.selectedBaseAssetCode = new DropdownOption("ABC", null, null);
         component.selectedBaseIssuer = new DropdownOption("GARGAMELLL", null, null);
         component.selectedCounterAssetCode = new DropdownOption("CHF", null, null);
-        component.selectedCounterIssuer = new DropdownOption("(native)", null, null);
+        component.selectedCounterIssuer = new DropdownOption("(native)", null, null); */
+        component.selectedBaseAsset = new DropdownOption(new Asset("ABC", null, null, new Account("GARGAMELLL", "rag.gar")),
+                                                         "ABC-GARGame.l", null);
+        component.selectedCounterAsset = new DropdownOption(new Asset("CHF", null, null, new Account("GANything", null)),
+                                                            "CHF-GANything (swiss franck)", null);
+
+
         const assetService = TestBed.get(AssetService);
         expect(assetService.updateCalled).toBeFalsy();
         component.issuerChanged(null);
@@ -118,6 +125,10 @@ describe("CustomExchangeComponent", () => {
 class AssetServiceStub {
     getAssetCodesForExchange(): string[] {
         return [ "XLM", "BONY", "MXN", "RRR" ];
+    }
+
+    getAvailableAssets(): Asset[] {
+        return [];
     }
 
     GetIssuersByAssetCode(code: string): Account[] {
@@ -164,6 +175,26 @@ class AssetServiceStub {
         }
         throw new Error("No data prepared for given inputs (exchange id=" + id + ")");
     }
+
+
+
+
+    UpdateCustomExchange2(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {      //TODO: delete the above one when done refactoring
+        if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer.address &&
+            "CHF" === counterAsset.code && "GANything" === counterAsset.issuer.address)
+        {
+            this.updateCalled = true;
+            return null;
+        }
+        if ("k85u56ww56" === exchangeId) {
+            return null;
+        }
+
+        throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer.address} ...)`);
+    }
+
+
+
 
     removeCalled = false;
     RemoveCustomExchange(exchId: string) {

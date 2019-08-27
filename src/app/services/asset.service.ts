@@ -279,7 +279,7 @@ export class AssetService {
 
 
 
-    UpdateCustomExchange2(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
+    UpdateCustomExchange2(exchangeId: string, baseAsset: Asset, counterAsset: Asset): ExchangePair {            //TODO: delete the previous one when done refactoring
         for (let i=0; i<this.customExchanges.length; i++) {
             if (this.customExchanges[i].id === exchangeId) {
                 this.customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
