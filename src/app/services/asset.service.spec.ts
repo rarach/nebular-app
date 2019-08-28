@@ -48,12 +48,6 @@ describe('AssetService', () => {
     });
 
     it('should load custom assets and exchanges', () => {
-        expect(assetService.customAssetCodes).toEqual(["Asdf", "jkl77", "USD", "BeefCoin"]);
-        expect(assetService.customAnchors).toEqual([
-            new Account("GA123456", "example.org"),
-            new Account("GBBBBBBBBBBBB", "this_is IT"),
-            new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{")
-        ]);
         const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415", "GGGGGGGGaposdyuh...");
         acc.domain = null;
         expect(assetService.customAssets).toEqual([
@@ -63,6 +57,12 @@ describe('AssetService', () => {
             new Asset("CNY", "CNY", "credit_alphanum4",
                       new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
                       "ripplefox.com/cny.png")
+        ]);
+        expect(assetService.customAssetCodes).toEqual(["ABC", "abcdef", "btC"]);
+        expect(assetService.customAnchors).toEqual([
+            new Account("GA123456", "example.org"),
+            new Account("GBBBBBBBBBBBB", "this_is IT"),
+            new Account("GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12", "&$@@@_{{")
         ]);
         expect(assetService.customExchanges).toEqual([
             new ExchangePair("5555",
@@ -110,22 +110,6 @@ describe('AssetService', () => {
     });
     it("#GetIssuerByAddress('GBDDD_NOPE') returns null", () => {
         expect(assetService.GetIssuerByAddress("GBDDD_NOPE")).toBeNull();
-    });
-    it("#AddCustomAssetCode() returns FALSE for existing asset code", () => {
-        expect(assetService.AddCustomAssetCode("USD")).toBe(false);
-    });
-    it("#AddCustomAssetCode('nEW') adds the code", () => {
-        expect(assetService.customAssetCodes).not.toContain('nEW');
-        expect(assetService.AddCustomAssetCode("nEW")).toBe(true);
-        expect(assetService.customAssetCodes).toContain('nEW');
-    });
-    it("#RemoveCustomAssetCode() removes existing code", () => {
-        assetService.customAssetCodes.push("OLD");
-        expect(assetService.RemoveCustomAssetCode("OLD")).toBe(true);
-        expect(assetService.customAssetCodes).not.toContain("OLD");
-    });
-    it("#RemoveCustomAssetCode('NOsuch') returns false", () => {
-        expect(assetService.RemoveCustomAssetCode("NOsuch")).toBe(false);
     });
     it("#AddCustomAnchor() doesn't add new issuer if it already exists", () => {
         expect(assetService.customAnchors.length).toBe(3);
@@ -229,13 +213,12 @@ describe('AssetService', () => {
                                                           new Asset("C00K", "Cookie token", "credit_alpanum4", new Account("G0141414", "asdf.org")),
                                                           KnownAssets["ETH-fchain"]));
         //Call one of the methods that internally call serializeToCookie()
-        assetService.AddCustomAssetCode("C01K");
+        assetService.CreateCustomExchange();
 
         const cookieService = TestBed.get(CookieService);
-        expect(cookieService.values["aco"]).toBe("Asdf,jkl77,USD,BeefCoin,COOK,C01K");
         expect(cookieService.values["iss"]).toBe("GA123456%2Fexample.org,GBBBBBBBBBBBB%2Fthis_is%20IT,GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12%2F%26%24%40%40%40_%7B%7B,GCookie%2Fcook.ie");
         expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|null|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
-        expect(cookieService.values["exc"]).toBe("5555#USD-GAAAASLIMIT/XLM,12345#lightcoin-GIBRALTARRRRR458743551/XrP-G0G0G0G0,10101010#XLM/xlm-null,c00k1e#C00K-G0141414/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU");
+        expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/xlm-null,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
     });
 });
 
@@ -243,9 +226,6 @@ describe('AssetService', () => {
 
 class CookieServiceStub {
     get(key: string): string {
-        if ("aco" === key) {
-            return "Asdf,jkl77,USD,BeefCoin";
-        }
         if ("iss" === key) {
             return "GA123456/example.org, GBBBBBBBBBBBB/this_is IT, GARFANKEL64ASDF45ASDF4A5SD4F5A1SD0FSDGJLVH12/&$@@@_{{";
         }
@@ -260,7 +240,7 @@ class CookieServiceStub {
 
     values = new Array();
     put(key: string, value: string, options: any) {
-        if ("aco" === key || "iss" === key || "ass" === key || "exc" === key) {
+        if ("iss" === key || "ass" === key || "exc" === key) {
             this.values[key] = value;
             return;
         }

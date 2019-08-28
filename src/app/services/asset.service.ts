@@ -26,9 +26,9 @@ export class AssetService {
     /** User's custom defined assets */
     readonly customAssets: Asset[];
     /** User's custom defined asset codes */
-    readonly customAssetCodes: string[];        //TODO: extract from customAssets
+    readonly customAssetCodes: string[];
     /** Custom anchors defined by the user */
-    readonly customAnchors: Account[];          //TODO: extract from customAssets
+    readonly customAnchors: Account[] = new Array<Account>();          //TODO: extract from customAssets
     /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     readonly customExchanges: ExchangePair[];
 
@@ -48,9 +48,9 @@ export class AssetService {
             }
         }
 
-        this.customAssetCodes = this.loadAssetCodes();  //TODO: delete these 2 lines
-        this.customAnchors = this.loadAnchors();
         this.customAssets = this.loadAssets();
+        this.customAssetCodes = this.loadAssetCodes();
+        this.customAnchors = this.loadAnchors();        //TODO: do we need this?        
         this.customExchanges = this.loadExchanges();
     }
 
@@ -125,35 +125,6 @@ export class AssetService {
         }
 
         return null;
-    }
-
-    /**
-     * Add new asset code (e.g. "USD", "BTC"...)
-     * @param assetCode up to 12 chars of new asset code
-     * @returns {boolean} - true on success, false if given asset type already exists
-     */
-    AddCustomAssetCode(assetCode: string): boolean {            //TODO: delete. The codes must be extracted from custom assets.
-        //Don't add if it's already there
-        for (let i=0; i < this.customAssetCodes.length; i++) {
-            if (this.customAssetCodes[i] === assetCode) {
-                return false;
-            }
-        }
-        this.customAssetCodes.push(assetCode);
-        this.serializeToCookie();
-        return true;
-    }
-
-    RemoveCustomAssetCode(assetCode: string): boolean {         //TODO: delete. The codes must be extracted from custom assets.
-        for (let i=0; i < this.customAssetCodes.length; i++) {
-            if (this.customAssetCodes[i] === assetCode) {
-                this.customAssetCodes.splice(i, 1);
-                this.serializeToCookie();
-                return true;
-            }
-        }
-        //No such asset type, nothing to remove
-        return false;
     }
 
     /**
@@ -324,20 +295,19 @@ export class AssetService {
         return new Account(issuerAddress, null);
     }
 
-    private loadAssetCodes(): string[] {        //TODO: delete. The codes must be extracted from custom assets.
-        const COOKIE_NAME = "aco";
-        const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
-        const customCodes = new Array();
+    /** Extract asset codes from custo assets. */
+    private loadAssetCodes(): string[] {
+        const codes = new Array<string>();
 
-        const assetCodes = cookieText.split(",");
-        for (let a=0; a<assetCodes.length; a++) {
-            if ((assetCodes[a] || "").length <= 0) {
-                continue;
+        for (let asset of this.customAssets) {
+            const assetCode: string = asset.code;
+            //UNION with _commonAssetCodes
+            if (-1 === codes.indexOf(assetCode) && -1 === this._commonAssetCodes.indexOf(assetCode)) {
+                codes.push(assetCode);
             }
-            customCodes.push(assetCodes[a].trim());
         }
 
-        return customCodes;
+        return codes;
     }
 
     /**
@@ -431,18 +401,10 @@ export class AssetService {
     private serializeToCookie() {
         let cookieText = "";
 
-//TODO: delete next 2 blocks
         //Asset codes
         var i = 0;
-        for (i = 0; i<this.customAssetCodes.length; i++) {
-            if (i>0) {
-                cookieText += ",";
-            }
-            cookieText += this.customAssetCodes[i];
-        }
-        this.setCookieValue("aco", cookieText);
 
-        //Anchors
+        //Anchors    (TODO: delete)
         cookieText = "";
         for (i=0; i<this.customAnchors.length; i++) {
             const anchor = this.customAnchors[i];
