@@ -22,16 +22,7 @@ describe('AssetService', () => {
     it('should be instantiated', inject([CookieService], (cookieService) => {
         const assetService = new AssetService(cookieService);
         expect(assetService).not.toBeNull();
-        expect(assetService.customAssetCodes.length).toBe(0);
-    }));
-    it("returns all available asset codes excluding XLM", inject([CookieService], (cookieService) => {
-        const assetService = new AssetService(cookieService);
-        assetService.customAssetCodes.push("XYZZ");
-        const allAssetCodes = assetService.getAllAssetCodes();
-        expect(allAssetCodes.length).toBeGreaterThan(5);
-        expect(allAssetCodes[0]).toEqual("BTC");
-        expect(allAssetCodes[1]).toEqual("CNY");    //etc...
-        expect(allAssetCodes).toContain("XYZZ");
+        expect(assetService.customAssets.length).toBe(0);
     }));
 });
 
@@ -58,7 +49,6 @@ describe('AssetService', () => {
                       new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
                       "ripplefox.com/cny.png")
         ]);
-        expect(assetService.customAssetCodes).toEqual(["ABC", "abcdef", "btC"]);
         expect(assetService.customAnchors).toEqual([
             new Account("GA123456", "example.org"),
             new Account("GBBBBBBBBBBBB", "this_is IT"),
@@ -206,7 +196,6 @@ describe('AssetService', () => {
         expect(assetService.customExchanges.length).toBe(3);
     });
     it("#serializeToCookie() works", () => {
-        assetService.customAssetCodes.push("COOK");
         assetService.customAnchors.push(new Account("GCookie", "cook.ie"));
         assetService.customAssets.push(KnownAssets["USD-AnchorUsd"]);
         assetService.customExchanges.push(new ExchangePair("c00k1e",

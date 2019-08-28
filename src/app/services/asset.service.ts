@@ -25,8 +25,6 @@ export class AssetService {
     private _commonAnchors: Account[] = new Array<Account>();
     /** User's custom defined assets */
     readonly customAssets: Asset[];
-    /** User's custom defined asset codes */
-    readonly customAssetCodes: string[];
     /** Custom anchors defined by the user */
     readonly customAnchors: Account[] = new Array<Account>();          //TODO: extract from customAssets
     /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
@@ -49,16 +47,10 @@ export class AssetService {
         }
 
         this.customAssets = this.loadAssets();
-        this.customAssetCodes = this.loadAssetCodes();
         this.customAnchors = this.loadAnchors();        //TODO: do we need this?        
         this.customExchanges = this.loadExchanges();
     }
 
-
-    /** Get all asset codes (i.e. common ones + custom defined by the user) excluding native XLM */
-    getAllAssetCodes(): string[] {
-        return this._commonAssetCodes.concat(this.customAssetCodes).slice(1);   //Exclude XLM
-    }
 
     /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
     getAssetCodesForExchange(): string[] {
@@ -293,21 +285,6 @@ export class AssetService {
 
         //Anchor not found among know issuers. Don't give up and create a dummy one
         return new Account(issuerAddress, null);
-    }
-
-    /** Extract asset codes from custo assets. */
-    private loadAssetCodes(): string[] {
-        const codes = new Array<string>();
-
-        for (let asset of this.customAssets) {
-            const assetCode: string = asset.code;
-            //UNION with _commonAssetCodes
-            if (-1 === codes.indexOf(assetCode) && -1 === this._commonAssetCodes.indexOf(assetCode)) {
-                codes.push(assetCode);
-            }
-        }
-
-        return codes;
     }
 
     /**

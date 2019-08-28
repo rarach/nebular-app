@@ -2,7 +2,7 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, OnInit, OnDestroy } from '@angular/core';
 import { Subscription } from 'rxjs';
 
-import { Asset, KnownAssets } from 'src/app/model/asset.model';
+import { Asset } from 'src/app/model/asset.model';
 import { AssetService } from 'src/app/services/asset.service';
 import { GETParams } from 'src/app/model/constants';
 import { DropdownOption } from 'src/app/model/dropdown-option';
@@ -15,7 +15,6 @@ import { DropdownOption } from 'src/app/model/dropdown-option';
 })
 export class CustomAssetsComponent implements OnInit, OnDestroy {
     private _getParamsSubscriber: Subscription;
-    assetCodes: DropdownOption<string>[] = null;
     selectedAssetCode: string = "";
     assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
@@ -33,7 +32,6 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
         this._getParamsSubscriber = this.route.paramMap.subscribe(params => {
             this.selectedAssetCode = params.get(GETParams.ASSET_TYPE);
         });
-        this.loadAssetCodes();
         this.loadAnchors();
     }
 
@@ -66,24 +64,8 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
         this.lastAddedAsset = null;
     }
 
-    private loadAssetCodes() {
-        this.assetCodes = new Array<DropdownOption<string>>();
-        const codes: string[] = this.assetService.getAllAssetCodes();
-        for(let assetCode of codes) {
-            //Search for asset full name among know assets
-            let assetFullName = assetCode + " (custom)";
-            for (var asset in KnownAssets) {
-                if (KnownAssets[asset].code === assetCode) {
-                    assetFullName = KnownAssets[asset].fullName;
-                    break;
-                }
-            }
 
-            this.assetCodes.push(new DropdownOption(assetCode, assetCode, assetFullName));
-        }
-    }
-
-    private loadAnchors() {
+    private loadAnchors() {     //TODO: delete the function
         this.assetIssuers = new Array<DropdownOption<string>>();
         const anchors = this.assetService.getAllAnchors();
         for (let i=0; i<anchors.length; i++) {
