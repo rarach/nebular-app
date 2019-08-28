@@ -9,7 +9,6 @@ import { ActivatedRouteStub } from 'src/app/testing/activated-route-stub';
 import { DropdownOption } from 'src/app/model/dropdown-option';
 
 
-
 describe('CustomAssetsComponent', () => {
     it('should have custom assets loaded after instantiation', () => {
         TestBed.configureTestingModule({
@@ -32,7 +31,6 @@ describe('CustomAssetsComponent', () => {
     });
 });
 
-
 describe('CustomAssetsComponent', () => {
     let component: CustomAssetsComponent;
 
@@ -50,42 +48,10 @@ describe('CustomAssetsComponent', () => {
         component = new CustomAssetsComponent(route, assetService);
     }));
 
-    it("#addAsset returns immediately if inputs are empty", () => {
-        component.lastAddedAsset = new Asset("XYYYYZ", "XYZ test", null, null);
-        component.addAsset();
-        expect(component.lastAddedAsset).toEqual(new Asset("XYYYYZ", "XYZ test", null, null));
-
-        component.selectedAssetCode = "whatever";
-        component.addAsset();
-        expect(component.lastAddedAsset).toEqual(new Asset("XYYYYZ", "XYZ test", null, null));
-    });
-    it("#addAsset adds new asset; assigns lastAddedAsset", () => {
-        component.selectedAssetCode = "RRR";
-        component.selectedIssuerAddress = "GORGONDOLA40651277187";
-        component.addAsset();
-        expect(component.duplicateAsset).toBeNull();
-        expect(component.lastAddedAsset.code).toBe("RRR");
-    });
-    it("#addAsset doesn't add duplicate asset", () => {
-        component.selectedAssetCode = "PLZ";
-        component.selectedIssuerAddress = "GNatioanlBankOfPoland";
-        component.addAsset();
-        expect(component.duplicateAsset).toBe("PLZ-GNatioanlBankOfPoland");
-    });
     it("#removeAsset", () => {
         component.removeAsset("GOE", "GEEEERDY74747474");
         const assetService = TestBed.get(AssetService);
         expect(assetService.removeCalled).toBe(true);
-    });
-
-    it("#loadAssetCodes loads available asset types", () => {
-        component.updateAssetCodes();
-        expect(component.assetCodes).toEqual([
-            new DropdownOption("ZZZz", "ZZZz", "ZZZz (custom)"),
-            new DropdownOption("GOAL", "GOAL", "GOAL (custom)"),
-            new DropdownOption("dry", "dry", "dry (custom)"),
-            new DropdownOption("EURT", "EURT", "Euro")
-        ]);
     });
 
     it("#loadIssuer() loads anchors", () => {
@@ -99,7 +65,6 @@ describe('CustomAssetsComponent', () => {
         ]);
     });
 });
-
 
 describe("CustomAssetsComponent", () => {
     it("#ngOnInit sets 'selectedAssetType' when it's given in URL", () => {

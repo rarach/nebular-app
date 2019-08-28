@@ -41,33 +41,12 @@ export class CustomAssetsComponent implements OnInit, OnDestroy {
         this._getParamsSubscriber.unsubscribe();
     }
 
-
-    addAsset() {
-        this.duplicateAsset = null;
-
-        if (!this.selectedAssetCode || !this.selectedIssuerAddress) {
-            return;
-        }
-        const newAsset: Asset = this.assetService.AddCustomAsset(this.selectedAssetCode, this.selectedIssuerAddress);
-        if (null != newAsset) {
-            this.lastAddedAsset = newAsset;
-        }
-        else {
-            this.duplicateAsset = this.selectedAssetCode + "-" + this.selectedIssuerAddress;
-        }
-    }
-
     removeAsset(assetCode, anchorAddress) {
         this.assetService.RemoveCustomAsset(assetCode, anchorAddress);
     }
 
-    /** Should be called when list of available asset codes changes. Will update the respective dropdown. */
-    updateAssetCodes() {
-        this.loadAssetCodes();
-    }
-
     /** Should be called when list of available issuers changes. Will update the respective dropdown. */
-    updateIssuers() {
+    updateIssuers() {           //TODO: delete
         this.loadAnchors()
     }
 
