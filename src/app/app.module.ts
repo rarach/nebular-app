@@ -19,7 +19,6 @@ import { HorizonRestService } from "./services/horizon-rest.service";
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
-import { CustomIssuersComponent } from './configuration/custom-issuers/custom-issuers.component';
 import { CustomAssetsComponent } from './configuration/custom-assets/custom-assets.component';
 import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analytics.component';
 import { LiveTradesComponent } from './live-trades/live-trades.component';
@@ -38,7 +37,6 @@ import { CustomAssetWizardComponent } from './configuration/custom-asset-wizard/
         TradeHistoryComponent,
         OrderbookComponent,
         CustomExchangeComponent,
-        CustomIssuersComponent,
         CustomAssetsComponent,
         ExchangeAnalyticsComponent,
         LiveTradesComponent,

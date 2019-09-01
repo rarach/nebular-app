@@ -23,10 +23,10 @@ export class AssetService {
     ];
     private _commonAssetCodes: string[] = new Array<string>();
     private _commonAnchors: Account[] = new Array<Account>();
+    private _customAnchors: Account[] = new Array<Account>();
+
     /** User's custom defined assets */
-    readonly customAssets: Asset[];
-    /** Custom anchors defined by the user */
-    readonly customAnchors: Account[] = new Array<Account>();          //TODO: extract from customAssets
+    readonly customAssets: Asset[];    
     /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
     readonly customExchanges: ExchangePair[];
 
@@ -47,7 +47,7 @@ export class AssetService {
         }
 
         this.customAssets = this.loadAssets();
-        this.customAnchors = this.loadAnchors();        //TODO: do we need this?        
+        this.loadAnchors();
         this.customExchanges = this.loadExchanges();
     }
 
@@ -67,7 +67,7 @@ export class AssetService {
 
     /** All anchors, i.e. common + user defined (even if they aren't used in a custom asset) */
     getAllAnchors(): Account[] {
-        return this._commonAnchors.concat(this.customAnchors);
+        return this._commonAnchors.concat(this._customAnchors);
     }
 
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
@@ -117,41 +117,6 @@ export class AssetService {
         }
 
         return null;
-    }
-
-    /**
-     * Add new issuer (a.k.a. anchor).
-     * @param address - Valid Stellar public key
-     * @param domain - optional domain or any name describing the anchor
-     * @returns {boolean} - true on success, false if an issuer with given address already exists
-     */
-    AddCustomAnchor(address: string, domain: string): boolean {     //TODO: delete this
-        //Don't add if it's already there
-        for (let i=0; i < this.customAnchors.length; i++) {
-            if (this.customAnchors[i].address === address) {
-                return false;
-            }
-        }
-        this.customAnchors.push(new Account(address, domain));
-        this.serializeToCookie();
-
-        return true;
-    }
-
-    /**
-     * Remove custom issuer by their address
-     * @param address - anchor's issuing address
-     */
-    RemoveCustomAnchor(address: string): boolean {      //TODO: delete this
-        for (let i=0; i < this.customAnchors.length; i++) {
-            if (this.customAnchors[i].address === address) {
-                this.customAnchors.splice(i, 1);
-                this.serializeToCookie();
-                return true;
-            }
-        }
-        //No such anchor, nothing to remove
-        return false;
     }
 
     /**
@@ -288,10 +253,21 @@ export class AssetService {
     }
 
     /**
-     * Load and return user's custom anchor accounts (name+domain).
+     * Load and return custom anchor accounts (name+domain) as extracted from user's assets.
      * @return Array of Account instances
      */
-    private loadAnchors(): Account[] {      //TODO: delete this method. The accounts must be extracted from custom assets.
+    private loadAnchors() {
+        this._customAnchors = new Array<Account>();
+        //Also performs UNION with _commonAnchors to ease further processing
+        for (let asset of this.customAssets) {
+            if (asset.issuer &&
+                -1 === this._customAnchors.findIndex(iss => iss.address === asset.issuer.address) &&
+                -1 === this._commonAnchors.findIndex(anch => anch.address === asset.issuer.address)) {
+                    this._customAnchors.push(asset.issuer);
+            }
+        }
+
+/*DEL
         const COOKIE_NAME = "iss";
         const customIssuers = new Array();
         const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
@@ -309,6 +285,7 @@ export class AssetService {
         }
 
         return customIssuers;
+*/
     }
 
     /** Loads user's custom defined assets (code + anchor) */
@@ -377,20 +354,7 @@ export class AssetService {
 
     private serializeToCookie() {
         let cookieText = "";
-
-        //Asset codes
         var i = 0;
-
-        //Anchors    (TODO: delete)
-        cookieText = "";
-        for (i=0; i<this.customAnchors.length; i++) {
-            const anchor = this.customAnchors[i];
-            if (i>0) {
-                cookieText += ","
-            }
-            cookieText += encodeURIComponent(anchor.address + "/" + anchor.domain);     //TODO: Do we need the encode/decode stuff? ngx-cookie may do it already
-        }
-        this.setCookieValue("iss", cookieText);
 
         //Assets
         cookieText = "";
