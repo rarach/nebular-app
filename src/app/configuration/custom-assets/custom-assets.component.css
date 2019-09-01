@@ -16,22 +16,3 @@ img.asset-icon {
 button.removeButton {
     background-color: #ED8117;
 }
-
-
-/** TODO: delete these */
-button.big-button {
-    height: 40px;
-    min-width: 80px;
-}
-
-mat-form-field {
-    border: 1px solid black;
-}
-.mat-option {
-    border-bottom: 1px solid #ddd;
-    font-size: .92rem !important;
-    font-family: consolas,"Liberation Mono",courier,monospace;
-}
-.selectedIssuerOption {
-    width: 410px;
-}

@@ -12,7 +12,6 @@ import { DropdownOption } from 'src/app/model/dropdown-option';
     styleUrls: ['./custom-assets.component.css']
 })
 export class CustomAssetsComponent {
-    selectedAssetCode: string = "";
     assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
     customAssets: Asset[];

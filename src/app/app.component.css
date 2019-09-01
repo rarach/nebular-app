@@ -133,16 +133,5 @@ div.headerLinks {
 
 
 /*TODO: delete these*/
-:host ::ng-deep .selectedAssetCode {
-    height: 38px;
-    width: 140px;
-    line-height: 38px;
-    background-position: 4px 50%;
-    background-repeat: no-repeat;
-    background-size: 32px 32px;
-}
-:host ::ng-deep .selectedIssuerOption {
-    height: 38px;
-    line-height: 38px;
-    padding-left: 5px;
-}
+
+
