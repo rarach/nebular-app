@@ -1,49 +1,48 @@
 //DEL import { async, TestBed } from '@angular/core/testing';
-import { browser, by, element } from 'protractor';
+import { browser, by, element, protractor } from 'protractor';
 
 
 describe('Configuration page', () => {
-/*dEL    beforeEach(async(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: AssetService, useClass: AssetServiceStub }
-            ]
-        })
-        .compileComponents();
-    }));
-*/
+
     it('should display title "Nebular - Configuration"', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
-    it("Drop-down with asset codes contains all available codes", () => {
-        //Trick: go to invalid page to load the web without calling the dependent services
-        browser.get("/no-such-page");
-        browser.manage().addCookie({
-            name: "aco",
-            value: "xyzCoin,PLZ,RUPEE,ZEC"
-        });
+    it("finds all relevant anchors for asset code 'USD'", () => {
         //Actual page being tested
         browser.get("/configuration");
 
-        //With mat-select we need to open the drop-down fitst to have items markup there
-        element(by.css(".selectedAssetCode")).click();
+        //Fill the asset input with "USD"
+        const assetCodeInput = element(by.css("input#newAssetCode"));
+        assetCodeInput.sendKeys("USD");
+        browser.ignoreSynchronization = true;
+        element(by.css("button#findAssetCodeBtn")).click();
 
-        const assetCodeOptions = element.all(by.css("mat-option"));
-        expect(assetCodeOptions.count()).toBe(13 + 4);  //13 known (excluding XLM) + 4  from above cookie
-        expect(assetCodeOptions.get(0).getText()).toBe("BTC");
-        expect(assetCodeOptions.get(0).getWebElement().getAttribute("title")).toBe("Bitcoin");
+        const resultsTable = element(by.css("table#foundAssetsTable"));
+        browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of USD anchors failed to show in 5sec");
 
-        expect(assetCodeOptions.get(4).getText()).toBe("HKDT");
-        expect(assetCodeOptions.get(4).getWebElement().getAttribute("title")).toBe("Hong Kong Dollar");
-        expect(assetCodeOptions.get(13).getText()).toBe("xyzCoin");
-        expect(assetCodeOptions.get(13).getWebElement().getAttribute("title")).toBe("xyzCoin (custom)");
-        expect(assetCodeOptions.get(14).getText()).toBe("PLZ");
-        expect(assetCodeOptions.get(14).getWebElement().getAttribute("title")).toBe("PLZ (custom)");
-        expect(assetCodeOptions.get(16).getText()).toBe("ZEC");
-        expect(assetCodeOptions.get(16).getWebElement().getAttribute("title")).toBe("ZEC (custom)");
+        //Check for most common USD anchors
+        const anchorRow1 = resultsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX"));
+        expect(anchorRow1.getText()).toBe("USD-www.anchorusd.com Add");
+        const anchorImage1 = anchorRow1.element(by.css("img.asset-icon"));
+
+        if (!browser.ignoreSynchronization) throw new Error("blah!!!");
+
+
+
+/*TODO: this is a preferred style, but doesn't work here for some reason :-(
+browser.wait(() => {
+    return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("anchorusd.com") > -1; }),
+    5000
+});
+*/      browser.sleep(4000);
+        expect(anchorImage1.getAttribute("src")).toContain("anchorusd.com");    //They wouldn't outsource the icon, right?
+
+
+
+        browser.ignoreSynchronization = false;
     });
-//TODO    it("Drop-down with anchors contains all available issuers", () => { todo })
+
     it("Contains list of custom assets saved by user", () => {
         //Trick: go to invalid page to load the web without calling the dependent services
         browser.get("/no-such-page");
