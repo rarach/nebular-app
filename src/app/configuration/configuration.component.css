@@ -66,14 +66,14 @@
     from { background-color: #46B446; }
     to { background-color: inherit; }
 }
-:host ::ng-deep div.customItemRow.highlight {
+:host ::ng-deep tr.asset-item.highlight {
     animation: animateGreen 1s linear 1;
 }
 @keyframes animateRed {
     from { background-color: #ED8117; }
     to { background-color: inherit; }
 }
-:host ::ng-deep div.customItemRow.duplicate {
+:host ::ng-deep tr.asset-item.duplicate {
     animation: animateRed 1s linear 1;
 }
 

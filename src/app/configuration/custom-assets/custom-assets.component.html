@@ -1,35 +1,24 @@
-<h3>Custom assets</h3>
+<h3>My assets</h3>
 <hr/>
 <div id="customAssetsList" class="valueList">
-    <div *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="customItemRow"
-         [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
-         [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
-        <div class="itemTitle">{{asset.code}}-{{asset.issuer.domain}} ({{asset.issuer.address}})</div>
-        <span (click)="removeAsset(asset.code, asset.issuer.address)">remove</span>
-    </div>
+
+    <table id="customAssetsTable">
+        <tr>
+            <th style="width: 30px;"></th>
+            <th></th>
+            <th style="width: 50px;"></th>
+        </tr>
+        <tr *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="asset-item"
+            [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
+            [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
+            <td>
+                <img class="asset-icon" src="{{asset.imageUrl}}"/>
+            </td>
+            <td title="issuer address: {{asset.issuer.address}}">{{asset.code}}-{{asset.issuer.domain}}</td>
+            <td>
+                <button type="button" class="removeButton" (click)="removeAsset(asset.code, asset.issuer.address)">Remove</button>
+            </td>
+        </tr>
+    </table>
 </div>
 <br/>
-
-<mat-form-field style="width: 150px;">
-    <mat-select [(value)]="selectedAssetCode" class="selectedAssetCode" placeholder="asset type..."
-                [ngStyle]="{
-                    'background-image': selectedAssetCode ? 'url(./assets/images/asset_icons/' + this.selectedAssetCode + '.png' : '',
-                    'padding-left': this.selectedAssetCode ? '40px' : '5px',
-                    'font-style': this.selectedAssetCode ? 'normal' : 'italic'
-                }">
-        <mat-option class="ddOption" *ngFor="let assetCode of assetCodes" value="{{assetCode.value}}" title="{{assetCode.tooltip}}">
-            <img src="./assets/images/asset_icons/{{assetCode.value}}.png" style="width: 32px; height: 32px;"/>
-            {{assetCode.text}}
-        </mat-option>
-    </mat-select>
-</mat-form-field>
-
-<mat-form-field style="width: 420px; margin-right: 15px;">
-    <mat-select [(value)]="selectedIssuerAddress" class="selectedIssuerOption" placeholder="asset issuer..."
-                [ngStyle]="{ 'font-style': this.selectedIssuerAddress ? 'normal' : 'italic' }">
-        <mat-option class="ddOption" *ngFor="let anchor of assetIssuers" value="{{anchor.value}}" title="{{anchor.tooltip}}">
-            {{anchor.text}}
-        </mat-option>
-    </mat-select>
-</mat-form-field>
-<button type="button" id="addAssetBtn" class="big-button" (click)="addAsset()">Add</button>

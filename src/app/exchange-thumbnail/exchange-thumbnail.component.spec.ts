@@ -12,8 +12,8 @@ import { HorizonRestService } from '../services/horizon-rest.service';
 describe('ExchangeThumbnailComponent', () => {
     let component: ExchangeThumbnailComponent;
     const exchange = new ExchangePair("asdf123",
-                                      new Asset("ABC", "ABC", null, new Account("GCCCP", null, null)),
-                                      new Asset("ETH", "ETH", null, new Account("GETH841062WESTHDF", null, null)));
+                                      new Asset("ABC", "ABC", null, new Account("GCCCP", null)),
+                                      new Asset("ETH", "ETH", null, new Account("GETH841062WESTHDF", null)));
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({

@@ -13,7 +13,7 @@ describe('HorizonRestService', () => {
     let httpMock: HttpTestingController;
     const exchange = new ExchangePair("gyuhjk,",
                                       KnownAssets["XRP-Interstellar"],
-                                      new Asset("HUHU", null, null, new Account("GDENIM784152", "g-denim", "denim.ggg")));
+                                      new Asset("HUHU", null, null, new Account("GDENIM784152", "denim.ggg")));
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -56,15 +56,15 @@ describe('HorizonRestService', () => {
     });
 
     it("#getTradeHistory(exch, 135) performs GET request to correct API URL", () => {
-        const exch = new ExchangePair("whatever", KnownAssets.XLM, KnownAssets.STEM);
+        const exch = new ExchangePair("whatever", KnownAssets.XLM, KnownAssets.SLT);
         service.getTradeHistory(exch, 135).subscribe(data => {
             expect(data).toEqual({ asdf: "whatever", jkl: 0.0000005 });
         });
 
         const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
                                        "?base_asset_code=XLM&base_asset_type=native&base_asset_issuer=null" +
-                                       "&counter_asset_code=STEM&counter_asset_type=credit_alphanum4" +
-                                       "&counter_asset_issuer=GAFXX2VJE2EGLLY3EFA2BQXJADAZTNR7NC7IJ6LFYPSCLE7AI3AK3B3M" +
+                                       "&counter_asset_code=SLT&counter_asset_type=credit_alphanum4" +
+                                       "&counter_asset_issuer=GCKA6K5PCQ6PNF5RQBF7PQDJWRHO6UOGFMRLK3DYHDOI244V47XKQ4GP" +
                                        "&order=desc&limit=135"));
         expect(req.request.method).toBe('GET');
         req.flush({ asdf: "whatever", jkl:.0000005 });
@@ -86,13 +86,13 @@ describe('HorizonRestService', () => {
     });
 
     it("#getLastPriceInNative() returns last trade price", () => {
-        service.getLastPriceInNative(KnownAssets.XIR).subscribe(priceInXlm => {
+        service.getLastPriceInNative(KnownAssets["USD-AnchorUsd"]).subscribe(priceInXlm => {
             expect(priceInXlm).toBe(1234);
         });
 
         const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
-                                        "?base_asset_code=XIR&base_asset_type=credit_alphanum4" +
-                                        "&base_asset_issuer=GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5" +
+                                        "?base_asset_code=USD&base_asset_type=credit_alphanum4" +
+                                        "&base_asset_issuer=GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX" +
                                         "&counter_asset_code=XLM&counter_asset_type=native" +
                                         "&counter_asset_issuer=null" +
                                         "&order=desc&limit=1"));
@@ -113,13 +113,13 @@ describe('HorizonRestService', () => {
           }`);
     });
     it("#getLastPriceInNative() returns -1 if there's no trade for the asset", () => {
-        service.getLastPriceInNative(KnownAssets.XIR).subscribe(priceInXlm => {
+        service.getLastPriceInNative(KnownAssets.REPO).subscribe(priceInXlm => {
             expect(priceInXlm).toBe(-1);
         });
 
         const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
-                                        "?base_asset_code=XIR&base_asset_type=credit_alphanum4" +
-                                        "&base_asset_issuer=GAO4DADCRAHA35GD6J3KUNOB5ELZE5D6CGPSJX2WBMEQV7R2M4PGKJL5" +
+                                        "?base_asset_code=REPO&base_asset_type=credit_alphanum4" +
+                                        "&base_asset_issuer=GCZNF24HPMYTV6NOEHI7Q5RJFFUI23JKUKY3H3XTQAFBQIBOHD5OXG3B" +
                                         "&counter_asset_code=XLM&counter_asset_type=native" +
                                         "&counter_asset_issuer=null" +
                                         "&order=desc&limit=1"));
@@ -135,7 +135,7 @@ describe('HorizonRestService', () => {
     });
 
     it("#getOrderbook(exch, 4) performs GET request to correct API URL", () => {
-        const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets.WSE);
+        const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets["XRP-Interstellar"]);
         service.getOrderbook(exch, 4).subscribe(data => {
             expect(data).toEqual({ called: "order-book", float:-999999999 });
         });
@@ -143,14 +143,14 @@ describe('HorizonRestService', () => {
         const req = httpMock.expectOne(req => req.url.endsWith("/order_book" +
                                        "?selling_asset_code=XCN&selling_asset_type=credit_alphanum4" +
                                        "&selling_asset_issuer=GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY" +
-                                       "&buying_asset_code=WSE&buying_asset_type=credit_alphanum4" +
-                                       "&buying_asset_issuer=GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V" +
+                                       "&buying_asset_code=XRP&buying_asset_type=credit_alphanum4" +
+                                       "&buying_asset_issuer=GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P" +
                                        "&limit=4"));
         expect(req.request.method).toBe('GET');
         req.flush({ called: "order-book", float:-999999999 });
     });
     it("#getOrderbook(exch) performs GET request to correct API URL", () => {
-        const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets.XTC);
+        const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets.MOBI);
         service.getOrderbook(exch).subscribe(data => {
             expect(data).toEqual({ called: "order-book", float:854125.1515 });
         });
@@ -158,8 +158,8 @@ describe('HorizonRestService', () => {
         const req = httpMock.expectOne(req => req.url.endsWith("/order_book" +
                                        "?selling_asset_code=XCN&selling_asset_type=credit_alphanum4" +
                                        "&selling_asset_issuer=GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY" +
-                                       "&buying_asset_code=XTC&buying_asset_type=credit_alphanum4" +
-                                       "&buying_asset_issuer=GDVJQHR5JZIGW76WBQREFMTYZ3JAKLSX2JTNT2P6DI4M7JR7VHUCNODY" +
+                                       "&buying_asset_code=MOBI&buying_asset_type=credit_alphanum4" +
+                                       "&buying_asset_issuer=GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH" +
                                        "&limit=17"));
         expect(req.request.method).toBe('GET');
         req.flush({ called: "order-book", float:854125.1515 });

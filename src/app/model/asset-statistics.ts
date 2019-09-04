@@ -1,6 +1,7 @@
 import { HorizonRestService } from "../services/horizon-rest.service";
 import { IssuerConfiguration } from "./toml/issuer-configuration";
 import { TomlConfigService } from "../services/toml-config.service";
+import { Utils } from "../utils";
 
 
 export class AssetStatistics {
@@ -10,11 +11,11 @@ export class AssetStatistics {
     public volume: number = 0.0;
     public volumeInNative: number = 0.0;
 
-    constructor(horizonSerice: HorizonRestService,
+    constructor(horizonService: HorizonRestService,
                 configService: TomlConfigService,
                 public assetCode: string,
                 private issuer: string) {
-        horizonSerice.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
+        horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
             if (configUrl) {
                 configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
                     this.loadAssetData(issuerConfig);
@@ -25,7 +26,7 @@ export class AssetStatistics {
                 });
 
                 //Derive asset's domain from config URL
-                const domain = this.parseDomain(configUrl);
+                const domain = Utils.parseDomain(configUrl);
                 this.assetTitle = this.assetCode + "-" + domain;
             }
             else {
@@ -51,16 +52,5 @@ export class AssetStatistics {
             //If no icon was provided, try our basic database
             this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
         }
-    }
-
-    private parseDomain(configUrl: string): string {
-        const chunks = configUrl.split("/");
-        for (let i = 1; i < chunks.length; i++) {
-            if (chunks[i]) {
-                return chunks[i];
-            }
-        }
-
-        return null;
     }
 }

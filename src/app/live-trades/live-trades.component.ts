@@ -89,7 +89,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             }
             const stat = this.stats.get(key);
             const amount = parseFloat(trade.base_amount);
-            const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null, null));
+            const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null));
             this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
                 stat.feedData(amount, xlmPrice);
                 if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {  //No need to do it twice
@@ -105,7 +105,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
             }
             const stat = this.stats.get(key);
             const amount = parseFloat(trade.counter_amount);
-            const dummyAsset = new Asset(trade.counter_asset_code, null, null, new Account(trade.counter_asset_issuer, null, null));
+            const dummyAsset = new Asset(trade.counter_asset_code, null, null, new Account(trade.counter_asset_issuer, null));
             this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
                 stat.feedData(amount, xlmPrice);
                 this.sortStatistics(this.currentSort);

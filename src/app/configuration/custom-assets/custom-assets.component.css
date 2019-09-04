@@ -1,16 +1,18 @@
-button.big-button {
-    height: 40px;
-    min-width: 80px;
+#customAssetsTable {
+    width: 100%;
+}
+#customAssetsTable tr:nth-child(even) {
+    background-color: white;
+}
+#customAssetsTable tr.asset-item:hover {
+    background-color: #e0e0e0;
 }
 
-mat-form-field {
-    border: 1px solid black;
+img.asset-icon {
+    width: 24px;
+    height: 24px;
 }
-.mat-option {
-    border-bottom: 1px solid #ddd;
-    font-size: .92rem !important;
-    font-family: consolas,"Liberation Mono",courier,monospace;
-}
-.selectedIssuerOption {
-    width: 410px;
+
+button.removeButton {
+    background-color: #ED8117;
 }

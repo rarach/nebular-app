@@ -1,0 +1,34 @@
+<h3>
+    Add custom asset
+</h3>
+<hr/>
+
+<form (submit)="searchAssetCodes(assetCodeForm)" #assetCodeForm="ngForm">
+    <label for="newAssetCode">Asset code:</label>
+    <input type="text" id="newAssetCode" placeholder="JPY, LTC..." maxlength="12" (keydown)="searchStatus=''"
+           [(ngModel)]="inputAssetCode" #newAssetCode="ngModel" name="newAssetCode" pattern="^[a-zA-Z0-9]{1,12}$"/>
+    <button type="submit" id="findAssetCodeBtn" [disabled]="!assetCodeForm.form.valid">Search</button>
+    <div *ngIf="newAssetCode.errors?.pattern" class="dataHint">Up to 12 characters, only letters and digits.</div>
+</form>
+
+<div *ngIf="searchStatus && !foundAssets">
+    <br/><br/>
+    There's currently no asset <b>{{newAssetCode.value}}</b> on the stellar ledger. Try different asset code.
+</div>
+
+<table id="foundAssetsTable">
+    <tr>
+        <th style="width: 30px;"></th>
+        <th></th>
+        <th style="width: 50px;"></th>
+    </tr>
+    <tr *ngFor="let asset of foundAssets" id="{{asset.code}}-{{asset.issuerAddress}}" class="asset-item">
+        <td>
+            <img class="asset-icon" src="{{asset.iconUrl}}"/>
+        </td>
+        <td title="issuer address: {{asset.issuerAddress}}">{{asset.code}}-{{asset.domain}}</td>
+        <td>
+            <button type="button" class="addButton" (click)="addAsset(asset)">Add</button>
+        </td>
+    </tr>
+</table>

@@ -13,7 +13,7 @@ div#currentPrice {
     padding: 14px;
 }
 div#currentPrice > span.buy {
-    color: #46b446; /*#3aba3a; rgb(184, 233, 134); */
+    color: #46b446;
 }
 div#currentPrice > span.sell {
     color: #ED8117;
