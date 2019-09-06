@@ -79,6 +79,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             this._lineChart.clearData();
 
             $("#"+this.chartPlaceholderId).empty();     //TODO: Angular way?
+            this.dataStatus = DataStatus.OK;
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
             let lastPrice = -999999;

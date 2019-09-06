@@ -68,6 +68,6 @@ describe('My Exchanges', () => {
     });
 
     it("TODO: adding new custom exchange saves it in cookie", () => {
-        //TODO: add 2 exchanges, refresh page, verify cookie
+        //TODO: add 2 exchanges, refresh page, verify cookie. Also merge this with the first 2 tiny tests
     });
 });
