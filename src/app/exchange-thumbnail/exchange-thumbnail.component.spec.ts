@@ -12,7 +12,7 @@ import { HorizonRestService } from '../services/horizon-rest.service';
 import { HttpErrorResponse } from '@angular/common/http';
 
 
-fdescribe('ExchangeThumbnailComponent', () => {
+describe('ExchangeThumbnailComponent', () => {
     let component: ExchangeThumbnailComponent;
     const exchange = new ExchangePair("asdf123",
                                       new Asset("ABC", "ABC", null, new Account("GCCCP", null)),
@@ -62,7 +62,6 @@ fdescribe('ExchangeThumbnailComponent', () => {
         done();
     });
     it("empty trade history sets status and message", async(done) => {
-        component.dataStatus = DataStatus.OK;   //To avoid false positive
         component.exchange = new ExchangePair("no-data-78787878",
                                               new Asset("NoData", "", null, new Account("GEEZ", null)),
                                               exchange.counterAsset);
@@ -74,7 +73,6 @@ fdescribe('ExchangeThumbnailComponent', () => {
         done();
     });
     it("outdated trade history sets status and message", async(done) => {
-        component.dataStatus = DataStatus.OK;   //To avoid false positive
         component.exchange = new ExchangePair("old-data-UKJYHTGF",
                                               new Asset("OLD", "", null, new Account("GEEZ", null)),
                                               exchange.counterAsset);

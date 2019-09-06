@@ -8,6 +8,8 @@ import { CustomAssetWizardComponent } from './custom-asset-wizard.component';
 import { HorizonRestService } from 'src/app/services/horizon-rest.service';
 import { TomlConfigService } from 'src/app/services/toml-config.service';
 import { TomlConfigServiceStub } from 'src/app/testing/stubs';
+import { Observable, of } from 'rxjs';
+import { AssetData } from 'src/app/model/asset-data.model';
 
 
 describe("CustomAssetWizardComponent", () => {
@@ -34,14 +36,14 @@ describe('CustomAssetWizardComponent', () => {
   let component: CustomAssetWizardComponent;
   let fixture: ComponentFixture<CustomAssetWizardComponent>;
 
-  beforeEach(async(() => {
-    TestBed.configureTestingModule({
-      declarations: [ CustomAssetWizardComponent ],
-      imports: [ FormsModule ],
-      providers: [
-        { provide: ActivatedRoute, useValue: {} },
-        { provide: HorizonRestService, useClass: HorizonRestServiceStub },
-        { provide: TomlConfigService, useValue: new TomlConfigServiceStub(`[[CURRENCIES]]
+    beforeEach(async(() => {
+        TestBed.configureTestingModule({
+        declarations: [ CustomAssetWizardComponent ],
+        imports: [ FormsModule ],
+        providers: [
+            { provide: ActivatedRoute, useValue: {} },
+            { provide: HorizonRestService, useClass: HorizonRestServiceStub },
+            { provide: TomlConfigService, useValue: new TomlConfigServiceStub(`[[CURRENCIES]]
 code = "zero-coin"
 desc = "a test token"
 display_decimals = 2
@@ -59,24 +61,57 @@ desc = "glitz koin"
 display_decimals = 4
 issuer = "GBETLEHEM"
 name = "glance token (or something)"`) },
-        { provide: AssetService, useClass: AssetServiceStub }
-      ]
-    })
-    .compileComponents();
-  }));
+            { provide: AssetService, useClass: AssetServiceStub }
+        ]
+        })
+        .compileComponents();
+    }));
 
-  beforeEach(inject([ActivatedRoute, HorizonRestService, TomlConfigService, AssetService], (route, horizonSevice, configService, assetService) => {
-    component = new CustomAssetWizardComponent(route, horizonSevice, configService, assetService);
-  }));
+    beforeEach(inject([ActivatedRoute, HorizonRestService, TomlConfigService, AssetService], (route, horizonSevice, configService, assetService) => {
+        component = new CustomAssetWizardComponent(route, horizonSevice, configService, assetService);
+    }));
 
-  it('should create', () => {
-    expect(component).toBeTruthy();
-  });
+    it('should create', () => {
+        expect(component).toBeTruthy();
+    });
+
+    it("#searchAssetCodes() exits immediately if the input form is invalid", () => {
+        const horizonSpy = spyOn(TestBed.get(HorizonRestService), "getAssetIssuers");
+        const formStub: NgForm = {
+            invalid: true,
+            value: { newAssetCode: "QWERT" }
+        } as NgForm;
+        component.searchAssetCodes(formStub);
+        expect(horizonSpy).not.toHaveBeenCalled();
+    });
+    it("#searchAssetCodes() exits immediately if the input asset code is empty", () => {
+        const horizonSpy = spyOn(TestBed.get(HorizonRestService), "getAssetIssuers");
+        const formStub: NgForm = {
+            invalid: false,
+            value: { newAssetCode: "" }
+        } as NgForm;
+        component.searchAssetCodes(formStub);
+        expect(horizonSpy).not.toHaveBeenCalled();
+    });
+    it("#searchAssetCodes() found no assets", () => {
+        const formStub: NgForm = {
+            invalid: false,
+            value: { newAssetCode: "NoSuch" }
+        } as NgForm;
+        component.searchAssetCodes(formStub);
+        expect(component.foundAssets).toBeNull();
+        expect(component.searchStatus).toBe("FINISHED");
+    });
 });
 
 
 class HorizonRestServiceStub {
-    //todo
+    getAssetIssuers(assetCode: string) : Observable<AssetData[]> {
+        if ("NoSuch" === assetCode) {
+            return of(null);
+        }
+        throw new Error("No test data ready for the input asset code " + assetCode);
+    }
 }
 
 class AssetServiceStub {
