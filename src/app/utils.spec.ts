@@ -1,4 +1,3 @@
-import { TestBed } from '@angular/core/testing';
 import { Utils } from './utils';
 
 
@@ -74,9 +73,14 @@ describe('Utils', () => {
     it("#getExchangeUrl('XLM', null, 'BTC', 'GARAYE') gives '/exchange/XLM/BTC-GARAYE'", () => {
         const url = Utils.getExchangeUrl("XLM", null, "BTC", "GARAYE");
         expect(url).toBe("/exchange/XLM/BTC-GARAYE");
-    })
+    });
     it("#getExchangeUrl('astr0', 'GASTRO', 'XLM', null) gives '/exchange/astro-GASTRO/XLM'", () => {
         const url = Utils.getExchangeUrl("astro", "GASTRO", "XLM", null);
         expect(url).toBe("/exchange/astro-GASTRO/XLM");
-    })
+    });
+
+    it("#parseDomain('INVALID') returns null", () => {
+        const domain = Utils.parseDomain("INVALID");
+        expect(domain).toBeNull();
+    });
 });
