@@ -1,6 +1,6 @@
 {
   "name": "nebular",
-  "version": "19.5.12",
+  "version": "19.9.9",
   "engines": {
     "node": "10.15.x"
   },
@@ -17,7 +17,6 @@
   "dependencies": {
     "@angular/animations": "^6.1.10",
     "@angular/cdk": "^7.0.3",
-    "@angular/cli": "^7.3.8",
     "@angular/common": "^6.1.0",
     "@angular/compiler": "^6.1.0",
     "@angular/core": "^7.2.12",
@@ -37,7 +36,7 @@
   },
   "devDependencies": {
     "@angular-devkit/build-angular": "^0.13.8",
-    "@angular/cli": "^7.3.8",
+    "@angular/cli": "^8.3.3",
     "@angular/compiler-cli": "^7.2.12",
     "@angular/language-service": "^6.1.0",
     "@types/jasmine": "~2.8.6",
