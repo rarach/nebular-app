@@ -8,7 +8,7 @@ describe('Configuration page', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
-    fit("finds all relevant anchors for asset code 'USD'", () => {   //TODO: "finds and adds new custom asset"
+    it("finds all relevant anchors for asset code 'USD'", () => {   //TODO: "finds and adds new custom asset"
         //Actual page being tested
         browser.get("/configuration");
 
@@ -56,7 +56,7 @@ describe('Configuration page', () => {
         expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(true);
     }, 60000);
 
-    it("contains list of custom assets saved by user", () => {     //TODO: "removes user's custom asset"
+    it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
         //Trick: go to invalid page to load the web without calling the dependent services
         browser.get("/no-such-page");
         browser.manage().addCookie({

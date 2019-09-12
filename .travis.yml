@@ -4,19 +4,13 @@ node_js:
 sudo: required
 dist: trusty
 
-#Install headless Chrome
+#Install headless Chrome (TEMPORARILY CHANGED FROM stable)
 addons:
-  chrome: stable
+  chrome: beta
 
 cache:
   directories:
     - node_modules
-
-#Workaround to updated current ChromeDriver to match Chrome version
-before_install:
-  - LATEST_CHROMEDRIVER_VERSION=`curl -s https://chromedriver.storage.googleapis.com/LATEST_RELEASE`
-  - curl https://chromedriver.storage.googleapis.com/${LATEST_CHROMEDRIVER_VERSION}/chromedriver_linux64.zip -O
-  - unzip chromedriver_linux64.zip -d ~/bin
 
 branches:
   only:
