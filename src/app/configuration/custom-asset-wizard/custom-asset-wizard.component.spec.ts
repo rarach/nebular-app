@@ -60,7 +60,14 @@ code = "GTN"
 desc = "glitz koin"
 display_decimals = 4
 issuer = "GBETLEHEM"
-name = "glance token (or something)"`) },
+name = "glance token (or something)"
+[[CURRENCIES]]
+code = "IRESA"
+desc = "Iresa token"
+name = "!@#$%"
+display_decimals = 50
+issuer = "G00GLE"
+image = "ab.cd/ef.jpg"`) },
             { provide: AssetService, useClass: AssetServiceStub }
         ]
         })
@@ -104,9 +111,11 @@ name = "glance token (or something)"`) },
             value: { newAssetCode: "IRESA" }
         } as NgForm;
         component.searchAssetCodes(formStub);
+        const iresaAsset = new AssetData("google.com/.well-known/stellar.toml", null, "IRESA", "G00GLE", 65);
+        iresaAsset.iconUrl = "ab.cd/ef.jpg";
         expect(component.foundAssets).toEqual([
             new AssetData(null, "alphanum4", "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80),
-            new AssetData("google.com/.well-known/stellar.toml", null, "IRESA", "G00GLE", 65)
+            iresaAsset
         ])
     });
 

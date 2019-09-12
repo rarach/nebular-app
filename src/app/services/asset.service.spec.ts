@@ -147,15 +147,16 @@ describe('AssetService', () => {
         expect(assetService.customExchanges.length).toBe(3);
         expect(assetService.customExchanges[1].baseAsset.issuer.address).toBe("GIBRALTARRRRR458743551");
         expect(assetService.customExchanges[1].counterAsset.code).toBe("XrP");
-        const updatedExch = assetService.UpdateCustomExchange("12345", "MXN", "GUPDATED", "DDD", "GBBBBBBBBBBBB");
+        const updatedExch = assetService.UpdateCustomExchange("12345", new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", null)),
+                                                                       new Asset("DDD", null, null, new Account("GBBBBBBBBBBBB", "hugo.boss")));
         expect(assetService.customExchanges.length).toBe(3);
         expect(updatedExch.id).toBe("12345");
-        expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "MXN", null, new Account("GUPDATED", "GUPDATED...")));
+        expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", "GUPDATED...")));
         expect(updatedExch).toBe(assetService.customExchanges[1]);
         expect(updatedExch.counterAsset.code).toBe("DDD");
     });
     it("#UpdateCustomExchange() with bad exchange ID returns null", () => {
-        expect(assetService.UpdateCustomExchange("0w645612a", "ABC", "G012", null, null)).toBeNull();
+        expect(assetService.UpdateCustomExchange("0w645612a", new Asset("ABC", null, null, new Account("G012", null)), null)).toBeNull();
     });
     it("#RemoveCustomExchange() removes existing exchange pair", () => {
         expect(assetService.customExchanges.length).toBe(3);

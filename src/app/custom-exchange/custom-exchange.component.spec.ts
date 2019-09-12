@@ -6,7 +6,7 @@ import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 
 import { Account } from '../model/account.model';
-import { Asset } from '../model/asset.model';
+import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
 import { CustomExchangeComponent } from './custom-exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
@@ -46,47 +46,25 @@ describe('CustomExchangeComponent', () => {
         expect(component.exchange.id).toBe("cust_ex96984");
         expect(component.exchange.baseAsset).toEqual(new Asset("RRR", "rupee", null, new Account("GABRIELASABATINI", null)));
     });
-    it("#removeCustomExchange deletes the exchange from repository", () => {
+
+    it("#removeExchange() deletes the exchange from repository", () => {
         const assetService = TestBed.get(AssetService);
         expect(assetService.removeCalled).toBe(false);
         component.removeExchange();
         expect(assetService.removeCalled).toBe(true);
     });
-    it("#baseAssetCodeChanged loads base asset issuers", () => {
-        expect(component.selectedBaseIssuer.value).not.toBe("GOTO");
-        component.exchange = new ExchangePair("k85u56ww56",
-                                              new Asset("CKLL", null, null, new Account("GOTO", null)),
-                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry.gal")));
-        component.selectedBaseAssetCode = new DropdownOption("CKLL", "CKLL", null);
-        component.baseAssetCodeChanged(null);
-        expect(component.selectedBaseIssuer).toEqual(new DropdownOption("GOTO", "www.go.to", "www.go.to"));
-    });
-    it("#counterAssetCodeChanged loads counter asset issuers", () => {
-        expect(component.selectedCounterIssuer.value).toBe("G014");
-        component.exchange = new ExchangePair("k85u56ww56",
-                                              new Asset("CKLL", null, null, new Account("GOTO", null)),
-                                              new Asset("MNO", "Mona coin", null, new Account("GARIBALDI7845", "Garry")));
-        component.selectedCounterAssetCode = new DropdownOption("MNO", "MNO", "monaco-in");
-        component.counterAssetCodeChanged(null);
-        expect(component.selectedCounterIssuer).toEqual(new DropdownOption("GARIBALDI7845", "Garry.gal", "Garry.gal"));
-    });
-    it("#issuerChanged calls service.UpdateCustomExchange with correct inputs", () => {
+
+    it("#updateExchange() calls service.UpdateCustomExchange with correct inputs", () => {
         expect(component.exchange.baseAsset.code).toBe("RRR");
         expect(component.exchange.counterAsset.issuer.address).toBe("G014");
 
-/*DEL?        component.selectedBaseAssetCode = new DropdownOption("ABC", null, null);
-        component.selectedBaseIssuer = new DropdownOption("GARGAMELLL", null, null);
-        component.selectedCounterAssetCode = new DropdownOption("CHF", null, null);
-        component.selectedCounterIssuer = new DropdownOption("(native)", null, null); */
         component.selectedBaseAsset = new DropdownOption(new Asset("ABC", null, null, new Account("GARGAMELLL", "rag.gar")),
                                                          "ABC-GARGame.l", null);
         component.selectedCounterAsset = new DropdownOption(new Asset("CHF", null, null, new Account("GANything", null)),
                                                             "CHF-GANything (swiss franck)", null);
-
-
         const assetService = TestBed.get(AssetService);
         expect(assetService.updateCalled).toBeFalsy();
-        component.issuerChanged(null);
+        component.updateExchange(null);
         expect(assetService.updateCalled).toBeTruthy();
     });
 });
@@ -108,7 +86,7 @@ describe("CustomExchangeComponent", () => {
         .compileComponents();
     }));
 
-    it("loads available assets codes - unknown (custom) codes", () => {
+    it("loads available assets - unknown (custom) assets", () => {
         fixture = TestBed.createComponent(CustomExchangeComponent);
         component = fixture.componentInstance;
         component.exchange = new ExchangePair("768y4-sdf1",
@@ -116,31 +94,42 @@ describe("CustomExchangeComponent", () => {
                                               new Asset("UNITA", "Unity coin", null, new Account("GORE", "gore.xyz")));
         fixture.detectChanges();
 
-        expect(component.selectedBaseAssetCode).toEqual(new DropdownOption("altte", "altte", "altte (custom)"));
-        expect(component.selectedCounterAssetCode).toEqual(new DropdownOption("UNITA", "UNITA", "UNITA (custom)"));
+        expect(component.selectedBaseAsset).toEqual(new DropdownOption(new Asset("altte", "altte", null, new Account("GCD5DG453SER745C415CG", "GCD5DG453SER745C...")),
+                                                                       "altte",
+                                                                       "altte-GCD5DG453SER745C415CG", "./assets/images/asset_icons/unknown.png"));
+        expect(component.selectedCounterAsset).toEqual(new DropdownOption(new Asset("UNITA", "UNITA", null, new Account("GORE", "GORE...")),
+                                                                          "UNITA",
+                                                                          "UNITA-GORE", "./assets/images/asset_icons/unknown.png"));
+    });
+
+    it("loads available assets - known assets", () => {
+        fixture = TestBed.createComponent(CustomExchangeComponent);
+        component = fixture.componentInstance;
+        component.exchange = new ExchangePair("xlm_usd-anchorUsd", KnownAssets.XLM, KnownAssets["USD-AnchorUsd"]);
+        fixture.detectChanges();
+
+        expect(component.selectedBaseAsset).toEqual(new DropdownOption(KnownAssets.XLM,
+                                                                       "XLM",
+                                                                       "Lumen", "./assets/images/asset_icons/unknown.png"/*Doesn't matter here*/));
+        expect(component.selectedCounterAsset).toEqual(new DropdownOption(KnownAssets["USD-AnchorUsd"],
+                                                                          "USD-anchorusd.com",
+                                                                          "US dollar", "./assets/images/asset_icons/unknown.png"/*Doesn't matter here*/));
     });
 });
 
 
 class AssetServiceStub {
-    getAssetCodesForExchange(): string[] {
-        return [ "XLM", "BONY", "MXN", "RRR" ];
-    }
-
     getAvailableAssets(): Asset[] {
-        return [];
+        return [
+            KnownAssets.XLM,
+            KnownAssets["USD-AnchorUsd"]
+        ];
     }
 
     GetIssuersByAssetCode(code: string): Account[] {
         if ("RRR" === code || "BONY" === code)
         {
             return [ new Account("GULIWER", "gu.li") ];
-        }
-        if ("CKLL" ===  code) {
-            return [ new Account("GOTO", "www.go.to"), new Account("GBBshouldntBeUsed", null) ];
-        }
-        if ("MNO" === code) {
-            return [ new Account("GARIBALDI7845", "Garry.gal"), new Account("GAuseless", null) ];
         }
         if ("altte" === code || "UNITA" === code) {
             return [ ];
@@ -152,34 +141,11 @@ class AssetServiceStub {
         if ("GABRIELASABATINI" === address || "G014" === address || "GCD5DG453SER745C415CG" === address || "GORE" === address) {
             return null;
         }
-        if ("GOTO" === address) {
-            return new Account("GOTO", "www.go.to" );
-        }
-        if ("GARIBALDI7845" === address) {
-            return new Account("GARIBALDI7845", "GariBal.dii");
-        }
         throw new Error("No data prepared for given input (address=" + address + ")");
     }
 
     updateCalled = false;
-    UpdateCustomExchange(id: string, baseAssetCode: string, baseIssuerAddress: string,
-                         counterAssetCode: string, counterIssuerAddress: string): ExchangePair {
-        if ("cust_ex96984" === id && "ABC" === baseAssetCode && "GARGAMELLL" === baseIssuerAddress &&
-            "CHF" === counterAssetCode && "(native)" === counterIssuerAddress)
-        {
-            this.updateCalled = true;
-            return null;
-        }
-        if ("k85u56ww56" === id) {
-            return null;
-        }
-        throw new Error("No data prepared for given inputs (exchange id=" + id + ")");
-    }
-
-
-
-
-    UpdateCustomExchange2(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {      //TODO: delete the above one when done refactoring
+    UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
         if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer.address &&
             "CHF" === counterAsset.code && "GANything" === counterAsset.issuer.address)
         {
@@ -192,9 +158,6 @@ class AssetServiceStub {
 
         throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer.address} ...)`);
     }
-
-
-
 
     removeCalled = false;
     RemoveCustomExchange(exchId: string) {

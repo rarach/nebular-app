@@ -4,9 +4,9 @@ node_js:
 sudo: required
 dist: trusty
 
-#Install headless Chrome (TEMPORARILY CHANGED FROM stable)
+#Install headless Chrome
 addons:
-  chrome: beta
+  chrome: stable
 
 cache:
   directories:
