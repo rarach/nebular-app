@@ -8,14 +8,16 @@ describe('Configuration page', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
-    it("finds all relevant anchors for asset code 'USD'", () => {   //TODO: "finds and adds new custom asset"
+    fit("finds all relevant anchors for asset code 'USD'", () => {   //TODO: "finds and adds new custom asset"
         //Actual page being tested
         browser.get("/configuration");
 
         //Fill the asset input with "USD"
         const assetCodeInput = element(by.css("input#newAssetCode"));
         assetCodeInput.sendKeys("USD");
-        browser.ignoreSynchronization = true;
+
+        //NOTE: timeout increased due to some unreachable stellar.toml files.
+        browser.driver.manage().timeouts().setScriptTimeout(60000);
         element(by.css("button#findAssetCodeBtn")).click();
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
@@ -25,22 +27,34 @@ describe('Configuration page', () => {
         const anchorRow1 = resultsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX"));
         expect(anchorRow1.getText()).toBe("USD-www.anchorusd.com Add");
         const anchorImage1 = anchorRow1.element(by.css("img.asset-icon"));
+        const anchorRow2 = resultsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP"));
+        expect(anchorRow2.getText()).toBe("USD-x.token.io Add");
+        const anchorImage2 = anchorRow2.element(by.css("img.asset-icon"));
 
+        browser.wait(() => {
+            return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("anchorusd.com") > -1; }),
+            5000
+        });
+        expect(anchorImage1.getAttribute("src")).toContain("anchorusd.com");    //They wouldn't outsource the icons, right?
+        expect(anchorImage2.getAttribute("src")).toContain("x.token.io");
 
+        //Verify that the two USD anchors are not among user's custom assets already
+        const assetsTable = element(by.css("table#customAssetsTable"));
+        expect(assetsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX")).isPresent()).toBe(false); //anchorusd.com
+        expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(false); //x.token.io
 
-/*TODO: this is a preferred style, but doesn't work here for some reason :-(
-browser.wait(() => {
-    return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("anchorusd.com") > -1; }),
-    5000
-});
-*/      browser.sleep(4000);
-        expect(anchorImage1.getAttribute("src")).toContain("anchorusd.com");    //They wouldn't outsource the icon, right?
+        const addButton1 = anchorRow1.element(by.css("button.addButton"));
+        addButton1.click();
+        //Verify it's been removed from the first list and added to the second
+        expect(anchorRow1.isPresent()).toBe(false);
+        expect(assetsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX")).isPresent()).toBe(true);
 
-
-
-        //TODO: verify that the two USD anchors are not among user's custom assets already. Add them and check that.
-        browser.ignoreSynchronization = false;
-    });
+        const addButton2 = anchorRow2.element(by.css("button.addButton"));
+        addButton2.click();
+        //Removed from available, added among stored
+        expect(anchorRow2.isPresent()).toBe(false);
+        expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(true);
+    }, 60000);
 
     it("contains list of custom assets saved by user", () => {     //TODO: "removes user's custom asset"
         //Trick: go to invalid page to load the web without calling the dependent services

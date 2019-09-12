@@ -13,7 +13,7 @@ describe('My Exchanges', () => {
         expect(addLink.get(0).getText()).toBe("(add)");
     });
 
-    fit("show 3 exchanges saved by a user, remove one", () => {
+    it("show 3 exchanges saved by a user, remove one", () => {
         //Trick: go to invalid page to load the web without calling the dependent services
         browser.get("/no-such-page");
         browser.manage().addCookie({
