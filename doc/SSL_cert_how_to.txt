@@ -1,0 +1,24 @@
+GoDaddy seems to renew SSL certificate for nebular.app without private key (or I may have just forgotten it? :-/ ).
+If we decide to keep using GoDaddy for issuing the cert, these are the steps taken last time to make it work:
+
+1. Go to csrgenerator.com and generate new CSR:
+Country: US
+State: Georgia
+Locality: Atlanta
+Organization: Nebular
+Org Unit: Dev Center
+Common Name: nebular.app
+Key Size: 2048
+2. Take the generated text and split it in two parts: cert request itself and private key
+3. Go to the certificate on GoDaddy and request new key ("re-key"). Paste the cert request part of CSR, submit
+and wait for new certificate to be issued.
+4. Download new cert, version for IIS (should contain one .crt file and few others).
+5. In command line, execute (assuming OpenSSL tool is installed):
+openssl pkcs12 -inkey private.key -in fromGoDaddy.crt -export -out nebular_app.pfx
+This uses the private key part from step 2 saved in plain text file private.key. You're asked for a password
+that will later be used in Azure portal.
+6. In Azure Portal -> App Services -> <my_app_name> -> TLS/SSL settigs, delete current bindings for nebular.app.
+7. In tab "Private Key Certificates (.pfx)" delete old version and upload new version of your nebular_app.pfx.
+8. Go back to tab "Bindings" and delete old bindings (with www. and without). Re-create the bindings with new
+certificate version and TLS/SSL Type "SNI SSL".
+9. Wait couple minutes and verify it works on www.nebular.app

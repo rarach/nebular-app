@@ -1,7 +1,7 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
 import { Title } from '@angular/platform-browser';
-import { Observable } from 'rxjs';
+import { Observable, of } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { ActivatedRouteStub } from '../testing/activated-route-stub';
@@ -53,7 +53,7 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");
     });
-    it("should initialize exchange from URL parameters", () => {
+    it("should initialize exchange from URL parameters - know asset", () => {
         activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY", interval: "1hour" });
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         exchComponent.ngOnInit();
@@ -61,16 +61,64 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.chartInterval).toBe(3600000);
         //Code coverage...
         exchComponent.ngOnDestroy();
-    }); 
+    });
+    it("should initialize exchange from URL parameters - unknow asset", () => {
+        activRoute.setParamMap({ baseAssetId: "BBQ-GRILLED", counterAssetId: "UUUUH-G0000AASFJGSFG56ADS", interval: "900000" });
+        expect(exchComponent.dataStatus).toBe(DataStatus.OK);
+        exchComponent.ngOnInit();
+        expect(exchComponent.exchange.baseAsset.code).toBe("BBQ");
+        expect(exchComponent.exchange.counterAsset.issuer.address).toBe("G0000AASFJGSFG56ADS");
+        expect(exchComponent.chartInterval).toBe(900000);
+    });
+
+    it("#swapAssets() should swap the assets in URL", () => {
+        const router = TestBed.get(Router);
+        const routerSpy = spyOn(router, "navigateByUrl");
+        exchComponent.exchange = new ExchangePair("test01", KnownAssets.MOBI, KnownAssets.XLM);
+
+        exchComponent.swapAssets();
+        expect(routerSpy).toHaveBeenCalledWith("exchange/XLM/MOBI-GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH?interval=900000");
+    });
+
+    it("#setChartInterval() should set correct chart interval", () => {
+        const router = TestBed.get(Router);
+        const routerSpy = spyOn(router, "createUrlTree").and.returnValue("https://google.com");
+        exchComponent.chartMessage = "whatever";
+
+        exchComponent.setChartInterval("1w");
+        expect(exchComponent.chartMessage).toBe("Loading chart...");
+        expect(exchComponent.chartInterval).toBe(604800000);
+        expect(routerSpy).toHaveBeenCalled();
+    });
+
+    it("#renderCandlestickChart() isn't called if the component is not active", () => {
+        const horizon = TestBed.get(HorizonRestService);
+        const horizonSpy = spyOn(horizon, "getTradeAggregations");
+
+        exchComponent.initChartStream();
+
+        //Lame but best way to check that renderCandlestickChart wasn't called
+        expect(horizonSpy).not.toHaveBeenCalled();
+    });
+
+    it("should initialize exchange from URL parameters - unknow asset", () => {
+        activRoute.setParamMap({ baseAssetId: "ASDF-GAAARGSAD0451", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "900000" });
+
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.NoData);
+        expect(exchComponent.chartMessage).toBe("No trades in this exchange");
+    });
+    //TODO: and so on
 });
 
 class RouterStub {
-    //todo
+    navigateByUrl(url: string) { }
+    createUrlTree(a: any, b: any) { }
 }
 
 class AssetServiceStub {
     getAssetCodesForExchange(): string[] {
-        return [ "Xyz" ];
+        return [ "XLM", "XYZ" ];
     }
 
     GetIssuersByAssetCode(assetCode: string): Account[] {
@@ -87,7 +135,14 @@ class HorizonRestServiceStub {
         return new Observable<Object>();
     }
 
-    getTradeAggregations(): Observable<Object> {
+    getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number): Observable<Object> {
+        if ("ASDF" === exchange.baseAsset.code) {
+            return of({
+                _embedded: {
+                    records: []
+                }
+            });
+        }
         return new Observable<Object>();
     }
 
