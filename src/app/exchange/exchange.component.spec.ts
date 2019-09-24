@@ -1,7 +1,8 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { ActivatedRoute, Router } from '@angular/router';
+import { HttpErrorResponse } from '@angular/common/http';
 import { Title } from '@angular/platform-browser';
-import { Observable, of } from 'rxjs';
+import { Observable, of, throwError } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { ActivatedRouteStub } from '../testing/activated-route-stub';
@@ -14,7 +15,7 @@ import { KnownAssets } from '../model/asset.model';
 import { TitleStub } from '../testing/stubs';
 
 
-describe('ExchangeComponent', () => {
+fdescribe('ExchangeComponent', () => {
     let exchComponent: ExchangeComponent;
     let activRoute: ActivatedRouteStub;
 
@@ -103,10 +104,43 @@ describe('ExchangeComponent', () => {
 
     it("should initialize exchange from URL parameters - unknow asset", () => {
         activRoute.setParamMap({ baseAssetId: "ASDF-GAAARGSAD0451", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "900000" });
+        const titleService = TestBed.get(Title);
+        spyOn(titleService, "setTitle");
 
         exchComponent.ngOnInit();
         expect(exchComponent.dataStatus).toBe(DataStatus.NoData);
         expect(exchComponent.chartMessage).toBe("No trades in this exchange");
+        expect(titleService.setTitle).toHaveBeenCalledWith("ASDF/CCCP");
+        expect(exchComponent.lastTradeTime).toBeNull();
+    });
+    it("should initialize exchange - last trade too old", () => {
+        activRoute.setParamMap({ baseAssetId: "OLD-GCCFGS486G5ADFG51A", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "300000" });
+
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.NoData);
+        expect(exchComponent.chartMessage).toBe("No trades in last 1 days");
+        expect(exchComponent.lastTradeType).toBe("sell");
+    });
+    it("should initialize exchange", () => {
+        activRoute.setParamMap({ baseAssetId: "CUS-GBDEV84512", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "3600000" });
+        const jQuerySpy = spyOn($.fn, "text");
+
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.OK);
+        expect(exchComponent.chartMessage).toBe("");
+        expect(jQuerySpy).toHaveBeenCalledTimes(10);    //5 for given candle, 5 for added artificial candle
+        expect(jQuerySpy).toHaveBeenCalledWith('open: 99.4846694');
+        expect(jQuerySpy).toHaveBeenCalledWith('high: 99.4955575');
+        expect(jQuerySpy).toHaveBeenCalledWith('low: 99.4846694');
+        expect(jQuerySpy).toHaveBeenCalledWith('close: 99.4955575');
+        expect(jQuerySpy).toHaveBeenCalledWith('volume: 64.9569426');
+    });
+    it("should show error message when failed to get candle data", () => {
+        activRoute.setParamMap({ baseAssetId: "ERROR-GOTOHELL", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "300000" });
+
+        exchComponent.ngOnInit();
+        expect(exchComponent.dataStatus).toBe(DataStatus.Error);
+        expect(exchComponent.chartMessage).toBe("Couldn't load data for this exchange (server: Resource not found on a computer - that's bad [404])");
     });
     //TODO: and so on
 });
@@ -131,18 +165,104 @@ class AssetServiceStub {
 }
 
 class HorizonRestServiceStub {
-    getTradeHistory(): Observable<Object> {
-        return new Observable<Object>();
-    }
-
-    getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number): Observable<Object> {
-        if ("ASDF" === exchange.baseAsset.code) {
+    getTradeHistory(exchange: ExchangePair, maxItems: number): Observable<Object> {
+        if ("ASDF" === exchange.baseAsset.code) {       //Unknown asset
             return of({
                 _embedded: {
                     records: []
                 }
             });
         }
+        if ("OLD" === exchange.baseAsset.code) {        //Last trade too old
+            return of({
+                _embedded: {
+                    records: [{
+                        ledger_close_time: 1534543200000,   //2018-08-18
+                        "price": {
+                            n: 200,
+                            d: 666
+                        },
+                        "base_is_seller": false
+                    }]
+                }
+            });
+        }
+        if ("CUS" === exchange.baseAsset.code) {
+            return of({
+                _embedded: {
+                    records: [{
+                        "ledger_close_time": (new Date()).getTime(),
+                        timestamp: (new Date()).getTime(),
+                        price: {
+                            n: 10,
+                            d: 3
+                        },
+                        base_amount: 100,
+                        "base_is_seller": true
+                    },
+                    {
+                        ledger_close_time: (new Date()).getTime(),
+                        "timestamp": (new Date()).getTime(),
+                        price: {
+                            "n": 10,
+                            d: 4
+                        },
+                        "base_amount": 7,
+                        base_is_seller: false
+                    },
+                    {
+                        ledger_close_time: (new Date()).getTime(),
+                        "timestamp": 1534543200000      //2018-08-18
+                    }]
+                }
+            });
+        }
+
+        return new Observable<Object>();
+    }
+
+    getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number): Observable<Object> {
+        if ("ASDF" === exchange.baseAsset.code) {       //Unknown asset
+            return of({
+                _embedded: {
+                    records: []
+                }
+            });
+        }
+        if ("OLD" === exchange.baseAsset.code) {        //Last trade too old
+            return of({
+                _embedded: {
+                    records: [{
+                        timestamp: 1534543200000    //2018-08-18
+                    }]
+                }
+            });
+        }
+        if ("CUS" === exchange.baseAsset.code) {
+            return of({
+                _embedded: {
+                    records: [{
+                        timestamp: (new Date()).getTime(),
+                        "base_volume": "64.9569426",
+                        "high": "99.4955575",
+                        "low": "99.4846694",
+                        "open": "99.4846694",
+                        "close": "99.4955575"
+                    },
+                    {
+                        timestamp: 1534543200000    //2018-08-18
+                    }]
+                }
+            });
+        }
+        if (exchange.baseAsset.code === "ERROR") {
+            return throwError(new HttpErrorResponse({
+                error: { detail: "Resource not found on a computer" },
+                statusText: "that's bad",
+                status: 404
+            }));
+        }
+
         return new Observable<Object>();
     }
 

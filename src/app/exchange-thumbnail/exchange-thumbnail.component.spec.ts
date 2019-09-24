@@ -1,4 +1,5 @@
 import { async, TestBed, inject } from '@angular/core/testing';
+import { HttpErrorResponse } from '@angular/common/http';
 import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
@@ -9,7 +10,6 @@ import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExchangeThumbnailComponent } from './exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { HttpErrorResponse } from '@angular/common/http';
 
 
 describe('ExchangeThumbnailComponent', () => {

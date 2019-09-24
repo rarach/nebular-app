@@ -178,6 +178,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 return;
             }
 
+            this.dataStatus = DataStatus.OK;
             this.chartMessage = "";
             let minPrice = Number.MAX_VALUE;
             let maxPrice = -1.0;
