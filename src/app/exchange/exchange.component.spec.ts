@@ -15,7 +15,7 @@ import { KnownAssets } from '../model/asset.model';
 import { TitleStub } from '../testing/stubs';
 
 
-fdescribe('ExchangeComponent', () => {
+describe('ExchangeComponent', () => {
     let exchComponent: ExchangeComponent;
     let activRoute: ActivatedRouteStub;
 
