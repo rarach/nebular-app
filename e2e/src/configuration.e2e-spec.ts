@@ -1,4 +1,3 @@
-//DEL import { async, TestBed } from '@angular/core/testing';
 import { browser, by, element, protractor } from 'protractor';
 
 
@@ -8,7 +7,8 @@ describe('Configuration page', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
-    it("finds all relevant anchors for asset code 'USD'", () => {   //TODO: "finds and adds new custom asset"
+
+    it("finds and adds two new custom assets (USD anchors)", () => {
         //Actual page being tested
         browser.get("/configuration");
 
@@ -16,9 +16,11 @@ describe('Configuration page', () => {
         const assetCodeInput = element(by.css("input#newAssetCode"));
         assetCodeInput.sendKeys("USD");
 
-        //NOTE: timeout increased due to some unreachable stellar.toml files.
+        //NOTE: black magic to make it work with async HTTP requests (+ timeout increased due to unreachable stellar.toml)
+        browser.waitForAngularEnabled(false);
         browser.driver.manage().timeouts().setScriptTimeout(60000);
         element(by.css("button#findAssetCodeBtn")).click();
+        browser.waitForAngularEnabled(true);
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
         browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of USD anchors failed to show in 5sec");
