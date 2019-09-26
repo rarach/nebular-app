@@ -5,7 +5,7 @@ import { Subscription } from 'rxjs';
 
 import { AssetData } from 'src/app/model/asset-data.model';
 import { AssetService } from 'src/app/services/asset.service';
-import { GETParams } from 'src/app/model/constants';
+import { Constants, GETParams } from 'src/app/model/constants';
 import { HorizonRestService } from 'src/app/services/horizon-rest.service';
 import { IssuerConfiguration } from 'src/app/model/toml/issuer-configuration';
 import { TomlConfigService } from 'src/app/services/toml-config.service';
@@ -87,6 +87,10 @@ export class CustomAssetWizardComponent implements OnInit, OnDestroy {
             if (asset.tomlLink) {
                 this.configService.getIssuerConfig(asset.tomlLink).subscribe(issuerConfig => {
                     this.loadAssetData(asset, issuerConfig);
+                },
+                err => {
+                    //Lilely an unreachable stellar.toml
+                    asset.iconUrl = Constants.UNKNOWN_ASSET_IMAGE;
                 });
             }            
         }

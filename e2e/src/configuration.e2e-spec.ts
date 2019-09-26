@@ -8,7 +8,7 @@ describe('Configuration page', () => {
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
 
-    it("finds and adds two new custom assets (USD anchors)", () => {
+    it("finds and adds two new custom assets (USD anchors)", async() => {
         //Actual page being tested
         browser.get("/configuration");
 
@@ -17,10 +17,8 @@ describe('Configuration page', () => {
         assetCodeInput.sendKeys("USD");
 
         //NOTE: black magic to make it work with async HTTP requests (+ timeout increased due to unreachable stellar.toml)
-        browser.waitForAngularEnabled(false);
         browser.driver.manage().timeouts().setScriptTimeout(60000);
         element(by.css("button#findAssetCodeBtn")).click();
-        browser.waitForAngularEnabled(true);
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
         browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of USD anchors failed to show in 5sec");

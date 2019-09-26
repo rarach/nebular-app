@@ -1,3 +1,4 @@
+import { Constants } from "./constants";
 import { HorizonRestService } from "../services/horizon-rest.service";
 import { IssuerConfiguration } from "./toml/issuer-configuration";
 import { TomlConfigService } from "../services/toml-config.service";
@@ -22,7 +23,7 @@ export class AssetStatistics {
                 },
                 error => {
                     //Usually a request blocked by the browser or proxy
-                    this.assetIcon = `./assets/images/asset_icons/unknown.png`;
+                    this.assetIcon = Constants.UNKNOWN_ASSET_IMAGE;
                 });
 
                 //Derive asset's domain from config URL

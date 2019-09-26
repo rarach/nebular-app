@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, OnInit, OnDestroy } from '@angular/core';
+import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
@@ -46,7 +46,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     selectedCounterIssuer: DropdownOption<string> = null;
 
 
-    constructor(private route: ActivatedRoute, private router: Router, private titleService: Title,
+    constructor(private readonly ngZone: NgZone, private route: ActivatedRoute, private router: Router, private titleService: Title,
                 private assetService: AssetService, private horizonService: HorizonRestService) {
         this.loadAssetCodes();
     }
@@ -259,9 +259,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
         this.renderCandlestickChart(false);
 
-        setTimeout(() => {
-            this.initChartStream();
-        }, Constants.CHART_INTERVAL);
+        //NOTE: Angular zones trick to prevent Protractor timeouts
+        this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.ngZone.run(() => { this.initChartStream(); });
+            }, Constants.CHART_INTERVAL);
+        });
     }
     /****************************** Trade history (right side panel) ******************************/
     private updateTradeHistory() {
@@ -325,9 +328,12 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
         this.updateTradeHistory();
 
-        setTimeout(() => {
-            this.initPastTradesStream();
-        }, ExchangeComponent.PAST_TRADES_INTERVAL);
+        //NOTE: Angular zones trick to prevent Protractor timeouts
+        this.ngZone.runOutsideAngular(() => {
+            setTimeout(() => {
+                this.ngZone.run(() => { this.initPastTradesStream(); });
+            }, ExchangeComponent.PAST_TRADES_INTERVAL);
+        });
     }
     /**********************************************************************************************/
 
