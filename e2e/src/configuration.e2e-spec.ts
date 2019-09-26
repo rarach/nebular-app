@@ -20,7 +20,6 @@ describe('Configuration page', () => {
 browser.waitForAngularEnabled(false);
         browser.driver.manage().timeouts().setScriptTimeout(60000);
         element(by.css("button#findAssetCodeBtn")).click();
-browser.waitForAngularEnabled(true);
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
         browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of USD anchors failed to show in 5sec");
@@ -56,6 +55,10 @@ browser.waitForAngularEnabled(true);
         //Removed from available, added among stored
         expect(anchorRow2.isPresent()).toBe(false);
         expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(true);
+
+
+
+browser.waitForAngularEnabled(true);
     }, 60000);
 
     it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
