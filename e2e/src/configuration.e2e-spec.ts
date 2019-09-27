@@ -8,7 +8,7 @@ describe('Configuration page', () => {
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
 
-    it("finds and adds two new custom assets (USD anchors)", async(done) => {
+    it("finds and adds two new custom assets (USD anchors)", async() => {
         //Actual page being tested
         browser.get("/configuration");
 
@@ -17,7 +17,7 @@ describe('Configuration page', () => {
         assetCodeInput.sendKeys("USD");
 
         //NOTE: black magic to make it work with async HTTP requests (+ timeout increased due to unreachable stellar.toml)
-        browser.driver.manage().timeouts().setScriptTimeout(60000);
+        browser.driver.manage().timeouts().setScriptTimeout(240000);
         element(by.css("button#findAssetCodeBtn")).click();
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
@@ -54,9 +54,7 @@ describe('Configuration page', () => {
         //Removed from available, added among stored
         expect(anchorRow2.isPresent()).toBe(false);
         expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(true);
-
-done();
-    }, 60000);
+    }, 240000);
 
     it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
         //Trick: go to invalid page to load the web without calling the dependent services
