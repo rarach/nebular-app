@@ -5,6 +5,7 @@ describe("CandlestickChartData (model)", () => {
     const chartData = new LineChartData();
 
     it("#clearData() clears market data", () => {
+        chartData.clearData();  //NOTE: otherwise it could interfere with below test
         expect(chartData.DataPointCount()).toBe(0);
         chartData.addPointData([1.0, 1.05, 3.0]);
         expect(chartData.getData()["series"][0].values.length).toBe(1);
@@ -12,6 +13,7 @@ describe("CandlestickChartData (model)", () => {
         expect(chartData.getData()["series"][0].values.length).toBe(0);
     });
     it("#addPointData() adds data point", () => {
+        chartData.clearData();  //NOTE: otherwise it could interfere with above test
         chartData.addPointData([123456789, 52.677]);
         chartData.addPointData([123456991, 59.0407]);
         expect(chartData.getData()['series'][0].values).toEqual([
