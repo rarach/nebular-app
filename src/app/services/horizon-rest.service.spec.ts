@@ -1,10 +1,11 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
 
-import { HorizonRestService } from './horizon-rest.service';
-import { ExchangePair } from '../model/exchange-pair.model';
-import { Asset, KnownAssets } from '../model/asset.model';
 import { Account } from '../model/account.model';
+import { Asset, KnownAssets } from '../model/asset.model';
+import { AssetData } from '../model/asset-data.model';
+import { ExchangePair } from '../model/exchange-pair.model';
+import { HorizonRestService } from './horizon-rest.service';
 
 
 describe('HorizonRestService', () => {
@@ -133,6 +134,28 @@ describe('HorizonRestService', () => {
             }
           }`);
     });
+    it("#getLastPriceInNative() returns -1 if asset's last trade is too old", () => {
+        service.getLastPriceInNative(KnownAssets.MOBI).subscribe(priceInXlm => {
+            expect(priceInXlm).toBe(-1);
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
+                                      "?base_asset_code=MOBI&base_asset_type=credit_alphanum4" +
+                                      "&base_asset_issuer=GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH" +
+                                      "&counter_asset_code=XLM&counter_asset_type=native" +
+                                      "&counter_asset_issuer=null" +
+                                      "&order=desc&limit=1"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+          "_links": {
+          },
+          "_embedded": {
+            "records": [
+              { "ledger_close_time": "2019-09-09T15:34:27Z" }
+            ]
+          }
+        }`);
+    });
 
     it("#getOrderbook(exch, 4) performs GET request to correct API URL", () => {
         const exch = new ExchangePair("whatever", KnownAssets.XCN, KnownAssets["XRP-Interstellar"]);
@@ -163,6 +186,50 @@ describe('HorizonRestService', () => {
                                        "&limit=17"));
         expect(req.request.method).toBe('GET');
         req.flush({ called: "order-book", float:854125.1515 });
+    });
+
+    it("#getAssetIssuers() returns null when there are no anchors for an asset code", () => {
+        service.getAssetIssuers("NOSUCH").subscribe(data => {
+            expect(data).toBeNull();
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=NOSUCH&limit=200"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_embedded": {
+              "records": [ ]
+            }
+          }`);
+    });
+    it("#getAssetIssuers() returns correct AssetData array for existing asset code", () => {
+        service.getAssetIssuers("EURT").subscribe(data => {
+            expect(data.length).toBe(1);
+            expect(data[0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
+                                              "credit_alphanum4",
+                                              "EURT",
+                                              "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
+                                              10815));
+        });
+
+        const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=EURT&limit=200"));
+        expect(req.request.method).toBe("GET");
+        req.flush(`{
+            "_embedded": {
+              "records": [
+                {
+                  "_links": {
+                    "toml": {
+                      "href": "https://tempo.eu.com/.well-known/stellar.toml"
+                    }
+                  },
+                  "asset_type": "credit_alphanum4",
+                  "asset_code": "EURT",
+                  "asset_issuer": "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
+                  "num_accounts": 10815
+                }
+              ]
+            }
+          }`);
     });
 
     it("#getIssuerConfigUrl() returns location of TOML file when present", () => {

@@ -61,9 +61,17 @@ export class HorizonRestService {
                     data = JSON.parse(data);
                 }
                 const trades = data._embedded.records;
-                return trades.length
-                    ? trades[0].price.n / trades[0].price.d
-                    : -1;
+                if (!trades.length) {
+                    return -1;
+                }
+                //Only consider last trade not older than 24 hours
+                const lastTradeTime = new Date(trades[0].ledger_close_time);
+                const yesterday = new Date();
+                yesterday.setDate(yesterday.getDate() - 1);
+                if (lastTradeTime < yesterday) {
+                    return -1;
+                }
+                return trades[0].price.n / trades[0].price.d;
             }))
     }
 
