@@ -7,6 +7,7 @@ import { ActivatedRouteStub } from 'src/app/testing/activated-route-stub';
 import { Asset } from 'src/app/model/asset.model';
 import { AssetData } from 'src/app/model/asset-data.model';
 import { AssetService } from 'src/app/services/asset.service';
+import { Constants } from 'src/app/model/constants';
 import { CustomAssetWizardComponent } from './custom-asset-wizard.component';
 import { HorizonRestService } from 'src/app/services/horizon-rest.service';
 import { TomlConfigService } from 'src/app/services/toml-config.service';
@@ -105,6 +106,16 @@ image = "ab.cd/ef.jpg"`) },
         expect(component.foundAssets).toBeNull();
         expect(component.searchStatus).toBe("FINISHED");
     });
+    it("#searchAssetCodes()->loadAssetIcons() uses default icon if asset's config is unreachable", () => {
+        const formStub: NgForm = {
+            invalid: false,
+            value: { newAssetCode: "TOML_ERROR" }
+        } as NgForm;
+        component.searchAssetCodes(formStub);
+        expect(component.searchStatus).toBe("FINISHED");
+        expect(component.foundAssets.length).toBe(1);
+        expect(component.foundAssets[0].iconUrl).toBe(Constants.UNKNOWN_ASSET_IMAGE);
+    });
     it("#searchAssetCodes() finds assets", () => {
         const formStub: NgForm = {
             invalid: false,
@@ -116,7 +127,7 @@ image = "ab.cd/ef.jpg"`) },
         expect(component.foundAssets).toEqual([
             new AssetData(null, "alphanum4", "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80),
             iresaAsset
-        ])
+        ]);
     });
 
     it("#addAsset() OK", () => {
@@ -155,6 +166,11 @@ class HorizonRestServiceStub {
             return of([
                 new AssetData("google.com/.well-known/stellar.toml", null, "IRESA", "G00GLE", 65),
                 new AssetData(null, "alphanum4", "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80)
+            ]);
+        }
+        if ("TOML_ERROR" === assetCode) {
+            return of([
+                new AssetData("THROW_ERROR", null, null, null, -1)
             ]);
         }
         throw new Error("No test data ready for the input asset code " + assetCode);

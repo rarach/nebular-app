@@ -143,8 +143,10 @@ describe('ExchangeComponent', () => {
         exchComponent.ngOnInit();
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Couldn't load data for this exchange (server: Resource not found on a computer - that's bad [404])");
+        expect(exchComponent.lastPrice).toBe(-1);
+        expect(exchComponent.lastTradeType).toBe("error");
     });
-    //TODO: and so on
+    //TODO: and so on (after we finish refactoring to one drop-down per asset)
 });
 
 class RouterStub {
@@ -218,6 +220,13 @@ class HorizonRestServiceStub {
                     }]
                 }
             });
+        }
+        if (exchange.baseAsset.code === "ERROR") {
+            return throwError(new HttpErrorResponse({
+                error: { detail: "This server won't give us trade history" },
+                statusText: "wrong",
+                status: 429
+            }));
         }
 
         return new Observable<Object>();

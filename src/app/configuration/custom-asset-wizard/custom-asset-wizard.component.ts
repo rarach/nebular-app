@@ -89,7 +89,7 @@ export class CustomAssetWizardComponent implements OnInit, OnDestroy {
                     this.loadAssetData(asset, issuerConfig);
                 },
                 err => {
-                    //Lilely an unreachable stellar.toml
+                    //Likely an unreachable stellar.toml
                     asset.iconUrl = Constants.UNKNOWN_ASSET_IMAGE;
                 });
             }            
