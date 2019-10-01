@@ -2,20 +2,28 @@
     margin-top: 24px;
 }
 
-.removeExchButton {
+.hoverButton {
     display: none;
     position: absolute;
     top: -15px;
-    right: -15px;
     z-index: 1;
     width: 30px;
     height: 30px;
     border-radius: 50%;
     text-align: center;
     color: white;
-    background-color: #ff6666;
     font-size: 1.8em;
     cursor: pointer;
+}
+
+.moveExchButton {
+    right: 20px;
+    background-color: #4d81b0;
+}
+
+.removeExchButton {
+    right: -15px;
+    background-color: #ff6666;
 }
 
 div.assetsSelection {

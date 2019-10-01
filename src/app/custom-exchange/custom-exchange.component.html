@@ -1,7 +1,9 @@
 <div id="customExchange{{exchange.id}}" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 customExchange">
-    <div onmouseover="$(this).find('div.removeExchButton').show();" onmouseout="$(this).find('div.removeExchButton').hide();">
+    <div onmouseover="$(this).find('div.hoverButton').show();"
+         onmouseout="$(this).find('div.hoverButton').hide();">
         <div class="assetsSelection" onclick="return false;">
-            <div class="removeExchButton" (click)="removeExchange()">X</div>
+            <div class="hoverButton moveExchButton" (mousedown)="startDrag()" title="Drag and drop to relocate this exchange (TODO!)">&#10542;</div>
+            <div class="hoverButton removeExchButton" (click)="removeExchange()" title="Remove this exchange from the list">X</div>
             <div class="assetDropDowns">
                 <mat-form-field style="width: 50%;">
                     <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption"

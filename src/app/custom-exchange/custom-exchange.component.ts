@@ -1,4 +1,4 @@
-import { Component, OnInit, Input } from '@angular/core';
+import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
 import { Asset } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
@@ -15,6 +15,7 @@ import { Account } from '../model/account.model';
 })
 export class CustomExchangeComponent implements OnInit {
     @Input() exchange: ExchangePair;
+    @Output() dragStarted = new EventEmitter();
 
     assetOptions: DropdownOption<Asset>[] = [];
     selectedBaseAsset: DropdownOption<Asset> = null;
@@ -37,6 +38,10 @@ export class CustomExchangeComponent implements OnInit {
 
     removeExchange() {
         this.assetService.RemoveCustomExchange(this.exchange.id);
+    }
+
+    startDrag() {
+        this.dragStarted.emit(this.exchange);
     }
 
 
