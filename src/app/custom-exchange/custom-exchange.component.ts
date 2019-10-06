@@ -1,11 +1,12 @@
 import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
 
+import { Account } from '../model/account.model';
 import { Asset } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
 import { Constants } from '../model/constants';
 import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
-import { Account } from '../model/account.model';
+import { UiActionsService } from '../services/ui-actions.service';
 
 
 @Component({
@@ -15,14 +16,18 @@ import { Account } from '../model/account.model';
 })
 export class CustomExchangeComponent implements OnInit {
     @Input() exchange: ExchangePair;
-    @Output() dragStarted = new EventEmitter();
 
     assetOptions: DropdownOption<Asset>[] = [];
     selectedBaseAsset: DropdownOption<Asset> = null;
     selectedCounterAsset: DropdownOption<Asset> = null;
 
 
-    constructor(private assetService: AssetService) {
+
+    highlightDropTarget: Boolean = false;
+
+
+
+    constructor(private assetService: AssetService, private uiActions: UiActionsService) {
         this.loadAssets();
     }
 
@@ -40,10 +45,19 @@ export class CustomExchangeComponent implements OnInit {
         this.assetService.RemoveCustomExchange(this.exchange.id);
     }
 
-    startDrag() {
-        this.dragStarted.emit(this.exchange);
+    onMouseOver() {
+        if (this.uiActions.DraggingExchange !== null && this.uiActions.DraggingExchange.id !== this.exchange.id) {
+            this.highlightDropTarget = true;
+        }
     }
 
+    startDrag() {
+        this.uiActions.draggingStarted(this.exchange);
+    }
+
+    public get isDragged() : Boolean {
+        return this.uiActions.DraggingExchange !== null && this.uiActions.DraggingExchange.id === this.exchange.id;
+    }
 
     private setupUi() {
         //Set selected option in base asset code drop-down

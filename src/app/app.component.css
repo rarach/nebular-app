@@ -130,8 +130,7 @@ div.headerLinks {
     padding-left: 15px;
 }
 
-
-
-/*TODO: delete these*/
-
-
+:host ::ng-deep #draggedExchangeClone {
+    margin: 0;
+    padding: 0;
+}
