@@ -16,6 +16,7 @@ import { PageNotFoundComponent } from './not-found.component';
 import { ExchangeThumbnailComponent } from './exchange-thumbnail/exchange-thumbnail.component';
 import { AssetService } from './services/asset.service';
 import { HorizonRestService } from "./services/horizon-rest.service";
+import { UiActionsService } from './services/ui-actions.service';
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
@@ -52,7 +53,7 @@ import { CustomAssetWizardComponent } from './configuration/custom-asset-wizard/
         AppRoutingModule,
         CookieModule.forRoot()
     ],
-    providers: [Title, AssetService, HorizonRestService],
+    providers: [Title, AssetService, HorizonRestService, UiActionsService],
     bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -12,7 +12,6 @@ import { ExchangePair } from '../model/exchange-pair.model';
 })
 export class MyExchangesComponent {
     exchanges = new Array<ExchangePair>();
-    draggingExchId: string = null;
 
     constructor(titleService: Title, private assetService: AssetService) {
         titleService.setTitle("My Exchanges");
@@ -22,9 +21,5 @@ export class MyExchangesComponent {
 
     addCustomExchange() {
         const newExchange: ExchangePair = this.assetService.CreateCustomExchange();
-    }
-
-    onDragStarted(eventData: ExchangePair) {
-        this.draggingExchId = eventData.id;
     }
 }

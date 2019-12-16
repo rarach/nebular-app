@@ -8,6 +8,7 @@ import {
 } from '@angular/platform-browser-dynamic/testing';
 
 declare const require: any;
+declare var $: any;
 
 // First, initialize the Angular testing environment.
 getTestBed().initTestEnvironment(

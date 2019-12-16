@@ -8,5 +8,7 @@ config.capabilities = {
   args: ['--headless', '--no-sandbox', "--proxy-server='direct://'", "--proxy-bypass-list=*" /*For local debugging , "--remote-debugging-port=9222"*/]
   }
 };
+//NOTE: this needs to be updated with each new chrome/chromedriver/Travis_distro
+config.chromeDriver = '../node_modules/webdriver-manager/selenium/chromedriver_78.0.3904.105',
 
 exports.config = config;

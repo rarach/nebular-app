@@ -2,6 +2,21 @@
     margin-top: 24px;
 }
 
+.dropTarget {
+    margin-top: 18px;
+    border: 3px dashed #4d81b0;
+}
+
+.draggedExchOverlay {
+    position: absolute;
+    z-index: 1;
+    /* 15px horizontal offsets match Bootstrap's grid padding */
+    left: 15px;
+    right: 15px;
+    height: 100%;
+    background: rgba(255, 255, 255, 0.8);
+}
+
 .hoverButton {
     display: none;
     position: absolute;
