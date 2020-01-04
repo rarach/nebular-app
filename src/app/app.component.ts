@@ -1,6 +1,7 @@
 import { Component } from '@angular/core';
-import * as $ from "jquery";
+import { UiActionsService } from './services/ui-actions.service';
 
+import * as $ from "jquery";
 
 @Component({
     selector: 'app-root',
@@ -8,5 +9,15 @@ import * as $ from "jquery";
     styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-    public constructor() { }
+    public constructor(private uiActions: UiActionsService) {
+
+    }
+
+    onClick() {
+        if (this.uiActions.DraggingExchange) {
+            //If we received the click event, it was outside a slot where the exchange thumbnail being dragged can
+            //be dropped => cancel the reposition
+            this.uiActions.draggingFinished();
+        }
+    }
 }
