@@ -9,6 +9,6 @@ config.capabilities = {
   }
 };
 //NOTE: this needs to be updated with each new chrome/chromedriver/Travis_distro
-config.chromeDriver = '../node_modules/webdriver-manager/selenium/chromedriver_78.0.3904.105',
+config.chromeDriver = '../node_modules/webdriver-manager/selenium/chromedriver_79.0.3945.36',
 
 exports.config = config;

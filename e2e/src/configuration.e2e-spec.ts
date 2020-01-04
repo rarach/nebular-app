@@ -8,52 +8,52 @@ describe('Configuration page', () => {
         expect(browser.getTitle()).toBe('Nebular - Configuration');
     });
 
-    it("finds and adds two new custom assets (USD anchors)", async() => {
+    it("finds and adds two new custom assets (BTC anchors)", async() => {
         //Actual page being tested
         browser.get("/configuration");
 
-        //Fill the asset input with "USD"
+        //Fill the asset input with "BTC"
         const assetCodeInput = element(by.css("input#newAssetCode"));
-        assetCodeInput.sendKeys("USD");
+        assetCodeInput.sendKeys("BTC");
 
         //NOTE: black magic to make it work with async HTTP requests (+ timeout increased due to unreachable stellar.toml)
         browser.driver.manage().timeouts().setScriptTimeout(240000);
         element(by.css("button#findAssetCodeBtn")).click();
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
-        browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of USD anchors failed to show in 5sec");
+        browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of BTC anchors failed to show in 5sec");
 
-        //Check for most common USD anchors
-        const anchorRow1 = resultsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX"));
-        expect(anchorRow1.getText()).toBe("USD-www.anchorusd.com Add");
+        //Check for most common BTC anchors
+        const anchorRow1 = resultsTable.element(by.css("tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF"));
+        expect(anchorRow1.getText()).toBe("BTC-apay.io Add");
         const anchorImage1 = anchorRow1.element(by.css("img.asset-icon"));
-        const anchorRow2 = resultsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP"));
-        expect(anchorRow2.getText()).toBe("USD-x.token.io Add");
+        const anchorRow2 = resultsTable.element(by.css("tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5"));
+        expect(anchorRow2.getText()).toBe("BTC-stellarport.io Add");
         const anchorImage2 = anchorRow2.element(by.css("img.asset-icon"));
 
         browser.wait(() => {
-            return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("anchorusd.com") > -1; }),
+            return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("apay.io") > -1; }),
             5000
         });
-        expect(anchorImage1.getAttribute("src")).toContain("anchorusd.com");    //They wouldn't outsource the icons, right?
-        expect(anchorImage2.getAttribute("src")).toContain("x.token.io");
+        expect(anchorImage1.getAttribute("src")).toContain("apay.io");    //They wouldn't outsource the icons, right?
+        expect(anchorImage2.getAttribute("src")).toContain("stellarport.io");
 
-        //Verify that the two USD anchors are not among user's custom assets already
+        //Verify that the two BTC anchors are not among user's custom assets already
         const assetsTable = element(by.css("table#customAssetsTable"));
-        expect(assetsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX")).isPresent()).toBe(false); //anchorusd.com
-        expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(false); //x.token.io
+        expect(assetsTable.element(by.css("tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF")).isPresent()).toBe(false); //apay.io
+        expect(assetsTable.element(by.css("tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5")).isPresent()).toBe(false); //stellarport.io
 
         const addButton1 = anchorRow1.element(by.css("button.addButton"));
         addButton1.click();
         //Verify it's been removed from the first list and added to the second
         expect(anchorRow1.isPresent()).toBe(false);
-        expect(assetsTable.element(by.css("tr#USD-GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX")).isPresent()).toBe(true);
+        expect(assetsTable.element(by.css("tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF")).isPresent()).toBe(true);
 
         const addButton2 = anchorRow2.element(by.css("button.addButton"));
         addButton2.click();
         //Removed from available, added among stored
         expect(anchorRow2.isPresent()).toBe(false);
-        expect(assetsTable.element(by.css("tr#USD-GDSRCV5VTM3U7Y3L6DFRP3PEGBNQMGOWSRTGSBWX6Z3H6C7JHRI4XFJP")).isPresent()).toBe(true);
+        expect(assetsTable.element(by.css("tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5")).isPresent()).toBe(true);
     }, 240000);
 
     it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
