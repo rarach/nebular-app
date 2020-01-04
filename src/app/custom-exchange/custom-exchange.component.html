@@ -3,7 +3,7 @@
     <div onmouseover="$(this).find('div.hoverButton').show();" (mouseover)="onMouseOver()"
          onmouseout="$(this).find('div.hoverButton').hide();" (mouseout)="highlightDropTarget = false;">
         <div class="assetsSelection" onclick="return false;">
-            <div class="hoverButton moveExchButton" (mousedown)="startDrag()" title="Drag and drop to relocate this exchange (TODO!)">&#10542;</div>
+            <div class="hoverButton moveExchButton" (click)="startDrag()" title="Drag and drop to relocate this exchange (TODO!)">&#10542;</div>
             <div class="hoverButton removeExchButton" (click)="removeExchange()" title="Remove this exchange from the list">X</div>
             <div class="assetDropDowns">
                 <mat-form-field style="width: 50%;">

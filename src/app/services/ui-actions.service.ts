@@ -29,9 +29,8 @@ export class UiActionsService {
     }
 
     public draggingFinished() {
-        this._draggingExch = null;
         this._exchange = null;
-        this.getWindow().isDraggingExchange = false;
+        this.getWindow().finishDragging();
     }
 
 

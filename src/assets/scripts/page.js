@@ -34,3 +34,8 @@ window.startDragging = function(exchangeElementId) {
     $(clone).width(width);
     $("#draggedSnapshot").empty().append(clone);
 };
+
+window.finishDragging = function() {
+    window.isDraggingExchange = false;
+    $("#draggedSnapshot").empty();
+};
