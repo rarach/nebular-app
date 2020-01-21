@@ -4,11 +4,12 @@ import { Router } from "@angular/router";
 import zingchart from "zingchart";
 
 import { Constants } from "../model/constants";
-import { ExchangePair } from '../model/exchange-pair.model';
-import { LineChartData } from '../model/line-chart-data';
-import { Utils } from 'src/app/utils';
-import { HorizonRestService } from '../services/horizon-rest.service';
 import { DataStatus } from '../model/data-status.enum';
+import { ExchangePair } from '../model/exchange-pair.model';
+import { HorizonRestService } from '../services/horizon-rest.service';
+import { LineChartData } from '../model/line-chart-data';
+import { UiActionsService } from '../services/ui-actions.service';
+import { Utils } from 'src/app/utils';
 
 
 @Component({
@@ -30,7 +31,10 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     private _isActive = false;
     private _lineChart: LineChartData = null;
 
-    constructor(private readonly ngZone: NgZone, private readonly router: Router, private horizonService: HorizonRestService) { }
+    constructor(private readonly ngZone: NgZone,
+                private readonly router: Router,
+                private readonly horizonService: HorizonRestService,
+                private readonly uiActions: UiActionsService) { }
 
     getUrl(): string {
         return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
@@ -51,7 +55,9 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     }
 
     onClick() {
-        this.router.navigateByUrl(this.getUrl());
+        if (!this.uiActions.DraggingExchange) {
+            this.router.navigateByUrl(this.getUrl());
+        }
     }
 
     private renderLineChart() {

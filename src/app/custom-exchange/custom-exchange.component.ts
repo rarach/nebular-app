@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, Output, EventEmitter } from '@angular/core';
+import { Component, OnInit, Input } from '@angular/core';
 
 import { Account } from '../model/account.model';
 import { Asset } from '../model/asset.model';
@@ -51,7 +51,22 @@ export class CustomExchangeComponent implements OnInit {
         }
     }
 
-    startDrag() {
+    onClick(event) {
+        event.stopPropagation();
+
+        if (this.uiActions.DraggingExchange !== null) {
+            if (this.uiActions.DraggingExchange.id !== this.exchange.id) {
+                window.alert("TODO: relocating...");
+            }
+            else {
+                //Dropped to itself => no relocation
+                this.uiActions.draggingFinished();
+            }
+        }
+    }
+
+    startDrag(event) {
+        event.stopPropagation();    //Don't mess with onClick()
         this.uiActions.draggingStarted(this.exchange);
     }
 

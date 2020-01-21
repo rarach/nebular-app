@@ -3,7 +3,7 @@
         <app-custom-exchange [exchange]="exch"></app-custom-exchange>
     </ng-container>
     
-    <div id="addCustomExchange" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
+    <div *ngIf="!this.uiService.DraggingExchange" id="addCustomExchange" class="col-xl-3 col-lg-4 col-md-6 col-sm-12">
         <div id="addExchangeButton" class="exchange-link" (click)="addCustomExchange();">
             (add)
         </div>

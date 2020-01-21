@@ -10,6 +10,7 @@ import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExchangeThumbnailComponent } from './exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { UiActionsService } from '../services/ui-actions.service';
 
 
 describe('ExchangeThumbnailComponent', () => {
@@ -28,8 +29,8 @@ describe('ExchangeThumbnailComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(inject([NgZone, Router, HorizonRestService], (zone, router, horizonService) => {
-        component = new ExchangeThumbnailComponent(zone, router, horizonService);
+    beforeEach(inject([NgZone, Router, HorizonRestService, UiActionsService], (zone, router, horizonService, uiService) => {
+        component = new ExchangeThumbnailComponent(zone, router, horizonService, uiService);
         component.exchange = exchange;
     }));
 
@@ -42,6 +43,8 @@ describe('ExchangeThumbnailComponent', () => {
         expect(url).toBe("exchange/ABC-GCCCP/ETH-GETH841062WESTHDF");
     });
     it("onClick() navigates to exchange URL", () => {
+        const uiService : UiActionsService = TestBed.get(UiActionsService);
+        spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(null);
         const router = TestBed.get(Router);
         const routerSpy = spyOn(router, "navigateByUrl");
 

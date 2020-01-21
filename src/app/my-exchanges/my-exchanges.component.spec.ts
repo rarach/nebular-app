@@ -1,17 +1,17 @@
 import { async, TestBed, inject } from '@angular/core/testing';
 import { Title} from '@angular/platform-browser';
 import { Router } from '@angular/router';
+import { HttpClient } from 'selenium-webdriver/http';
 
 import { AssetService } from '../services/asset.service';
 import { Asset, KnownAssets } from '../model/asset.model';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { MyExchangesComponent } from './my-exchanges.component';
-import { HttpClient } from 'selenium-webdriver/http';
+import { UiActionsService } from '../services/ui-actions.service';
 
 
 describe('MyExchangesComponent', () => {
     let component: MyExchangesComponent;
-
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -25,8 +25,8 @@ describe('MyExchangesComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(inject([Title, AssetService], (titleService, assetService) => {
-        component = new MyExchangesComponent(titleService, assetService);
+    beforeEach(inject([UiActionsService, Title, AssetService], (uiService, titleService, assetService) => {
+        component = new MyExchangesComponent(uiService, titleService, assetService);
     }));
 
     it('should create instance and load custom exchanges', () => {
