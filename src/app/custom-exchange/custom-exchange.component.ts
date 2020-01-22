@@ -20,14 +20,10 @@ export class CustomExchangeComponent implements OnInit {
     assetOptions: DropdownOption<Asset>[] = [];
     selectedBaseAsset: DropdownOption<Asset> = null;
     selectedCounterAsset: DropdownOption<Asset> = null;
-
-
-
     highlightDropTarget: Boolean = false;
 
 
-
-    constructor(private assetService: AssetService, private uiActions: UiActionsService) {
+    constructor(private readonly assetService: AssetService, private readonly uiActions: UiActionsService) {
         this.loadAssets();
     }
 
@@ -56,12 +52,10 @@ export class CustomExchangeComponent implements OnInit {
 
         if (this.uiActions.DraggingExchange !== null) {
             if (this.uiActions.DraggingExchange.id !== this.exchange.id) {
-                window.alert("TODO: relocating...");
+                this.assetService.SwapCustomExchanges(this.exchange, this.uiActions.DraggingExchange);
             }
-            else {
-                //Dropped to itself => no relocation
-                this.uiActions.draggingFinished();
-            }
+            //else: Dropped to itself => no relocation
+            this.uiActions.draggingFinished();
         }
     }
 

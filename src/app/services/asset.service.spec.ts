@@ -26,7 +26,6 @@ describe('AssetService', () => {
     }));
 });
 
-
 describe('AssetService', () => {
     let assetService: AssetService;
 
@@ -142,6 +141,7 @@ describe('AssetService', () => {
         expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null)));
         expect(newPair.counterAsset.code).toBe("XLM");
     });
+
     it("#UpdateCustomExchange() updates existing pair", () => {
         //Sanity checks first
         expect(assetService.customExchanges.length).toBe(3);
@@ -158,6 +158,7 @@ describe('AssetService', () => {
     it("#UpdateCustomExchange() with bad exchange ID returns null", () => {
         expect(assetService.UpdateCustomExchange("0w645612a", new Asset("ABC", null, null, new Account("G012", null)), null)).toBeNull();
     });
+
     it("#RemoveCustomExchange() removes existing exchange pair", () => {
         expect(assetService.customExchanges.length).toBe(3);
         expect(assetService.RemoveCustomExchange("12345")).toBe(true);
@@ -171,6 +172,22 @@ describe('AssetService', () => {
         expect(assetService.RemoveCustomExchange("0968dt4uwe5a6074d0gsdf")).toBe(false);
         expect(assetService.customExchanges.length).toBe(3);
     });
+
+    it("#SwapCustomExchanges() switches 2 custom markets", () => {
+        //Sanity check before the swap
+        expect(assetService.customExchanges.length).toBe(3);
+        expect(assetService.customExchanges[0].id).toBe("5555");
+        expect(assetService.customExchanges[1].id).toBe("12345");
+
+        assetService.SwapCustomExchanges(assetService.customExchanges[1], assetService.customExchanges[0]);
+
+        expect(assetService.customExchanges[0].id).toBe("12345");
+        expect(assetService.customExchanges[0].baseAsset.code).toBe("lightcoin");
+        expect(assetService.customExchanges[1].id).toBe("5555");
+        expect(assetService.customExchanges[1].baseAsset.issuer.address).toBe("GAAAASLIMIT");
+        expect(assetService.customExchanges[2].id).toBe("10101010");    //Must stay unchanged
+    });
+
     it("#serializeToCookie() works", () => {
         assetService.customAssets.push(KnownAssets["USD-AnchorUsd"]);
         assetService.customExchanges.push(new ExchangePair("c00k1e",

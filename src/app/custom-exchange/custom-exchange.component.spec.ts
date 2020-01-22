@@ -9,10 +9,11 @@ import { Account } from '../model/account.model';
 import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
 import { CustomExchangeComponent } from './custom-exchange.component';
+import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExchangeThumbnailComponent } from '../exchange-thumbnail/exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { DropdownOption } from '../model/dropdown-option';
+import { UiActionsService } from '../services/ui-actions.service';
 
 
 describe('CustomExchangeComponent', () => {
@@ -66,6 +67,66 @@ describe('CustomExchangeComponent', () => {
         expect(assetService.updateCalled).toBeFalsy();
         component.updateExchange(null);
         expect(assetService.updateCalled).toBeTruthy();
+    });
+
+    it("#onMouseOver() should highlight border if another exchange pair is being dragged", () => {
+        const uiService : UiActionsService = TestBed.get(UiActionsService);
+        const dummyExch = new ExchangePair("test-exch",
+                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+        spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
+
+        expect(component.highlightDropTarget).toBe(false);
+
+        component.onMouseOver();
+
+        expect(component.highlightDropTarget).toBe(true);
+    });
+
+    it("#onClick() should swap exchanges with right IDs if another exchange is being dragged", () => {
+        const uiService : UiActionsService = TestBed.get(UiActionsService);
+        const dummyExch = new ExchangePair("ex_to_swap",
+                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+        spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
+
+        let stopPropagationCalled = false;
+        const eventSpy = { stopPropagation: () => stopPropagationCalled = true };
+
+        component.onClick(eventSpy);
+
+        expect(stopPropagationCalled).toBe(true);
+        const assetService = TestBed.get(AssetService);
+        expect(assetService.swapCalled).toBe(true);
+    });
+
+    it("#startDrag() calls UiActions.draggingStarted with current exchange", () => {
+        const uiService : UiActionsService = TestBed.get(UiActionsService);
+        const dummyExch = new ExchangePair("test-exch",
+                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+        spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
+        spyOn(uiService, "draggingStarted").and.callFake(() => {});
+
+        let stopPropagationCalled = false;
+        const eventSpy = { stopPropagation: () => stopPropagationCalled = true };
+
+        component.startDrag(eventSpy);
+
+        expect(stopPropagationCalled).toBe(true);
+        expect(uiService.draggingStarted).toHaveBeenCalledWith(component.exchange);
+    });
+
+    it("#isDragged() should return true if current exchange pair is being dragged", () => {
+        const uiService : UiActionsService = TestBed.get(UiActionsService);
+        const dummyExch = new ExchangePair("cust_ex96984",
+                                           new Asset("DOESN'T", null, null, null),
+                                           new Asset("MATTER", null, null, new Account("GAAASGHASFGGDH4561", "HERE")));
+        spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
+
+        let value = component.isDragged;
+
+        expect(value).toBe(true);
     });
 });
 
@@ -165,6 +226,16 @@ class AssetServiceStub {
             throw "Test not ready for input exchange ID " + exchId;
         }
         this.removeCalled = true;
+    }
+
+    swapCalled = false;
+    SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair) {
+        if ("cust_ex96984" === exch1.id && "ex_to_swap" === exch2.id) {
+            this.swapCalled = true;
+        }
+        else {
+            throw new Error(`No data ready for given inputs (exch1.id=${exch1.id}; exch2.id=${exch2.id};)`);
+        }
     }
 }
 

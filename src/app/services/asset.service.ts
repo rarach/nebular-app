@@ -214,6 +214,26 @@ export class AssetService {
     }
 
     /**
+     * Swap positions of saved custom exchanges.
+     */
+    SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair) {
+        let exch1Index: number;
+        let exch2Index: number;
+
+        for (let i=0; i<this.customExchanges.length; i++) {
+            if (this.customExchanges[i].id === exch1.id) {
+                exch1Index = i;
+            }
+            else if (this.customExchanges[i].id === exch2.id) {
+                exch2Index = i;
+            }
+        }
+
+        this.customExchanges[exch1Index] = exch2;
+        this.customExchanges[exch2Index] = exch1;
+    }
+
+    /**
      * Get issuer by their Stellar address
      * @param issuerAddress public key of an issuer
      * @returns first issuer with given address or NULL if no such is registered here
