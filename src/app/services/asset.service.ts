@@ -231,6 +231,7 @@ export class AssetService {
 
         this.customExchanges[exch1Index] = exch2;
         this.customExchanges[exch2Index] = exch1;
+        this.serializeToCookie();
     }
 
     /**
