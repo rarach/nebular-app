@@ -23,7 +23,7 @@ export class CustomExchangeComponent implements OnInit {
     highlightDropTarget: Boolean = false;
 
 
-    constructor(private readonly assetService: AssetService, private readonly uiActions: UiActionsService) {
+    constructor(private readonly assetService: AssetService, public readonly uiActions: UiActionsService) {
         this.loadAssets();
     }
 
