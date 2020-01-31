@@ -84,7 +84,9 @@ export class CustomExchangeComponent implements OnInit {
             const lostAsset = new Asset(this.exchange.baseAsset.code, this.exchange.baseAsset.code, null,
                                         new Account(this.exchange.baseAsset.issuer.address, null),
                                         this.exchange.baseAsset.imageUrl ? this.exchange.baseAsset.imageUrl : Constants.UNKNOWN_ASSET_IMAGE);
-            baseAssetDdOption = new DropdownOption(lostAsset, this.exchange.baseAsset.code, assetId, lostAsset.imageUrl);
+            const ddText = assetId;     //TODO: we should somehow get domain here instead of address even if user deleted it
+            baseAssetDdOption = new DropdownOption(lostAsset, ddText, assetId, lostAsset.imageUrl);
+            this.assetOptions.push(baseAssetDdOption);
         }
         this.selectedBaseAsset = baseAssetDdOption;
 
@@ -103,7 +105,9 @@ export class CustomExchangeComponent implements OnInit {
             const lostAsset = new Asset(this.exchange.counterAsset.code, this.exchange.counterAsset.code, null,
                                         new Account(this.exchange.counterAsset.issuer.address, null),
                                         this.exchange.counterAsset.imageUrl ? this.exchange.counterAsset.imageUrl : Constants.UNKNOWN_ASSET_IMAGE);
-            counterAssetDdOption = new DropdownOption(lostAsset, this.exchange.counterAsset.code, assetId, lostAsset.imageUrl);
+            const ddText = assetId;     //TODO: we should somehow get domain here instead of address even if user deleted it
+            counterAssetDdOption = new DropdownOption(lostAsset, ddText, assetId, lostAsset.imageUrl);
+            this.assetOptions.push(counterAssetDdOption);
         }
         this.selectedCounterAsset = counterAssetDdOption;
     }
