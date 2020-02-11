@@ -1,8 +1,9 @@
 import { Component, OnInit } from '@angular/core';
-
-import { ExchangePair } from "../model/exchange-pair.model";
-import { KnownAssets, Asset } from '../model/asset.model';
 import { Title } from '@angular/platform-browser';
+
+import { Asset } from '../model/asset.model';
+import { ExchangePair } from "../model/exchange-pair.model";
+import { NebularService } from '../services/nebular.service';
 
 
 @Component({
@@ -11,24 +12,23 @@ import { Title } from '@angular/platform-browser';
     styleUrls: ['./overview.component.css']
 })
 export class OverviewComponent implements OnInit {
-    exchangeList: ExchangePair[] = [
-        //Dummies for now
-        new ExchangePair("highVolume01", KnownAssets.XLM, KnownAssets.MOBI),
-        new ExchangePair("highVolume02", KnownAssets.XLM, KnownAssets["CNY-RippleFox"]),
-        new ExchangePair("featured", KnownAssets.XLM, KnownAssets.TERN),
-        new ExchangePair("highVolume03", KnownAssets.XLM, KnownAssets.RMT),
-        new ExchangePair("highTradeCount02", KnownAssets.XLM, KnownAssets["BTC-Papaya"]),
-        new ExchangePair("highTradeCount03", KnownAssets.XLM, KnownAssets.ABDT),
-        new ExchangePair("letsSee1", KnownAssets.XLM, KnownAssets.SLT),
-        new ExchangePair("letsSee2", KnownAssets.XLM, KnownAssets["USD-AnchorUsd"]),
-        new ExchangePair("letsSee3", KnownAssets.XLM, KnownAssets.WSD)
-    ];
+    exchangeList: ExchangePair[] = null;
 
-    constructor(titleService: Title) {
+    constructor(private readonly nebularService: NebularService, titleService: Title) {
         titleService.setTitle("Nebular");
     }
 
     ngOnInit() {
-        //TODO: get the stats from server and assign this.exchangeList by it
+        this.nebularService.getTopVolumeExchanges().subscribe(data => {
+            this.exchangeList = [];
+            let i = 0;
+
+            for (let exchange of data) {
+                const baseAsset = new Asset(exchange.baseAsset.code, null, null, exchange.baseAsset.issuer, null);
+                const counterAsset = new Asset(exchange.counterAsset.code, null, null, exchange.counterAsset.issuer, null);
+                const pair = new ExchangePair("front_exch_" + (i++), baseAsset, counterAsset);
+                this.exchangeList.push(pair);
+            }
+        });
     }
 }

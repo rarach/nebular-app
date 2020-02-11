@@ -11,9 +11,7 @@ export class UiActionsService {
     private _draggingExch = new Subject<ExchangePair>();
     private _exchange: ExchangePair = null;
 
-
     constructor() {}
-
 
 
     public get DraggingExchange() : ExchangePair {

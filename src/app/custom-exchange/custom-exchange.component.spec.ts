@@ -156,10 +156,10 @@ describe("CustomExchangeComponent", () => {
         fixture.detectChanges();
 
         expect(component.selectedBaseAsset).toEqual(new DropdownOption(new Asset("altte", "altte", null, new Account("GCD5DG453SER745C415CG", "GCD5DG453SER745C...")),
-                                                                       "altte",
+                                                                       "altte-GCD5DG453SER745C415CG",
                                                                        "altte-GCD5DG453SER745C415CG", "./assets/images/asset_icons/unknown.png"));
         expect(component.selectedCounterAsset).toEqual(new DropdownOption(new Asset("UNITA", "UNITA", null, new Account("GORE", "GORE...")),
-                                                                          "UNITA",
+                                                                          "UNITA-GORE",
                                                                           "UNITA-GORE", "./assets/images/asset_icons/unknown.png"));
     });
 

@@ -9,7 +9,7 @@ export class Asset {
                 public readonly type: string,
                 public readonly issuer: Account,
                 public readonly imageUrl: string = null) {
-        this.imageUrl = imageUrl || "./assets/images/asset_icons/unknown.png";  //TODO: put the url in constant
+        this.imageUrl = imageUrl || Constants.UNKNOWN_ASSET_IMAGE;
         this.code = code || Constants.NATIVE_ASSET_CODE;
         if (null === type) {
             if (this.code === Constants.NATIVE_ASSET_CODE && (!issuer || !issuer.address)) {
