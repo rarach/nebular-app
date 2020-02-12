@@ -3,7 +3,7 @@ import { Injectable } from '@angular/core';
 import { map } from 'rxjs/operators';
 import { Observable } from 'rxjs';
 
-import { Asset } from '../model/asset.model';
+import { OverviewData } from '../model/overview-data.model';
 
 
 @Injectable({
@@ -18,19 +18,14 @@ export class NebularService {
     /**
      * Retrieve list of exchanges with highest trade volume in past 24 hours.
      */
-    getTopVolumeExchanges() : Observable<ILightExchangePair[]> {
+    getTopVolumeExchanges() : Observable<OverviewData> {
         const url = this.API_URL + "/top_exchanges.json";
 
-        return this.http.get<string>(url).pipe(map<any, ILightExchangePair[]>(data => {
+        return this.http.get<string>(url).pipe(map<any, OverviewData>(data => {
             if (typeof(data) == "string") {
                 data = JSON.parse(data);
             }
             return data;
         }));
     }
-}
-
-export interface ILightExchangePair {       //TODO: move to appropriate place
-    baseAsset: Asset;
-    counterAsset: Asset;
 }

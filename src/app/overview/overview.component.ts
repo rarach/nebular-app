@@ -23,7 +23,7 @@ export class OverviewComponent implements OnInit {
             this.exchangeList = [];
             let i = 0;
 
-            for (let exchange of data) {
+            for (let exchange of data.topExchanges) {
                 const baseAsset = new Asset(exchange.baseAsset.code, null, null, exchange.baseAsset.issuer, null);
                 const counterAsset = new Asset(exchange.counterAsset.code, null, null, exchange.counterAsset.issuer, null);
                 const pair = new ExchangePair("front_exch_" + (i++), baseAsset, counterAsset);

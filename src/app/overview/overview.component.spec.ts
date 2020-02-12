@@ -4,8 +4,9 @@ import { Observable, of } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { Asset } from '../model/asset.model';
-import { NebularService, ILightExchangePair } from '../services/nebular.service';
+import { NebularService } from '../services/nebular.service';
 import { OverviewComponent } from './overview.component';
+import { OverviewData } from '../model/overview-data.model';
 
 
 describe('OverviewComponent', () => {
@@ -52,22 +53,25 @@ describe('OverviewComponent', () => {
 });
 
 class NebularServiceStub {
-    private dummyExchanges: ILightExchangePair[] = [
-        {
-            baseAsset: new Asset("EOS", null, null, new Account("GEOSSSSSS", "eos.soe")),
-            counterAsset: new Asset("XLM", "Stellar Lumens", "native", null)
-        },
-        {
-            baseAsset: new Asset("qwerty", null, null, new Account("GUERTY086464105453204084", "qwerty.coin")),
-            counterAsset: new Asset("UIOP", "Another dumb cryptocoin", null, new Account("GEA6S0G46A3G6ASDA826S40FKDTY0S6T6DI5YU3", null))
-        },
-        {
-            counterAsset: new Asset("bun-bo-nam", null, null, new Account("GBBBBAYSTDUDYZTS9898989898989898", null)),
-            baseAsset: new Asset("Tock", "tick-tack tocken", null, new Account("GOTOTOKEN0648G5JDFGK", "tock.en"))
-        }
-    ];
+    private dummyExchanges: OverviewData = {
+        timestamp: "2019-12-24",
+        topExchanges: [
+            {
+                baseAsset: new Asset("EOS", null, null, new Account("GEOSSSSSS", "eos.soe")),
+                counterAsset: new Asset("XLM", "Stellar Lumens", "native", null)
+            },
+            {
+                baseAsset: new Asset("qwerty", null, null, new Account("GUERTY086464105453204084", "qwerty.coin")),
+                counterAsset: new Asset("UIOP", "Another dumb cryptocoin", null, new Account("GEA6S0G46A3G6ASDA826S40FKDTY0S6T6DI5YU3", null))
+            },
+            {
+                counterAsset: new Asset("bun-bo-nam", null, null, new Account("GBBBBAYSTDUDYZTS9898989898989898", null)),
+                baseAsset: new Asset("Tock", "tick-tack tocken", null, new Account("GOTOTOKEN0648G5JDFGK", "tock.en"))
+            }
+        ]
+    };
 
-    getTopVolumeExchanges() : Observable<ILightExchangePair[]> {
+    getTopVolumeExchanges() : Observable<OverviewData> {
         return of(this.dummyExchanges);
     }
 }
