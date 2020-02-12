@@ -10,7 +10,7 @@ import { Asset } from '../model/asset.model';
     providedIn: 'root'
 })
 export class NebularService {
-    private readonly API_URL = "http://bots2017.cloudapp.net/api";
+    private readonly API_URL = "https://bots2017.cloudapp.net/api";
 
     constructor(private http: HttpClient) { }
 
