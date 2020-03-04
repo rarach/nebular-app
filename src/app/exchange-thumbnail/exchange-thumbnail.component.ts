@@ -74,7 +74,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             const minDate = new Date();
             minDate.setDate(minDate.getDate() - 1);
             const yesterday = minDate.getTime();
-            const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
+            const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
             if (firstTimestamp < yesterday) {
                 //Last trade is older than 24hrs => we have no data
                 this.dataStatus = DataStatus.NoData;
@@ -92,7 +92,8 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             let startPrice;
 
             for(let record of data._embedded.records) {
-                if (record.timestamp < yesterday) {
+                const timestampAsNum = Number(record.timestamp);
+                if (timestampAsNum < yesterday) {
                     break;    //Break at first value older than 24hrs
                 }
 
@@ -110,9 +111,9 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
                     minPrice = avgValue;
                 }
 
-                const point = [record.timestamp, avgValue];
+                const point = [timestampAsNum, avgValue];
                 this._lineChart.addPointData(point);
-                this._lineChart.setStartTime(record.timestamp);
+                this._lineChart.setStartTime(timestampAsNum);
             }
 
             //Special case: if we have only one point in the chart, use trick and add artificial starting point

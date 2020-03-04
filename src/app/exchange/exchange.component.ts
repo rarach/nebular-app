@@ -170,7 +170,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const chartRangeInDays = this.getChartRangeByInterval();
             minDate.setDate(minDate.getDate() - chartRangeInDays);
             const rangeStart = minDate.getTime();
-            const firstTimestamp = new Date(data._embedded.records[0].timestamp).getTime();
+            const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
             if (firstTimestamp < rangeStart) {
                 //Last trade is older than date range => we have no data
                 this.dataStatus = DataStatus.NoData;
@@ -189,7 +189,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
             //Collect data for a single candle in the candlestick chart
             for (let record of data._embedded.records) {
-                if (record.timestamp < rangeStart) {
+                const timestampAsNum = Number(record.timestamp);
+                if (timestampAsNum < rangeStart) {
                     break;    //Break at first value older than range start
                 }
                 const open = parseFloat(record.open);
@@ -206,7 +207,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 if (-1.0 == globalClose) {
                     globalClose = close;
                 }
-                const candle = [record.timestamp, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
+                const candle = [timestampAsNum, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
 
                 //Collect data for bar chart with volume
                 const volume = parseFloat(record.base_volume);
@@ -214,9 +215,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     maxVolume = volume;
                 }
                 volumeSum += volume;
-                const volumeBar = [record.timestamp, volume];
+                const volumeBar = [timestampAsNum, volume];
                 chartData.addCandleData(candle, volumeBar);
-                chartData.setStartTime(record.timestamp);
+                chartData.setStartTime(timestampAsNum);
             }
 
             chartData.setCandleSize(this.chartInterval);
