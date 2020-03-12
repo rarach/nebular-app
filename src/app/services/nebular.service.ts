@@ -10,7 +10,7 @@ import { OverviewData } from '../model/overview-data.model';
     providedIn: 'root'
 })
 export class NebularService {
-    private readonly API_URL = "https://bots2017.cloudapp.net/api";
+    private readonly API_URL = "https://nebularapi.azurewebsites.net/api";
 
     constructor(private http: HttpClient) { }
 
@@ -19,7 +19,7 @@ export class NebularService {
      * Retrieve list of exchanges with highest trade volume in past 24 hours.
      */
     getTopVolumeExchanges() : Observable<OverviewData> {
-        const url = this.API_URL + "/top_exchanges.json";
+        const url = this.API_URL + "/topExchanges";
 
         return this.http.get<string>(url).pipe(map<any, OverviewData>(data => {
             if (typeof(data) == "string") {

@@ -22,11 +22,14 @@ describe("NebularService", () => {
     
     it("#getTopVolumeExchanges() performs GET request to API and parses response JSON", () => {
         service.getTopVolumeExchanges().subscribe(data => {
-            expect(data).toEqual({ timestamp: "jkl;", topExchanges: [] });
+            expect(data).toEqual({ timestamp: "2020-02-20T20:20:20.202", topExchanges: [] });
         });
 
-        const req = httpMock.expectOne(req => req.url.endsWith("/api/top_exchanges.json"));
+        const req = httpMock.expectOne(req => req.url.endsWith("/api/topExchanges"));
         expect(req.request.method).toBe('GET');
-        req.flush('{ timestamp: "2020-02-20T20:20:20.202", topExchanges: [ { baseAsset: "XLM", counterAsset: { code: "asDF"} } ] }');
+        req.flush(`{
+            "timestamp": "2020-02-20T20:20:20.202",
+            "topExchanges": [ ]
+        }`);
     });
 });
