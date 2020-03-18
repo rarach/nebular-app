@@ -6,13 +6,14 @@
         </tr>
     </thead>
     <tbody id="orderBookAsks">
-        <!--TODO: use this.message is dataStatus is error -->
+        <!--TODO: use this.message if dataStatus is error -->
         <ng-container *ngIf="this.orderbook.asks.length === 0; else askRows">
             <tr></tr>
             <tr><td>Loading data...</td></tr>
         </ng-container>
         <ng-template #askRows>
-            <tr *ngFor="let ask of orderbook.asks.slice().reverse()" [class.linked]="ask.isCrossLinked"
+            <tr *ngFor="let ask of orderbook.asks.slice().reverse()"
+                [class.linked]="ask.isCrossLinked"
                 [attr.title]="ask.isCrossLinked ? (ask.price + ' - linked thru XLM') : ask.price"
                 [ngStyle]="getRowStyle(ask, 'ask')">
                 <td>{{Utils.formatPrice(ask.price)}}</td>
@@ -33,7 +34,8 @@ Date: {{lastTradeTime | date:'d MMM'}}">{{Utils.formatPrice(lastPrice)}}</span>
             <tr><td>Loading data...</td></tr>
         </ng-container>
         <ng-template #bidRows>
-            <tr *ngFor="let bid of orderbook.bids" [class.linked]="bid.isCrossLinked"
+            <tr *ngFor="let bid of orderbook.bids"
+                [class.linked]="bid.isCrossLinked"
                 [attr.title]="bid.isCrossLinked ? (bid.price + ' - linked thru XLM') : bid.price"
                 [ngStyle]="getRowStyle(bid, 'bid')">
                 <td>{{Utils.formatPrice(bid.price)}}</td>

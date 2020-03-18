@@ -1,31 +1,32 @@
 <table id="tradeHistoryTable">
-  <thead>
-  <tr>
-      <th>Time</th>
-      <th>Price</th>
-      <th>Amount ({{exchange.baseAsset.code}})</th>
-  </tr>
-  </thead>
-  <tbody id="tradeHistoryData">
-  <tr></tr>
-  <ng-container *ngIf="this.recentTrades.length === 0; else tradeItems">
-    <tr>
-      <td colspan='3'></td>
-    </tr>
-    <tr>
-      <td colspan='3'>No recent trades in this market</td>
-    </tr>
-  </ng-container>
+    <thead>
+        <tr>
+            <th>Time</th>
+            <th>Price</th>
+            <th>Amount ({{exchange.baseAsset.code}})</th>
+        </tr>
+    </thead>
+    <tbody id="tradeHistoryData">
+        <tr></tr>
+        <ng-container *ngIf="this.recentTrades.length === 0; else tradeItems">
+            <tr>
+            <td colspan='3'></td>
+            </tr>
+            <tr>
+            <td colspan='3'>No recent trades in this market</td>
+            </tr>
+        </ng-container>
 
-  <ng-template #tradeItems>
-    <tr *ngFor="let trade of recentTrades"
-        title="date: {{trade.time | date:'d MMM'}}
+        <ng-template #tradeItems>
+            <tr *ngFor="let trade of recentTrades"
+                [class.lastInDay]="trade.isLastOfDay"
+                title="date: {{trade.time | date:'d MMM'}}
 seller: {{trade.sellingAccount.substring(0, 8)}}...{{trade.sellingAccount.substring(48)}}
 buyer: {{trade.buyingAccount.substring(0, 8)}}...{{trade.buyingAccount.substring(48)}}">
-      <td>{{trade.time | date:'HH:mm:ss'}}</td> 
-      <td class="{{trade.tradeType}}">{{Utils.formatPrice(trade.price)}}</td>         
-      <td>{{Utils.formatAmount(trade.amount)}}</td>
-    </tr>
-  </ng-template>
-  </tbody>
+            <td>{{trade.time | date:'HH:mm:ss'}}</td> 
+            <td class="{{trade.tradeType}}">{{Utils.formatPrice(trade.price)}}</td>         
+            <td>{{Utils.formatAmount(trade.amount)}}</td>
+            </tr>
+        </ng-template>
+    </tbody>
 </table>

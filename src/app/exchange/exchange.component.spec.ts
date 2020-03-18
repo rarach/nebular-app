@@ -114,6 +114,7 @@ describe('ExchangeComponent', () => {
         expect(titleService.setTitle).toHaveBeenCalledWith("ASDF/CCCP");
         expect(exchComponent.lastTradeTime).toBeNull();
     });
+
     it("should initialize exchange - last trade too old", () => {
         activRoute.setParamMap({ baseAssetId: "OLD-GCCFGS486G5ADFG51A", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "300000" });
 
@@ -122,6 +123,7 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.chartMessage).toBe("No trades in last 1 days");
         expect(exchComponent.lastTradeType).toBe("sell");
     });
+
     it("should initialize exchange", () => {
         activRoute.setParamMap({ baseAssetId: "CUS-GBDEV84512", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "3600000" });
         const jQuerySpy = spyOn($.fn, "text");
@@ -137,6 +139,7 @@ describe('ExchangeComponent', () => {
         expect(jQuerySpy).toHaveBeenCalledWith('close: 99.4955575');
         expect(jQuerySpy).toHaveBeenCalledWith('volume: 64.9569426');  */
     });
+
     it("should show error message when failed to get candle data", () => {
         activRoute.setParamMap({ baseAssetId: "ERROR-GOTOHELL", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "300000" });
 

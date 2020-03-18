@@ -298,6 +298,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     return;
                 }
 
+                let lastDay = -1;
                 for(let record of data._embedded.records) {
                     if (record.timestamp < rangeStart) {
                         break;    //Break at first value older than range start
@@ -306,7 +307,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                     const amount = parseFloat(record.base_amount);
                     const time = new Date(record.ledger_close_time);
                     const tradeType = record.base_is_seller ? "buy" : "sell";
-                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account));
+                    const isLastThatDay = lastDay > -1 && time.getDay() != lastDay;
+                    lastDay = time.getDay();
+                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account, isLastThatDay));
                 }
             }
         },

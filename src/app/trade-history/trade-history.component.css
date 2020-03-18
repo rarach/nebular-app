@@ -4,6 +4,10 @@
     border-spacing: 0px;
 }
 
+#tradeHistoryTable tr.lastInDay {
+    border-top: 2px solid #5B6A72;
+}
+
 #tradeHistoryData td.buy {
     color: #46B446;
 }
