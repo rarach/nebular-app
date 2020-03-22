@@ -31,7 +31,7 @@ export class AssetService {
     readonly customExchanges: ExchangePair[];
 
 
-    constructor(private cookieService: CookieService) {
+    constructor(private readonly cookieService: CookieService) {
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
             //Take asset codes from the common assets

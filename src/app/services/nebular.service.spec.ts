@@ -1,5 +1,6 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
 import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { CookieService } from 'ngx-cookie';
 
 import { NebularService } from './nebular.service';
 
@@ -12,7 +13,16 @@ describe("NebularService", () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             imports: [HttpClientTestingModule],
-            providers: [NebularService]
+            providers: [
+                NebularService,
+                {
+                    provide: CookieService,
+                    useValue: {
+                        get: (key) => "", 
+                        put: (key, value, options) => { }
+                    }
+                }
+            ]
         });
         injector = getTestBed();
         service = injector.get(NebularService);
@@ -31,5 +41,23 @@ describe("NebularService", () => {
             "timestamp": "2020-02-20T20:20:20.202",
             "topExchanges": [ ]
         }`);
+    });
+
+    it("gets user's agreement with cookie usage", () => {
+        const cookieService = TestBed.get(CookieService);
+        const cookieSpy = spyOn(cookieService, "get").and.returnValue("true");
+
+        const agreed = service.UserAgreedWithCookies();
+        expect(agreed).toBe(true);
+        expect(cookieSpy).toHaveBeenCalledWith("agr");
+    });
+
+    it("can save user's agreement with cookie usage", () => {
+        const cookieService = TestBed.get(CookieService);
+        const cookieSpy = spyOn(cookieService, "put").and.callFake(() => {});
+
+        service.SetUserAgreement();
+
+        expect(cookieSpy).toHaveBeenCalledWith("agr", "true", jasmine.any(Object));
     });
 });
