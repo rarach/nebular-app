@@ -7,6 +7,9 @@ describe('My Exchanges', () => {
     });
 
     it('should always show the (add) button', () => {
+        //Trick: go to invalid page to load the web without calling the dependent services, setup a cookie
+        browser.get("/no-such-page");
+        browser.manage().addCookie({ name: "agr", value: "true" });
         browser.get('/myExchanges');
         const addLink = element.all(by.css("div.exchange-link"));
         expect(addLink.count()).toBe(1);

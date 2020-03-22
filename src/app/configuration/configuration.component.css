@@ -34,22 +34,6 @@
     width: 115px;
 }
 
-:host ::ng-deep button {
-    border: none;
-    border-radius: 3px;
-    height: 28px;
-    min-width: 50px;
-    background-color: #23527c;
-    color: white;
-}
-:host ::ng-deep button:focus, button:hover {
-    background-color: #4d81b0;
-    font-weight: bold;
-}
-:host ::ng-deep button:disabled {
-    color: gray;
-}
-
 :host ::ng-deep div.customItemRow {
     margin-bottom: 8px;
     border: 1px solid transparent;

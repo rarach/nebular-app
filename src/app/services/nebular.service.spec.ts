@@ -47,7 +47,8 @@ describe("NebularService", () => {
         const cookieService = TestBed.get(CookieService);
         const cookieSpy = spyOn(cookieService, "get").and.returnValue("true");
 
-        const agreed = service.UserAgreedWithCookies();
+        const agreed = service.CookieAgreement;
+
         expect(agreed).toBe(true);
         expect(cookieSpy).toHaveBeenCalledWith("agr");
     });
@@ -56,7 +57,7 @@ describe("NebularService", () => {
         const cookieService = TestBed.get(CookieService);
         const cookieSpy = spyOn(cookieService, "put").and.callFake(() => {});
 
-        service.SetUserAgreement();
+        service.CookieAgreement = true;
 
         expect(cookieSpy).toHaveBeenCalledWith("agr", "true", jasmine.any(Object));
     });

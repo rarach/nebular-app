@@ -1,0 +1,6 @@
+<div id="agreementDiv" *ngIf="!this.nebularService.CookieAgreement">
+    <h4>We use cookies here</h4><br/>
+    This part of Nebular uses cookies to work correctly. All data stored in cookies are used only by Nebular and not given to any
+    third party. By clicking "I love cookies!" you agree that we use the data.<br/><br/>
+    <button type="button" id="agreeCookie" (click)="this.nebularService.CookieAgreement = true">I love cookies!</button>
+</div>

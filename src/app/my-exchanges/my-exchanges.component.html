@@ -1,4 +1,4 @@
-<div class="row exchanges-frame">
+<div *ngIf="this.nebularService.CookieAgreement" class="row exchanges-frame">
     <ng-container *ngFor="let exch of exchanges">
         <app-custom-exchange [exchange]="exch"></app-custom-exchange>
     </ng-container>
@@ -14,3 +14,5 @@
 <div id="draggedSnapshot" style="position: fixed; z-index: 5;">
     &nbsp;
 </div>
+
+<app-cookie-consent *ngIf="!this.nebularService.CookieAgreement"></app-cookie-consent>

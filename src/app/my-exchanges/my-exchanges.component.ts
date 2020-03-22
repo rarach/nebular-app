@@ -3,6 +3,7 @@ import { Title } from "@angular/platform-browser";
 
 import { AssetService } from '../services/asset.service';
 import { ExchangePair } from '../model/exchange-pair.model';
+import { NebularService } from '../services/nebular.service';
 import { UiActionsService } from '../services/ui-actions.service';
 
 
@@ -14,7 +15,8 @@ import { UiActionsService } from '../services/ui-actions.service';
 export class MyExchangesComponent {
     exchanges = new Array<ExchangePair>();
 
-    constructor(public uiService: UiActionsService,
+    constructor(public readonly uiService: UiActionsService,
+                public readonly nebularService: NebularService,
                 private readonly titleService: Title,
                 private readonly assetService: AssetService) {
         titleService.setTitle("My Exchanges");

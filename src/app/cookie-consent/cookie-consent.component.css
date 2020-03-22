@@ -1,0 +1,11 @@
+#agreementDiv {
+    height: 50vw;
+    margin: 10px;
+    padding: 10px;
+    background-color: #FAD9B9;
+}
+
+button#agreeCookie {
+    margin-top: 20px;
+    background-color: #46B446;
+}

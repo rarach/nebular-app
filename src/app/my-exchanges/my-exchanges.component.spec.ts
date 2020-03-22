@@ -7,6 +7,7 @@ import { AssetService } from '../services/asset.service';
 import { Asset, KnownAssets } from '../model/asset.model';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { MyExchangesComponent } from './my-exchanges.component';
+import { NebularService } from '../services/nebular.service';
 import { UiActionsService } from '../services/ui-actions.service';
 
 
@@ -17,6 +18,12 @@ describe('MyExchangesComponent', () => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: Title, useClass: Title },
+                {
+                    provide: NebularService,
+                    useValue: {
+                        CookieAgreement: true
+                    }
+                },
                 { provide: AssetService, useClass: AssetServiceStub },
                 { provide: Router, useValue: {} },
                 { provide: HttpClient, useValue: {} }
@@ -25,8 +32,8 @@ describe('MyExchangesComponent', () => {
         .compileComponents();
     }));
 
-    beforeEach(inject([UiActionsService, Title, AssetService], (uiService, titleService, assetService) => {
-        component = new MyExchangesComponent(uiService, titleService, assetService);
+    beforeEach(inject([UiActionsService, NebularService, Title, AssetService], (uiService, nebularService, titleService, assetService) => {
+        component = new MyExchangesComponent(uiService, nebularService, titleService, assetService);
     }));
 
     it('should create instance and load custom exchanges', () => {

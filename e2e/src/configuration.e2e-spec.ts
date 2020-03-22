@@ -3,12 +3,21 @@ import { browser, by, element, protractor } from 'protractor';
 
 describe('Configuration page', () => {
 
-    it('should display title "Nebular - Configuration"', () => {
+    it('should display title "Nebular - Configuration" and cookie agreement prompt', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
+
+        const cookieButton = element(by.css("button#agreeCookie"));
+        cookieButton.click();
+
+        const assetCodeInput = element(by.css("input#newAssetCode"));
+        expect(assetCodeInput.isDisplayed()).toBe(true);
     });
 
     it("finds and adds two new custom assets (BTC anchors)", async() => {
+        //Trick: go to invalid page to load the web without calling the dependent services, setup a cookie
+        browser.get("/no-such-page");
+        browser.manage().addCookie({ name: "agr", value: "true" });
         //Actual page being tested
         browser.get("/configuration");
 
@@ -59,6 +68,7 @@ describe('Configuration page', () => {
     it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
         //Trick: go to invalid page to load the web without calling the dependent services
         browser.get("/no-such-page");
+        browser.manage().addCookie({ name: "agr", value: "true" });
         browser.manage().addCookie({
             name: "ass",
             value: "RUB|GUBERNIA2929292929292929|noSuch.ru|https://noSuch.ru/rub.ico,"+

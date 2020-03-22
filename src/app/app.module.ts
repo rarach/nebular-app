@@ -25,6 +25,7 @@ import { CustomAssetsComponent } from './configuration/custom-assets/custom-asse
 import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analytics.component';
 import { LiveTradesComponent } from './live-trades/live-trades.component';
 import { CustomAssetWizardComponent } from './configuration/custom-asset-wizard/custom-asset-wizard.component';
+import { CookieConsentComponent } from './cookie-consent/cookie-consent.component';
 
 
 @NgModule({
@@ -42,7 +43,8 @@ import { CustomAssetWizardComponent } from './configuration/custom-asset-wizard/
         CustomAssetsComponent,
         ExchangeAnalyticsComponent,
         LiveTradesComponent,
-        CustomAssetWizardComponent
+        CustomAssetWizardComponent,
+        CookieConsentComponent
     ],
     imports: [
         BrowserModule,

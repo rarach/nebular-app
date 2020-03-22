@@ -33,7 +33,10 @@ export class NebularService {
         }));
     }
 
-    UserAgreedWithCookies(): boolean {
+    /**
+     * Returns true if user has agreed with using cookies.
+     */
+    get CookieAgreement(): boolean {
         const cookieText = this.cookieService.get(this.COOKIE_NAME);
 
         return "true" === cookieText;
@@ -42,7 +45,7 @@ export class NebularService {
     /**
      * The user agreed with using cookies. Save this info to... a cookie.
      */
-    SetUserAgreement() {
+    set CookieAgreement(value: boolean) {
         //Make it expire in 200 days
         const expiration = new Date();
         expiration.setDate(expiration.getDate() + 200);
@@ -50,6 +53,6 @@ export class NebularService {
             expires: expiration
         };
 
-        this.cookieService.put(this.COOKIE_NAME, "true", options);
+        this.cookieService.put(this.COOKIE_NAME, ""+value, options);
     }
 }

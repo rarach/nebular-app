@@ -1,6 +1,8 @@
 import { Component } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 
+import { NebularService } from '../services/nebular.service';
+
 
 @Component({
     selector: 'app-configuration',
@@ -8,7 +10,8 @@ import { Title } from '@angular/platform-browser';
     styleUrls: ['./configuration.component.css']
 })
 export class ConfigurationComponent {
-    constructor(titleService: Title) {
+
+    constructor(readonly nebularService: NebularService, titleService: Title) {
         titleService.setTitle("Nebular - Configuration");
     }
 }
