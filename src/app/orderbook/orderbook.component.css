@@ -2,7 +2,7 @@
     padding-left: 5px;
     padding-right: 15px;
 }
-#orderBookBids tr.linked, #orderBookAsks tr.linked {
+#orderBookBids tr.linked, #orderBookAsks tr.linked, td.noOrders {
     font-style: italic;
     color: #8396a0;
 }

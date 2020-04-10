@@ -6,10 +6,13 @@
         </tr>
     </thead>
     <tbody id="orderBookAsks">
-        <!--TODO: use this.message if dataStatus is error -->
         <ng-container *ngIf="this.orderbook.asks.length === 0; else askRows">
             <tr></tr>
-            <tr><td>Loading data...</td></tr>
+            <tr>
+                <td *ngIf="this.dataStatus == DataStatus.OK;">Loading data...</td>
+                <td colspan="2" class="error" *ngIf="this.dataStatus == DataStatus.Error;">{{this.message}}</td>
+                <td colspan="2" class="noOrders" *ngIf="this.dataStatus == DataStatus.NoData;">(no asks in this market)</td>
+            </tr>
         </ng-container>
         <ng-template #askRows>
             <tr *ngFor="let ask of orderbook.asks.slice().reverse()"
@@ -28,10 +31,13 @@ Date: {{lastTradeTime | date:'d MMM'}}">{{Utils.formatPrice(lastPrice)}}</span>
 </div>
 <table>
     <tbody id="orderBookBids">
-        <!--TODO: use this.message if dataStatus is error -->
         <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
             <tr></tr>
-            <tr><td>Loading data...</td></tr>
+            <tr>
+                <td *ngIf="this.dataStatus == DataStatus.OK;">Loading data...</td>
+                <td colspan="2" class="error" *ngIf="this.dataStatus == DataStatus.Error;">{{this.message}}</td>
+                <td colspan="2" class="noOrders" *ngIf="this.dataStatus == DataStatus.NoData;">(no bids in this market)</td>
+            </tr>
         </ng-container>
         <ng-template #bidRows>
             <tr *ngFor="let bid of orderbook.bids"
