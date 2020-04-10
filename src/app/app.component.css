@@ -86,7 +86,7 @@ div.headerLinks {
     padding-right: 40px;
 }
 
-:host ::ng-deep button {
+:host ::ng-deep button.nebularBtn {
     border: none;
     border-radius: 3px;
     height: 28px;
@@ -94,11 +94,11 @@ div.headerLinks {
     background-color: #23527c;
     color: white;
 }
-:host ::ng-deep button:focus, button:hover {
+:host ::ng-deep button.nebularBtn:focus, button.nebularBtn:hover {
     background-color: #4d81b0;
     font-weight: bold;
 }
-:host ::ng-deep button:disabled {
+:host ::ng-deep button.nebularBtn:disabled {
     color: gray;
 }
 

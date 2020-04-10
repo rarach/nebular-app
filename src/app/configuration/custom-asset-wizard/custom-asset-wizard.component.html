@@ -7,7 +7,7 @@
     <label for="newAssetCode">Asset code:</label>
     <input type="text" id="newAssetCode" placeholder="JPY, LTC..." maxlength="12" (keydown)="searchStatus=''"
            [(ngModel)]="inputAssetCode" #newAssetCode="ngModel" name="newAssetCode" pattern="^[a-zA-Z0-9]{1,12}$"/>
-    <button type="submit" id="findAssetCodeBtn" [disabled]="!assetCodeForm.form.valid">Search</button>
+    <button type="submit" id="findAssetCodeBtn" class="nebularBtn" [disabled]="!assetCodeForm.form.valid">Search</button>
     <div *ngIf="newAssetCode.errors?.pattern" class="dataHint">Up to 12 characters, only letters and digits.</div>
 </form>
 
@@ -28,7 +28,7 @@
         </td>
         <td title="issuer address: {{asset.issuerAddress}}">{{asset.code}}-{{asset.domain}}</td>
         <td>
-            <button type="button" class="addButton" (click)="addAsset(asset)">Add</button>
+            <button type="button" class="nebularBtn addButton" (click)="addAsset(asset)">Add</button>
         </td>
     </tr>
 </table>
