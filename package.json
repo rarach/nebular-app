@@ -1,6 +1,6 @@
 {
   "name": "nebular",
-  "version": "19.9.9",
+  "version": "20.4.13",
   "engines": {
     "node": "10.15.x"
   },
@@ -43,6 +43,7 @@
     "@types/jasminewd2": "^2.0.8",
     "@types/jquery": "^3.3.34",
     "@types/node": "~8.9.4",
+    "@nguniversal/express-engine": "^9.1.0",
     "codelyzer": "^5.1.2",
     "coveralls": "^3.0.11",
     "jasmine-core": "~3.5.0",

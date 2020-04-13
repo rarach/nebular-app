@@ -31,7 +31,7 @@
               "node_modules/jquery/dist/jquery.min.js",
               "src/assets/scripts/page.js",
               "src/assets/scripts/3rdParty/bootstrap.min.js",
-              "node_modules/zingchart/client/zingchart.min.js"
+              "node_modules/zingchart/zingchart.min.js"
             ]
           },
           "configurations": {
@@ -85,7 +85,7 @@
               "src/assets/scripts/page.js",
               "node_modules/jquery/dist/jquery.min.js",
               "src/assets/scripts/3rdParty/bootstrap.min.js",
-              "node_modules/zingchart/client/zingchart.min.js"
+              "node_modules/zingchart/zingchart.min.js"
             ],
             "assets": [
               "src/favicon.ico",
