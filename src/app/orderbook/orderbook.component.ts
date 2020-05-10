@@ -1,13 +1,14 @@
 import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { Subscription } from 'rxjs';
 
 import { Constants } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { KnownAssets } from '../model/asset.model';
 import { Orderbook, Offer } from '../model/orderbook.model';
 import { Utils } from '../utils';
-import { KnownAssets } from '../model/asset.model';
 
 
 @Component({
@@ -16,13 +17,13 @@ import { KnownAssets } from '../model/asset.model';
     styleUrls: ['./orderbook.component.css']
 })
 export class OrderbookComponent implements OnInit, OnDestroy {
-    private _isActive = false;
-    _exchange: ExchangePair;
 
+    private _dataStream: Subscription;
+
+    _exchange: ExchangePair;
     @Input()
     set exchange(exchange: ExchangePair) {
         this._exchange = exchange;
-        this.fillOrderBook();
     }
     @Input() readonly lastPrice: number = 0.0;
     @Input() readonly lastTradeType: string = "";
@@ -33,47 +34,19 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     message: string = null;
     Utils = Utils;
 
-
-    constructor(private readonly ngZone: NgZone, private readonly horizonService: HorizonRestService){}
+    constructor(private readonly horizonService: HorizonRestService){}
 
     ngOnInit() {
-        this._isActive = true;
+        this.dataStatus = DataStatus.NoData;
         this.initOrderBookStream();
     }
 
     ngOnDestroy() {
-        this._isActive = false;
+        if (this._dataStream) {
+            this._dataStream.unsubscribe();
+        }
     }
 
-
-    /**
-     * Get order book from Horizon API and render it to table.
-     * If none of the assets is native XLM, the order book is enhanced with offers "cross-linked" through XLM, i.e. artificial offers
-     * that are calculated from orderbooks of ASSET1/XLM and ASSET2/XLM. This can be useful for some anemic or exotic order books
-     * to show that there may be a better deal when going through Lumens.
-     * NOTE: due to asynchronous nature of AJAX calls this has to be done as a chain of requests and callbacks as we need
-     *       to get the data in specific order.
-     */
-    fillOrderBook() {
-        this.horizonService.getOrderbook(this._exchange).subscribe(
-            success => {
-                const data = success as any;
-
-                if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
-                    this.renderOrderBook(data);
-                }
-                else {
-                    this.addCrossLinkedOffers1(data);
-                }
-            },
-            error => {
-                const errorResponse = error as HttpErrorResponse;
-                this.dataStatus = DataStatus.Error;
-                this.message = "Error loading order book (server: " +
-                                errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-            }
-        );
-    }
 
     /** Fetch the baseAsset/XLM order book for cross-linked offers */
     private addCrossLinkedOffers1(originalOrderBook: any) {
@@ -205,20 +178,34 @@ export class OrderbookComponent implements OnInit, OnDestroy {
         this.maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
     }
 
+    /**
+     * Subscribe to order book and render it to table on each update.
+     * If none of the assets is native XLM, the order book is enhanced with offers "cross-linked" through XLM, i.e. artificial offers
+     * that are calculated from orderbooks of ASSET1/XLM and XLM/ASSET2. This can be useful for some anemic or exotic order books
+     * to show that there may be a better deal when going through Lumens.
+     * NOTE: due to asynchronous nature of calls, the data has to be fetched in a chain of requests and callbacks as we need
+     *       to get the data in specific order.
+     */
     private initOrderBookStream() {
-        if (!this._isActive)
-        {
-            //Cancel the loop if user navigated away
-            return;
-        }
-        this.fillOrderBook();
+        this._dataStream = this.horizonService.streamOrderbook(this._exchange).subscribe(
+            success => {
+                const data = success as any;
 
-        //NOTE: Angular zones trick to prevent Protractor timeouts
-        this.ngZone.runOutsideAngular(() => {
-            setTimeout(() => {
-                this.ngZone.run(() => { this.initOrderBookStream(); });
-            }, Constants.ORDERBOOK_INTERVAL);
-        });
+                if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
+                    this.renderOrderBook(data);
+                }
+                else {
+                    this.addCrossLinkedOffers1(data);
+                }
+                this.dataStatus = DataStatus.OK;
+            },
+            error => {
+                const errorResponse = error as HttpErrorResponse;
+                this.dataStatus = DataStatus.Error;
+                this.message = "Error loading order book (server: " +
+                                errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+            }
+        );
     }
 
     /** Set background of an offer item to visually indicate its volume (amount) relatively to cumulative volume of whole orderbook */

@@ -88,6 +88,22 @@ export class HorizonRestService {
         });
     }
 
+    /** Stream orderbook for given exchange pair. Fresh data are pushed on each update of the orderbook. */
+    streamOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {
+        const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
+                    "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems + "&cursor=now";
+
+        return new Observable<Object>(obs => {
+            const es = new EventSource(url);
+            es.addEventListener('message', (evt: MessageEvent) => {
+                const bookData: Object = JSON.parse(evt.data);
+                obs.next(bookData);
+            });
+            return () => es.close();
+        });
+    }
+
+    /** Get current orderbook for given exchange in one request. */
     getOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {
         const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                     "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
