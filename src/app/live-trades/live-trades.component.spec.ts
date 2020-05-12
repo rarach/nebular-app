@@ -51,9 +51,9 @@ name = "glance token (or something)"`) }
         expect(titleService.title).toBe("Live Trades");
     }));
 
-    it('should contain 4 trades fetched from data API', () => {
+    it('should contain 5 trades fetched from data API', () => {
         component.ngOnInit();
-        expect(component.trades.length).toBe(4);
+        expect(component.trades.length).toBe(5);
         expect(component.trades).toContain(jasmine.objectContaining({linkHref: "/exchange/XLM/ASDF-GASDF"}));
         expect(component.trades).toContain(jasmine.objectContaining({linkHref: "/exchange/zero-coin-GAZERO/GTN-GBETLEHEM"}));
         component.ngOnDestroy();    //Ehm... code coverage
@@ -69,16 +69,16 @@ name = "glance token (or something)"`) }
 
         expect(component.sortedStatistics.length).toBe(3);  //XLM must not be there
         expect(component.sortedStatistics[0].assetCode).toBe("GTN");
-        expect(component.sortedStatistics[0].numTrades).toBe(3);
-        expect(component.sortedStatistics[0].volume).toBe(15);
-        expect(component.sortedStatistics[0].volumeInNative).toBe(-1 * 757575.7575);
+        expect(component.sortedStatistics[0].numTrades).toBe(4);
+        expect(component.sortedStatistics[0].volume).toBe(17);
+        expect(component.sortedStatistics[0].volumeInNative).toBe(-1 * 858585.8585);
         expect(component.sortedStatistics[1].assetCode).toBe("zero-coin");
         expect(component.sortedStatistics[1].numTrades).toBe(3);
         expect(component.sortedStatistics[1].volume).toBe(7.5);
         expect(component.sortedStatistics[1].volumeInNative).toBe(-1 * 378787.87875);
         expect(component.sortedStatistics[2].assetCode).toBe("ASDF");
-        expect(component.sortedStatistics[2].numTrades).toBe(1);
-        expect(component.sortedStatistics[2].volume).toBe(3.0);
+        expect(component.sortedStatistics[2].numTrades).toBe(2);
+        expect(component.sortedStatistics[2].volume).toBe(17.5);
     });
     it("should order statistics by volume in XLM when sorted by 'volume'", () => {
         component.ngOnInit();
@@ -86,17 +86,17 @@ name = "glance token (or something)"`) }
 
         expect(component.sortedStatistics.length).toBe(3);  //XLM must not be there
         expect(component.sortedStatistics[0].assetCode).toBe("GTN");
-        expect(component.sortedStatistics[0].numTrades).toBe(3);
-        expect(component.sortedStatistics[0].volume).toBe(15);
-        expect(component.sortedStatistics[0].volumeInNative).toBe(-1 * 757575.7575);
+        expect(component.sortedStatistics[0].numTrades).toBe(4);
+        expect(component.sortedStatistics[0].volume).toBe(17);
+        expect(component.sortedStatistics[0].volumeInNative).toBe(-1 * 858585.8585);
         expect(component.sortedStatistics[1].assetCode).toBe("zero-coin");
         expect(component.sortedStatistics[1].numTrades).toBe(3);
         expect(component.sortedStatistics[1].volume).toBe(7.5);
         expect(component.sortedStatistics[1].volumeInNative).toBe(-1 * 378787.87875);
         expect(component.sortedStatistics[2].assetCode).toBe("ASDF");
-        expect(component.sortedStatistics[2].numTrades).toBe(1);
-        expect(component.sortedStatistics[2].volume).toBe(3.0);
-        expect(component.sortedStatistics[2].volumeInNative).toBe(66.666);
+        expect(component.sortedStatistics[2].numTrades).toBe(2);
+        expect(component.sortedStatistics[2].volume).toBe(17.5);
+        expect(component.sortedStatistics[2].volumeInNative).toBe(388.88500000000005);
     });
     it("should not order statistics when sort direction is not given", () => {
         component.ngOnInit();
@@ -104,17 +104,17 @@ name = "glance token (or something)"`) }
 
         expect(component.sortedStatistics.length).toBe(3);  //XLM must not be there
         expect(component.sortedStatistics[0].assetCode).toBe("ASDF");
-        expect(component.sortedStatistics[0].numTrades).toBe(1);
-        expect(component.sortedStatistics[0].volume).toBe(3);
-        expect(component.sortedStatistics[0].volumeInNative).toBe(66.666);
+        expect(component.sortedStatistics[0].numTrades).toBe(2);
+        expect(component.sortedStatistics[0].volume).toBe(17.5);
+        expect(component.sortedStatistics[0].volumeInNative).toBe(388.88500000000005);
         expect(component.sortedStatistics[1].assetCode).toBe("zero-coin");
         expect(component.sortedStatistics[1].numTrades).toBe(3);
         expect(component.sortedStatistics[1].volume).toBe(7.5);
         expect(component.sortedStatistics[1].volumeInNative).toBe(-1 * 378787.87875);
         expect(component.sortedStatistics[2].assetCode).toBe("GTN");
-        expect(component.sortedStatistics[2].numTrades).toBe(3);
-        expect(component.sortedStatistics[2].volume).toBe(15.0);
-        expect(component.sortedStatistics[2].volumeInNative).toBe(-1 * 757575.7575);
+        expect(component.sortedStatistics[2].numTrades).toBe(4);
+        expect(component.sortedStatistics[2].volume).toBe(17.0);
+        expect(component.sortedStatistics[2].volumeInNative).toBe(-1 * 858585.8585);
     });
 });
 
@@ -170,6 +170,19 @@ export class HorizonRestServiceStub {
             counter_asset_issuer: "GBETLEHEM",
             counter_amount: "10",
             price: { n: 888, d: 2 }
+        } as Trade,
+        {
+            id: "trade-05",
+            base_is_seller: false,
+            base_asset_type: "alphanum4",
+            base_asset_code: "ASDF",
+            base_asset_issuer: "GASDF",
+            base_amount: "14.50",
+            counter_asset_type: "alphanum4",
+            counter_asset_code: "GTN",
+            counter_asset_issuer: "GBETLEHEM",
+            counter_amount: "2",
+            price: { n: 888, d: 20202 }
         } as Trade
     ];
 
