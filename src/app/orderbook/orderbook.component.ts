@@ -1,4 +1,4 @@
-import { Component, OnInit, Input, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, Input, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Subscription } from 'rxjs';
 
@@ -24,6 +24,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     @Input()
     set exchange(exchange: ExchangePair) {
         this._exchange = exchange;
+        this.initOrderBookStream();
     }
     @Input() readonly lastPrice: number = 0.0;
     @Input() readonly lastTradeType: string = "";
@@ -187,6 +188,10 @@ export class OrderbookComponent implements OnInit, OnDestroy {
      *       to get the data in specific order.
      */
     private initOrderBookStream() {
+        if (this._dataStream) {
+            this._dataStream.unsubscribe();
+        }
+
         this._dataStream = this.horizonService.streamOrderbook(this._exchange).subscribe(
             success => {
                 const data = success as any;
