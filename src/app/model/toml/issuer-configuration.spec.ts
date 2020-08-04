@@ -272,7 +272,7 @@ display_decimals=7
 name="Retired - Redeem Immeadiately (ETH)"
 desc="This asset has been retired. Please redeem this asset immeadiately."
 redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
-image="https://stronghold.co/img/Stronghold-Logo-100x100.png"
+image="https://firebasestorage.googleapis.com/v0/b/devcamp-api-151806.appspot.com/o/icon.png?alt=media&token=7323ad1f-7935-4018-b9a4-618c846ca428"
 
 [[CURRENCIES]]
 code="XRP"
@@ -301,6 +301,8 @@ image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
         expect(issuerConfig.currencies[0].issuer).toBe("GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH");
         expect(issuerConfig.currencies[0].image).toBe("https://stronghold.co/img/Stronghold-Logo-100x100.png");
         expect(issuerConfig.currencies[0].display_decimals).toBe(0);
+
+        expect(issuerConfig.currencies[3].image).toBe("https://firebasestorage.googleapis.com/v0/b/devcamp-api-151806.appspot.com/o/icon.png?alt=media&token=7323ad1f-7935-4018-b9a4-618c846ca428");
     });
     
     it("should parse currencies from source data #5", () => {
