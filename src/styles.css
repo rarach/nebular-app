@@ -34,8 +34,8 @@ html, body {
 
 /* For pages Overview and My Exchanges */
 div.exchanges-frame {
-    padding-left:40px;
-    padding-right:40px;
+    padding-left: 12px;
+    padding-right: 12px;
 }
 
 div.exchange-link {
@@ -86,8 +86,10 @@ div.exchange-link span.slash {
     font-weight: bold;
 }
 div.exchange-link-chart {
+    display: table;
     min-height: 300px;
     height: 100%;
+    width: 100%;
 }
 /**************************************/
 

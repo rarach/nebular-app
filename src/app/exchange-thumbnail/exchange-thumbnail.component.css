@@ -1,6 +1,6 @@
 div.chartWarning {
-    height: 300px;
-    line-height: 300px;
+    display: table-cell;
+    vertical-align: middle;
     background-color: white;
     text-align: center;
     font-size: 25px;
