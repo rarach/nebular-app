@@ -29,7 +29,7 @@ export class Asset {
 
     ToUrlParameters(prefix: string): string {
         let getParams = prefix + "_asset_code=" + this.code + "&" + prefix + "_asset_type=" + this.type;
-        if (this.issuer) {
+        if (this.issuer?.address) {
             getParams += "&" + prefix + "_asset_issuer=" + this.issuer.address;
         }
 

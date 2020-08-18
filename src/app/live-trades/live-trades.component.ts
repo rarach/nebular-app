@@ -1,6 +1,6 @@
 import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
-import { Sort } from '@angular/material';
-import { Subscription } from "rxjs";
+import { Sort } from '@angular/material/sort';
+import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
 import { AssetStatistics } from '../model/asset-statistics';
@@ -25,8 +25,8 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     private readonly TIMER_INTERVAL = 5000;
     private stats = new Map<string, AssetStatistics>();
 
-    Utils = Utils;          //Template access
-    public duration = "5s";    //TODO: No! Do it as template pipe that gets the timespan as number
+    Utils = Utils;          // Template access
+    public duration = "5s";    // TODO: No! Do it as template pipe that gets the timespan as number
     public trades = new Array<LiveTradeItem>();
     public sortedStatistics: AssetStatistics[] = null;
     private currentSort: Sort = { active: "asset", direction: "asc" };
@@ -68,9 +68,9 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         timeDiff -= minutes * 1000 * 60;
         const seconds = Math.floor(timeDiff / 1000);
 
-        this.duration = "";
+        this.duration = '';
         if (hours > 0) {
-        this.duration = `${hours}h ${minutes}m`;
+            this.duration = `${hours}h ${minutes}m`;
         }
         else if (minutes > 0) {
             this.duration = `${minutes}m ${seconds}s`;

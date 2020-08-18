@@ -63,7 +63,7 @@ describe('HorizonRestService', () => {
         });
 
         const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
-                                       "?base_asset_code=XLM&base_asset_type=native&base_asset_issuer=null" +
+                                       '?base_asset_code=XLM&base_asset_type=native' +
                                        "&counter_asset_code=SLT&counter_asset_type=credit_alphanum4" +
                                        "&counter_asset_issuer=GCKA6K5PCQ6PNF5RQBF7PQDJWRHO6UOGFMRLK3DYHDOI244V47XKQ4GP" +
                                        "&order=desc&limit=135"));
@@ -95,7 +95,6 @@ describe('HorizonRestService', () => {
                                         "?base_asset_code=USD&base_asset_type=credit_alphanum4" +
                                         "&base_asset_issuer=GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX" +
                                         "&counter_asset_code=XLM&counter_asset_type=native" +
-                                        "&counter_asset_issuer=null" +
                                         "&order=desc&limit=1"));
         expect(req.request.method).toBe("GET");
         req.flush(`{
@@ -122,7 +121,6 @@ describe('HorizonRestService', () => {
                                         "?base_asset_code=REPO&base_asset_type=credit_alphanum4" +
                                         "&base_asset_issuer=GCZNF24HPMYTV6NOEHI7Q5RJFFUI23JKUKY3H3XTQAFBQIBOHD5OXG3B" +
                                         "&counter_asset_code=XLM&counter_asset_type=native" +
-                                        "&counter_asset_issuer=null" +
                                         "&order=desc&limit=1"));
         expect(req.request.method).toBe("GET");
         req.flush(`{
@@ -143,7 +141,6 @@ describe('HorizonRestService', () => {
                                       "?base_asset_code=MOBI&base_asset_type=credit_alphanum4" +
                                       "&base_asset_issuer=GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH" +
                                       "&counter_asset_code=XLM&counter_asset_type=native" +
-                                      "&counter_asset_issuer=null" +
                                       "&order=desc&limit=1"));
         expect(req.request.method).toBe("GET");
         req.flush(`{

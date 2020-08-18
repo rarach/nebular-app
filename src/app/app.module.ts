@@ -1,10 +1,11 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { CookieModule } from 'ngx-cookie';
-import { FormsModule }   from '@angular/forms';
+import { FormsModule } from '@angular/forms';
 import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { MatSelectModule, MatSortModule } from '@angular/material';
+import { MatSelectModule } from '@angular/material/select';
+import { MatSortModule } from '@angular/material/sort';
 
 import { AppComponent } from './app.component';
 import { AppRoutingModule } from './app-routing.module';
@@ -15,7 +16,7 @@ import { ConfigurationComponent } from './configuration/configuration.component'
 import { PageNotFoundComponent } from './not-found.component';
 import { ExchangeThumbnailComponent } from './exchange-thumbnail/exchange-thumbnail.component';
 import { AssetService } from './services/asset.service';
-import { HorizonRestService } from "./services/horizon-rest.service";
+import { HorizonRestService } from './services/horizon-rest.service';
 import { UiActionsService } from './services/ui-actions.service';
 import { NebularService } from './services/nebular.service';
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
