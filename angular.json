@@ -80,7 +80,7 @@
             "karmaConfig": "src/karma.conf.js",
             "styles": [
               "src/styles.css"
-             ],
+            ],
             "scripts": [
               "src/assets/scripts/page.js",
               "node_modules/jquery/dist/jquery.min.js",
@@ -136,5 +136,8 @@
       }
     }
   },
-  "defaultProject": "nebular"
+  "defaultProject": "nebular",
+  "cli": {
+    "analytics": false
+  }
 }

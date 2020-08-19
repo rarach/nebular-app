@@ -1,8 +1,8 @@
 {
   "name": "nebular",
-  "version": "20.5.12",
+  "version": "20.8.19",
   "engines": {
-    "node": "10.15.x"
+    "node": "12.15.x"
   },
   "scripts": {
     "ng": "ng",
