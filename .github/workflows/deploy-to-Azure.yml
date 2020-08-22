@@ -24,3 +24,9 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build -- --prod
+       
+    - name: 'Run Azure webapp deploy action using publish profile credentials'
+      uses: azure/webapps-deploy@v2
+      with: 
+        app-name: ${{ env.AZURE_WEBAPP_NAME }}
+        publish-profile: ${{ secrets.NEBULAR_WEBAPPPUBLISHPROFILE }}
