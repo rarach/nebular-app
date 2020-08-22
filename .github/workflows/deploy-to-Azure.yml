@@ -5,7 +5,7 @@ on:
     branches: [ master ]
 env:
   AZURE_WEBAPP_NAME: nebular
-  AZURE_WEBAPP_PACKAGE_PATH: './dist/angulargithubaction'
+  AZURE_WEBAPP_PACKAGE_PATH: '.'
   NODE_VERSION: '12.x'
 
 jobs:
@@ -25,8 +25,9 @@ jobs:
     - name: Build
       run: npm run build -- --prod
        
-    - name: 'Run Azure webapp deploy action using publish profile credentials'
+    - name: 'Deploy to Azure webapp'
       uses: azure/webapps-deploy@v2
       with: 
         app-name: ${{ env.AZURE_WEBAPP_NAME }}
         publish-profile: ${{ secrets.NEBULAR_WEBAPPPUBLISHPROFILE }}
+        package: ${{ env.AZURE_WEBAPP_PACKAGE_PATH }}
