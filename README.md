@@ -5,4 +5,4 @@
 # [www.nebular.app](https://www.nebular.app)
 
 Price charts for asset exchanges on the Stellar decentralized exchange.
-User can add and save their own markets.
+User can view and bookmark markets of their interest.
