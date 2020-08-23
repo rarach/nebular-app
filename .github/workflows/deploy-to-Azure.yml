@@ -1,4 +1,4 @@
-name: Build and deploy to Azure web app NEBULAR
+name: Deploy to Azure
 
 on:
   push:
@@ -24,7 +24,9 @@ jobs:
       run: npm install
     - name: Build
       run: npm run build -- --prod
-       
+    - name: Unit tests
+      run: npm run test
+
     - name: 'Deploy to Azure webapp'
       uses: azure/webapps-deploy@v2
       with: 
