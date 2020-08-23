@@ -1,6 +1,6 @@
 {
   "name": "nebular",
-  "version": "20.8.19",
+  "version": "20.8.23",
   "engines": {
     "node": "12.18.x"
   },

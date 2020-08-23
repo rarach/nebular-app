@@ -22,10 +22,10 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
     - name: Install dependencies
       run: npm install
-    - name: Build
-      run: npm run build -- --prod
     - name: Unit tests
       run: npm run test
+    - name: Build
+      run: npm run build -- --prod
 
     - name: 'Deploy to Azure webapp'
       uses: azure/webapps-deploy@v2
