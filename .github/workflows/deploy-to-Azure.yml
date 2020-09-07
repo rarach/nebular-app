@@ -22,10 +22,15 @@ jobs:
         node-version: ${{ env.NODE_VERSION }}
     - name: Install dependencies
       run: npm install
+
     - name: Unit tests
       run: npm run test
+
     - name: Upload statistics to Coveralls
-      run: npm run coveralls
+      uses: coverallsapp/github-action@master
+      with:
+        github-token: ${{ secrets.GITHUB_TOKEN }}
+
     - name: PROD build
       run: npm run build -- --prod
 
