@@ -1,4 +1,4 @@
-name: Deploy to Azure
+name: PROD delivery
 
 on:
   push:
@@ -24,7 +24,9 @@ jobs:
       run: npm install
     - name: Unit tests
       run: npm run test
-    - name: Build
+    - name: Upload statistics to Coveralls
+      run: npm run coveralls
+    - name: PROD build
       run: npm run build -- --prod
 
     - name: 'Deploy to Azure webapp'
