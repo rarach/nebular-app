@@ -3,6 +3,8 @@ import { browser, by, element, protractor } from 'protractor';
 
 describe('Configuration page', () => {
 
+    afterEach(() => browser.waitForAngularEnabled(true));
+
     it('should display title "Nebular - Configuration" and cookie agreement prompt', () => {
         browser.get('/configuration');
         expect(browser.getTitle()).toBe('Nebular - Configuration');
@@ -15,6 +17,8 @@ describe('Configuration page', () => {
     });
 
     it("finds and adds two new custom assets (BTC anchors)", async() => {
+        browser.waitForAngularEnabled(false);
+
         //Trick: go to invalid page to load the web without calling the dependent services, setup a cookie
         browser.get("/no-such-page");
         browser.manage().addCookie({ name: "agr", value: "true" });
@@ -26,10 +30,13 @@ describe('Configuration page', () => {
         assetCodeInput.sendKeys("BTC");
 
         //NOTE: black magic to make it work with async HTTP requests (+ timeout increased due to unreachable stellar.toml)
-        browser.driver.manage().timeouts().setScriptTimeout(240000);
+        browser.driver.manage().timeouts().setScriptTimeout(120000);
         element(by.css("button#findAssetCodeBtn")).click();
 
         const resultsTable = element(by.css("table#foundAssetsTable"));
+
+        //Give some time to load and build elements
+        browser.sleep(5000);
         browser.wait(protractor.ExpectedConditions.presenceOf(resultsTable), 5000, "List of BTC anchors failed to show in 5sec");
 
         //Check for most common BTC anchors
@@ -40,10 +47,6 @@ describe('Configuration page', () => {
         expect(anchorRow2.getText()).toBe("BTC-stellarport.io Add");
         const anchorImage2 = anchorRow2.element(by.css("img.asset-icon"));
 
-        browser.wait(() => {
-            return anchorImage1.getAttribute("src").then((value) => { return value.indexOf("apay.io") > -1; }),
-            5000
-        });
         expect(anchorImage1.getAttribute("src")).toContain("apay.io");    //They wouldn't outsource the icons, right?
         expect(anchorImage2.getAttribute("src")).toContain("stellarport.io");
 
@@ -63,7 +66,7 @@ describe('Configuration page', () => {
         //Removed from available, added among stored
         expect(anchorRow2.isPresent()).toBe(false);
         expect(assetsTable.element(by.css("tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5")).isPresent()).toBe(true);
-    }, 240000);
+    }, 120000);
 
     it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"
         //Trick: go to invalid page to load the web without calling the dependent services
