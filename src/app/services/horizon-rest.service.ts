@@ -13,7 +13,12 @@ import { Trade } from '../model/trade.model';
     providedIn: 'root'
 })
 export class HorizonRestService {
-    private readonly API_URLS = [ "https://horizon.stellar.org" , "https://horizon.stellar.coinqvest.com" ];
+    private readonly API_URLS = [ 
+        "https://horizon.stellar.org/" /*TODO: find reliable publicly available instances,
+        "https://stellar-horizon.satoshipay.io/",
+        "https://horizon.stellar.lobstr.co/",
+        "https://horizon.stellar.coinqvest.com/" */
+     ];
 
     constructor(private http: HttpClient) { }
 
