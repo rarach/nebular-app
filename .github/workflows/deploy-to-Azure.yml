@@ -31,6 +31,9 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: E2E tests
+      run: npm run e2e -- --protractorConfig=e2e/protractor-ci.conf.js
+
     - name: PROD build
       run: npm run build -- --prod
 
