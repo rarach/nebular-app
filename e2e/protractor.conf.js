@@ -20,7 +20,7 @@ exports.config = {
     defaultTimeoutInterval: 30000,
     print: function() {}
   },
-  //NOTE: this needs to be updated with each new chrome(driver)
+  //NOTE: this needs to be updated with each new chrome(driver). SEEMS WE SOLVED THIS IN GitHub Actions PIPE? DELETE THIS IF TODAY > 2021-09-01
 //DEL?  chromeDriver: '../node_modules/webdriver-manager/selenium/chromedriver_90.0.4430.24.exe',
   onPrepare() {
     require('ts-node').register({
