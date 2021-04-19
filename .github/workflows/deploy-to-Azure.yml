@@ -33,9 +33,9 @@ jobs:
 
     - name: Update Chrome before E2E
     - run: |
-      sudo apt-get update
-      sudo apt-get --only-upgrade install google-chrome-stable
-      google-chrome --version
+        sudo apt-get update
+        sudo apt-get -- --only-upgrade install google-chrome-stable
+        google-chrome -- --version
 
     - name: E2E tests
       run: npm run e2e -- --protractorConfig=e2e/protractor-ci.conf.js
