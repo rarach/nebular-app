@@ -21,7 +21,7 @@ exports.config = {
     print: function() {}
   },
   //NOTE: this needs to be updated with each new chrome(driver)
-  chromeDriver: '../node_modules/webdriver-manager/selenium/chromedriver_90.0.4430.24.exe',
+//DEL?  chromeDriver: '../node_modules/webdriver-manager/selenium/chromedriver_90.0.4430.24.exe',
   onPrepare() {
     require('ts-node').register({
       project: require('path').join(__dirname, './tsconfig.e2e.json')
