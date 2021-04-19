@@ -9,6 +9,6 @@ config.capabilities = {
   }
 };
 //NOTE: Unfortunate Protractor nuts! This needs to be updated with each new chrome/chromedriver
-config.chromeDriver = '../node_modules/webdriver-manager/selenium/chromedriver_87.0.4280.88',
+config.chromeDriver = '../node_modules/webdriver-manager/selenium/chromedriver_90.0.4430.24',
 
 exports.config = config;
