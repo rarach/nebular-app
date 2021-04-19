@@ -31,8 +31,14 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
+    - name: Update Chrome before E2E
+    - run: |
+      sudo apt-get update
+      sudo apt-get --only-upgrade install google-chrome-stable
+      google-chrome --version
+
     - name: E2E tests
-      run: npm run e2e
+      run: npm run e2e -- --protractorConfig=e2e/protractor-ci.conf.js
 
     - name: PROD build
       run: npm run build -- --prod
