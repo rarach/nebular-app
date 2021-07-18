@@ -1,7 +1,6 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject } from '@angular/core/testing';
 import { Title} from '@angular/platform-browser';
 import { Router } from '@angular/router';
-import { HttpClient } from 'selenium-webdriver/http';
 
 import { AssetService } from '../services/asset.service';
 import { Asset, KnownAssets } from '../model/asset.model';
@@ -14,7 +13,7 @@ import { UiActionsService } from '../services/ui-actions.service';
 describe('MyExchangesComponent', () => {
     let component: MyExchangesComponent;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: Title, useClass: Title },
@@ -25,12 +24,11 @@ describe('MyExchangesComponent', () => {
                     }
                 },
                 { provide: AssetService, useClass: AssetServiceStub },
-                { provide: Router, useValue: {} },
-                { provide: HttpClient, useValue: {} }
+                { provide: Router, useValue: {} }
             ]
         })
         .compileComponents();
-    }));
+    });
 
     beforeEach(inject([UiActionsService, NebularService, Title, AssetService], (uiService, nebularService, titleService, assetService) => {
         component = new MyExchangesComponent(uiService, nebularService, titleService, assetService);
