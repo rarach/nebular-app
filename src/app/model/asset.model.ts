@@ -5,10 +5,10 @@ import { Constants } from "./constants";
 
 export class Asset {
     constructor(public readonly code: string,
-                public readonly fullName: string,
+                public fullName: string,
                 public readonly type: string,
                 public readonly issuer: Account,
-                public readonly imageUrl: string = null) {
+                public imageUrl: string = null) {
         this.imageUrl = imageUrl || Constants.UNKNOWN_ASSET_IMAGE;
         this.code = code || Constants.NATIVE_ASSET_CODE;
         if (null === type) {
@@ -73,26 +73,23 @@ export class Asset {
 
 /** "Database" of currently knwon assets on the Stellar network. TODO: load this from backend! */
 export const KnownAssets = {
-    "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, null)),
+    "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
     "BTC-Interstellar" : new Asset("BTC", "Bitcoin", null, KnownAccounts.Interstellar),
     "BTC-NaoBTC" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.NaoBTC),
-    "BTC-Papaya" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Papaya2),
+    "BTC-Papaya" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Papaya2, 'https://apay.io/public/logo/btc.svg'),
     "CNY-RippleFox" : new Asset("CNY", "Chinese Yuan", "credit_alphanum4", KnownAccounts.RippleFox),
     "ETH-fchain" : new Asset("ETH", "Ethereum", null, new Account("GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU", "fchain.io")),
-    "ETH-Papaya" : new Asset("ETH", "Ethereum", "credit_alphanum4", KnownAccounts.Papaya1),
+    "ETH-Papaya" : new Asset("ETH", "Ethereum", "credit_alphanum4", KnownAccounts.Papaya1, 'https://apay.io/public/logo/eth.png'),
     "EURT" : new Asset("EURT", "Euro", "credit_alphanum4", KnownAccounts.Tempo),
     "GTN" : new Asset("GTN", "Glitzkoin", null, new Account("GARFMAHQM4JDI55SK2FGEPLOZU7BTEODS3Y5QNT3VMQQIU3WV2HTBA46", "Glitzkoin.com")),
     "GRAT" : new Asset("GRAT", "Gratz token", null, new Account("GAJ7V3EMD3FRWAPBEJAP7EC4223XI5EACDZ46RFMY5DYOMCIMWEFR5II", "gratz.io")),
-    "LTC-Interstellar" : new Asset("LTC", "Litecoin", null, KnownAccounts.Interstellar),
-    "LTC-Papaya" : new Asset("LTC", "Litecoin", "credit_alphanum4", KnownAccounts.Papaya3),
-    "MOBI" : new Asset("MOBI", "Mobius", "credit_alphanum4", KnownAccounts.Mobius),
+    "MOBI" : new Asset("MOBI", "Mobius", "credit_alphanum4", KnownAccounts.Mobius, 'https://mobius.network/mobi.png'),
     "REPO" : new Asset("REPO", "RepoCoin", "credit_alphanum4", KnownAccounts.RepoCoin),
     "RMT" : new Asset("RMT", "SureRemit token", "credit_alphanum4", KnownAccounts.SureRemit),
-    "SLT" : new Asset("SLT", "Smartlands token", "credit_alphanum4", KnownAccounts.SmartLands),
+    "SLT" : new Asset("SLT", "Smartlands token", "credit_alphanum4", KnownAccounts.SmartLands, 'https://smartlands.io/.well-known/KPUeW1N1.jpg'),
     "TERN" : new Asset("TERN", "Ternio.io TERN", "credit_alphanum4", KnownAccounts.Ternio),
     "USD-AnchorUsd": new Asset("USD", "US dollar", null, new Account("GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX", "anchorusd.com")),
-    "WSD" : new Asset("WSD", "US dollar", null, KnownAccounts.WhiteStandard),
     "XCN" : new Asset("XCN", "Chinese Yuan", "credit_alphanum4", KnownAccounts.Firefly),
     "XRP-Interstellar" : new Asset("XRP", "XRP", null, KnownAccounts.Interstellar)
 };

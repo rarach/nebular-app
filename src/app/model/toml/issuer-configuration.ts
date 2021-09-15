@@ -28,7 +28,6 @@ export class IssuerConfiguration {
         let name: string = null;
         let desc: string = null;
         let issuer: string = null;
-        let decimals: number = null;
         let image: string = null;
 
         for(let i = startLine+1; ; i++) {
@@ -52,17 +51,14 @@ export class IssuerConfiguration {
                 case "issuer":
                     issuer = value;
                 break;
-                case "display_decimals":
-                    decimals = Number(value);
-                break;
                 case "image":
                     image = value;
                 break;
             }
         }
 
-        if (code && issuer && decimals != null) {
-            const asset = new TomlAsset(code, issuer, decimals);
+        if (code && issuer) {
+            const asset = new TomlAsset(code, issuer);
             asset.name = name;
             asset.desc = desc;
             asset.image = image;

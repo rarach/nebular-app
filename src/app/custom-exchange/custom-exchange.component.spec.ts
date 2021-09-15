@@ -172,7 +172,7 @@ describe("CustomExchangeComponent", () => {
 
         expect(component.selectedBaseAsset).toEqual(new DropdownOption(KnownAssets.XLM,
                                                                        "XLM",
-                                                                       "Lumen", "./assets/images/asset_icons/unknown.png"/*Doesn't matter here*/));
+                                                                       "Lumen", "./assets/images/asset_icons/XLM.png"));
         expect(component.selectedCounterAsset).toEqual(new DropdownOption(KnownAssets["USD-AnchorUsd"],
                                                                           "USD-anchorusd.com",
                                                                           "US dollar", "./assets/images/asset_icons/unknown.png"/*Doesn't matter here*/));

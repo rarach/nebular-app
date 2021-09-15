@@ -4,6 +4,7 @@ import { CookieService } from 'ngx-cookie';
 import { AssetService } from './asset.service';
 import { Account, KnownAccounts } from '../model/account.model';
 import { Asset, KnownAssets } from '../model/asset.model';
+import { Constants } from '../model/constants';
 import { ExchangePair } from '../model/exchange-pair.model';
 
 
@@ -138,7 +139,7 @@ describe('AssetService', () => {
         const newPair = assetService.CreateCustomExchange();
         expect(assetService.customExchanges.length).toBe(4);
         expect(newPair.id).toBeTruthy();
-        expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null)));
+        expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE));
         expect(newPair.counterAsset.code).toBe("XLM");
     });
 

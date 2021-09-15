@@ -270,7 +270,7 @@ class HorizonRestServiceStub {
             });
         }
         if (exchange.baseAsset.code === "ERROR") {
-            return throwError(new HttpErrorResponse({
+            return throwError(() => new HttpErrorResponse({
                 error: { detail: "Resource not found on a computer" },
                 statusText: "that's bad",
                 status: 404

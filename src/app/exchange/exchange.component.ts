@@ -156,90 +156,91 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
         const chartData = new CandlestickChartData(this.exchange.counterAsset.code);
 
-        this.horizonService.getTradeAggregations(this.exchange, this.chartInterval, 70).subscribe(
-        success => {
-            const data = success as any;
-            if (data._embedded.records.length == 0) {
-                this.dataStatus = DataStatus.NoData;
-                this.chartMessage = "No trades in this exchange";
-                return;
+        this.horizonService.getTradeAggregations(this.exchange, this.chartInterval, 70).subscribe({
+            next : (success) => {
+                const data = success as any;
+                if (data._embedded.records.length == 0) {
+                    this.dataStatus = DataStatus.NoData;
+                    this.chartMessage = "No trades in this exchange";
+                    return;
+                }
+
+                //Check age of last trade, show candles only for specific number of last days, depending on current scale
+                const minDate = new Date();
+                const chartRangeInDays = this.getChartRangeByInterval();
+                minDate.setDate(minDate.getDate() - chartRangeInDays);
+                const rangeStart = minDate.getTime();
+                const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
+                if (firstTimestamp < rangeStart) {
+                    //Last trade is older than date range => we have no data
+                    this.dataStatus = DataStatus.NoData;
+                    this.chartMessage = `No trades in last ${chartRangeInDays} days`;
+                    return;
+                }
+
+                this.dataStatus = DataStatus.OK;
+                this.chartMessage = "";
+                let minPrice = Number.MAX_VALUE;
+                let maxPrice = -1.0;
+                let maxVolume = -1.0;
+                let globalOpen = -1.0;
+                let globalClose = -1.0
+                let volumeSum = 0.0;
+
+                //Collect data for a single candle in the candlestick chart
+                for (let record of data._embedded.records) {
+                    const timestampAsNum = Number(record.timestamp);
+                    if (timestampAsNum < rangeStart) {
+                        break;    //Break at first value older than range start
+                    }
+                    const open = parseFloat(record.open);
+                    globalOpen = open;
+                    const high = parseFloat(record.high);
+                    if (high > maxPrice) {
+                        maxPrice = high;
+                    }
+                    const low = parseFloat(record.low);
+                    if (low < minPrice) {
+                        minPrice = low;
+                    }
+                    const close = parseFloat(record.close);
+                    if (-1.0 == globalClose) {
+                        globalClose = close;
+                    }
+                    const candle = [timestampAsNum, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
+
+                    //Collect data for bar chart with volume
+                    const volume = parseFloat(record.base_volume);
+                    if (volume > maxVolume) {
+                        maxVolume = volume;
+                    }
+                    volumeSum += volume;
+                    const volumeBar = [timestampAsNum, volume];
+                    chartData.addCandleData(candle, volumeBar);
+                    chartData.setStartTime(timestampAsNum);
+                }
+
+                chartData.setCandleSize(this.chartInterval);
+                chartData.setVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but works*/);
+                chartData.setPriceScale(minPrice, maxPrice);
+                //Set volume chart range
+                chartData.setVolumeScale(maxVolume);
+
+                zingchart.THEME="classic";
+                zingchart.render({
+                    id : "marketChart",
+                    data : chartData.getData(),
+                    height: "100%",
+                    width: "100%"
+                });
+                this.showGlobalOhlcData(globalOpen, maxPrice, minPrice, globalClose, volumeSum);
+            },
+            error: (errorData) => {
+                const errorResponse = errorData as HttpErrorResponse;
+                this.chartMessage = "Couldn't load data for this exchange (server: " +
+                                    errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+                this.dataStatus = DataStatus.Error;
             }
-
-            //Check age of last trade, show candles only for specific number of last days, depending on current scale
-            const minDate = new Date();
-            const chartRangeInDays = this.getChartRangeByInterval();
-            minDate.setDate(minDate.getDate() - chartRangeInDays);
-            const rangeStart = minDate.getTime();
-            const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
-            if (firstTimestamp < rangeStart) {
-                //Last trade is older than date range => we have no data
-                this.dataStatus = DataStatus.NoData;
-                this.chartMessage = `No trades in last ${chartRangeInDays} days`;
-                return;
-            }
-
-            this.dataStatus = DataStatus.OK;
-            this.chartMessage = "";
-            let minPrice = Number.MAX_VALUE;
-            let maxPrice = -1.0;
-            let maxVolume = -1.0;
-            let globalOpen = -1.0;
-            let globalClose = -1.0
-            let volumeSum = 0.0;
-
-            //Collect data for a single candle in the candlestick chart
-            for (let record of data._embedded.records) {
-                const timestampAsNum = Number(record.timestamp);
-                if (timestampAsNum < rangeStart) {
-                    break;    //Break at first value older than range start
-                }
-                const open = parseFloat(record.open);
-                globalOpen = open;
-                const high = parseFloat(record.high);
-                if (high > maxPrice) {
-                    maxPrice = high;
-                }
-                const low = parseFloat(record.low);
-                if (low < minPrice) {
-                    minPrice = low;
-                }
-                const close = parseFloat(record.close);
-                if (-1.0 == globalClose) {
-                    globalClose = close;
-                }
-                const candle = [timestampAsNum, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
-
-                //Collect data for bar chart with volume
-                const volume = parseFloat(record.base_volume);
-                if (volume > maxVolume) {
-                    maxVolume = volume;
-                }
-                volumeSum += volume;
-                const volumeBar = [timestampAsNum, volume];
-                chartData.addCandleData(candle, volumeBar);
-                chartData.setStartTime(timestampAsNum);
-            }
-
-            chartData.setCandleSize(this.chartInterval);
-            chartData.setVolumeDecimals(maxVolume >= 10.0 ? 2 : 4/*Lame but works*/);
-            chartData.setPriceScale(minPrice, maxPrice);
-            //Set volume chart range
-            chartData.setVolumeScale(maxVolume);
-
-            zingchart.THEME="classic";
-            zingchart.render({
-                id : "marketChart",
-                data : chartData.getData(),
-                height: "100%",
-                width: "100%"
-            });
-            this.showGlobalOhlcData(globalOpen, maxPrice, minPrice, globalClose, volumeSum);
-        },
-        error => {
-            const errorResponse = error as HttpErrorResponse;
-            this.chartMessage = "Couldn't load data for this exchange (server: " +
-                                errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-            this.dataStatus = DataStatus.Error;
         });
     }
 
