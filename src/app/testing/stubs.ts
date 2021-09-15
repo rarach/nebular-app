@@ -12,7 +12,7 @@ export class TomlConfigServiceStub {
 
     public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
         if ("THROW_ERROR" === tomlFileUrl) {
-            return throwError("Sorry, stellar.toml file is unreachable");
+            return throwError(() => new Error("Sorry, stellar.toml file is unreachable"));
         }
 
         const config = new IssuerConfiguration(this.tomlData);
