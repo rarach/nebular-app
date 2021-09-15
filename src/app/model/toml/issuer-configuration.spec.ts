@@ -133,7 +133,6 @@ name ="Simply nope"
         expect(issuerConfig.currencies[0].desc).toBe("The White Standard is a stable coin 100% backed by and redeemable for $USD");
         expect(issuerConfig.currencies[1].name).toBe("White Standard Euro");
         expect(issuerConfig.currencies[2].issuer).toBe("GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V");
-        expect(issuerConfig.currencies[3].display_decimals).toBe(5);
     });
 
     it("should parse currencies from source data #2", () => {
@@ -173,7 +172,6 @@ image="https://hopecoin.org/hopecoin-icon.png"
         expect(issuerConfig.currencies[0].name).toBe("Hope Coin");
         expect(issuerConfig.currencies[0].issuer).toBe("GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO");
         expect(issuerConfig.currencies[0].image).toBe("https://hopecoin.org/hopecoin-icon.png");
-        expect(issuerConfig.currencies[0].display_decimals).toBe(2);
     });
 
     it("should parse currencies from source data #3", () => {
@@ -216,7 +214,6 @@ image="https://etxco.com/etx.png"
         expect(issuerConfig.currencies[0].name).toBe("Ethereum X");
         expect(issuerConfig.currencies[0].issuer).toBe("GCEFMSNWXTALXQPRQFIXOMWJHZFDEQJBM26RGEDZUDFMU32JB6WJGRJX");
         expect(issuerConfig.currencies[0].image).toBe("https://etxco.com/etx.png");
-        expect(issuerConfig.currencies[0].display_decimals).toBe(2);
     });
 
     it("should parse currencies from source data #4", () => {
@@ -300,7 +297,6 @@ image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
         expect(issuerConfig.currencies[0].name).toBe("Stronghold Token");
         expect(issuerConfig.currencies[0].issuer).toBe("GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH");
         expect(issuerConfig.currencies[0].image).toBe("https://stronghold.co/img/Stronghold-Logo-100x100.png");
-        expect(issuerConfig.currencies[0].display_decimals).toBe(0);
 
         expect(issuerConfig.currencies[3].image).toBe("https://firebasestorage.googleapis.com/v0/b/devcamp-api-151806.appspot.com/o/icon.png?alt=media&token=7323ad1f-7935-4018-b9a4-618c846ca428");
     });
@@ -328,6 +324,5 @@ image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
         expect(issuerConfig.currencies.length).toBe(1);
         expect(issuerConfig.currencies[0].code).toBe("DICENS");
         expect(issuerConfig.currencies[0].image).toBe("http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936");
-        expect(issuerConfig.currencies[0].display_decimals).toBe(7);
     });
 });

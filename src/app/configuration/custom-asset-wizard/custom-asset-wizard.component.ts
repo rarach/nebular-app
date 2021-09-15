@@ -30,6 +30,7 @@ export class CustomAssetWizardComponent implements OnInit, OnDestroy {
                 private assetService: AssetService) {
                 }
 
+    //TODO: we shouldn't need any of this parameter processing once we don't divide assed code and issuer. So DELETE it all.
     ngOnInit() {
         //Handle GET parameter 'assetType'
         this._getParamsSubscriber = this.route.paramMap.subscribe(params => {
@@ -76,6 +77,9 @@ export class CustomAssetWizardComponent implements OnInit, OnDestroy {
     private compareAssetData(a: AssetData, b: AssetData): number {
         return b.trustlineCount - a.trustlineCount;
     }
+
+
+    //TODO: we shouldn't do this low-end stuff here. Shield it behind the AssetService
 
     /** For each asset that has configuration attached, try to get its icon */ 
     private loadAssetIcons() {

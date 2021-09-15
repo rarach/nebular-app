@@ -7,12 +7,12 @@ import { Observable, of, throwError } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { ActivatedRouteStub } from '../testing/activated-route-stub';
+import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangeComponent } from './exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { KnownAssets } from '../model/asset.model';
 import { TitleStub } from '../testing/stubs';
 
 
@@ -140,7 +140,7 @@ describe('ExchangeComponent', () => {
         expect(jQuerySpy).toHaveBeenCalledWith('volume: 64.9569426');  */
     });
 
-    it("should show error message when failed to get candle data", () => {
+    fit("should show error message when failed to get candle data", () => {
         activRoute.setParamMap({ baseAssetId: "ERROR-GOTOHELL", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "300000" });
 
         exchComponent.ngOnInit();
@@ -158,6 +158,14 @@ class RouterStub {
 }
 
 class AssetServiceStub {
+    public getAsset(assetId: string): Asset {
+        return KnownAssets['BTC-Papaya'];
+    }
+
+    public get availableAssets(): Asset[] {
+        return new Array<Asset>();
+    }
+
     getAssetCodesForExchange(): string[] {
         return [ "XLM", "XYZ" ];
     }

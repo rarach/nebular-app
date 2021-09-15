@@ -3,7 +3,11 @@ import { CookieService, CookieOptions } from 'ngx-cookie';
 
 import { Account } from "../model/account.model";
 import { Asset, KnownAssets } from '../model/asset.model';
+import { Constants } from '../model/constants';
 import { ExchangePair } from '../model/exchange-pair.model';
+import { HorizonRestService } from './horizon-rest.service';
+import { TomlConfigService } from './toml-config.service';
+import { Utils } from '../utils';
 
 
 @Injectable({
@@ -31,7 +35,10 @@ export class AssetService {
     readonly customExchanges: ExchangePair[];
 
 
-    constructor(private readonly cookieService: CookieService) {
+    constructor(
+        private readonly cookieService: CookieService,
+        private readonly horizonService: HorizonRestService,
+        private readonly configService: TomlConfigService) {
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
             //Take asset codes from the common assets
@@ -47,10 +54,12 @@ export class AssetService {
         }
 
         this.customAssets = this.loadAssets();
-        this.loadAnchors();
+        this.loadAnchors();         //mm-TODO: DELETE?
         this.customExchanges = this.loadExchanges();
     }
 
+
+    //mm-TODO: DELETE
 
     /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
     getAssetCodesForExchange(): string[] {
@@ -70,10 +79,51 @@ export class AssetService {
         return this._commonAnchors.concat(this._customAnchors);
     }
 
-    /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
-    getAvailableAssets(): Asset[] {
+
+
+
+    public get availableAssets(): Asset[] {
         return this._commonAssets.concat(this.customAssets);
     }
+
+    //mm-TODO: delete this
+    /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
+    public getAvailableAssets(): Asset[] {
+        return this._commonAssets.concat(this.customAssets);
+    }
+
+
+    /** Retrieve asset reference based on its ID. The ID has form CODE-ISSUER_ADDRESS */
+    public getAsset(assetId: string): Asset {
+        if (Constants.NATIVE_ASSET_CODE === assetId) {
+            return KnownAssets.XLM;
+        }
+
+        //TODO: the parsings start to disturb me. What if we have a hash-map with the asset ID as key?
+        const index = assetId.indexOf("-");
+
+        if (index <= 0) {
+            throw new Error('Invalid asset identification: ' + assetId);
+        }
+        const assetCode = assetId.substr(0, index);
+        const issuerAddress = assetId.substr(index+1);
+
+        //Try to find among known assets
+        for(const knownAsset of this.availableAssets) {    //TODO: ideally replace with simple hash-map lookup
+            if (assetCode === knownAsset.code && issuerAddress === knownAsset.issuer.address) {
+                return knownAsset;
+            }
+        }
+
+        const anchor = new Account(issuerAddress);
+        const asset = new Asset(assetCode, null, null, anchor);
+
+        this.loadAssetData(asset);
+        return asset;
+    }
+
+
+
 
     /**
      * Returns all available anchors issuing given asset code.
@@ -106,6 +156,9 @@ export class AssetService {
         return null;
     }
 
+
+    //mm-TODO: DELETE
+
     /** Return anchor with given address or NULL if there's no such among available anchors  */
     GetIssuerByAddress(address: string): Account {
         //NOTE: user can register a known anchor. In that case first mathing address is returned
@@ -133,6 +186,10 @@ export class AssetService {
                 return null;
             }
         }
+
+
+        //mm-TODO: THIS WHOLE BLOCK AND THE CONDITION FROM THE NEXT IF SHOULDN'T BE NEEDED
+
         //Try to match the address with known issuer.
         let issuer = null;
         const anchors = this.getAllAnchors();
@@ -147,6 +204,9 @@ export class AssetService {
         if (null === issuer) {
             issuer = new Account(issuerAddress, issuerDomain);
         }
+
+
+
 
         const newAsset = new Asset(assetCode, assetCode, null, issuer, imageUrl);
         this.customAssets.push(newAsset);
@@ -251,6 +311,31 @@ export class AssetService {
         return new Account(issuerAddress, null);
     }
 
+
+    /** Load full data for a given basic asset definition. */
+    private loadAssetData(asset: Asset) {
+        asset.fullName = `${asset.code}-${asset.issuer.address}`;
+        this.horizonService.getIssuerConfigUrl(asset.code, asset.issuer.address).subscribe(configUrl => {
+            if (configUrl) {
+                this.configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
+                    const theAsset = issuerConfig.currencies.find(configAsset => {
+                        return configAsset.code === asset.code && configAsset.issuer === asset.issuer.address;
+                    });
+                    if (theAsset) {
+                        asset.imageUrl = theAsset.image;
+                        asset.fullName = theAsset.name;
+                    }
+                });
+
+                //Derive asset's domain from config URL
+                const domain = Utils.parseDomain(configUrl);
+                asset.issuer.domain = domain;
+            }
+        });
+    }
+
+
+
     /**
      * Load and return custom anchor accounts (name+domain) as extracted from user's assets.
      * @return Array of Account instances
@@ -265,26 +350,6 @@ export class AssetService {
                     this._customAnchors.push(asset.issuer);
             }
         }
-
-/*DEL
-        const COOKIE_NAME = "iss";
-        const customIssuers = new Array();
-        const cookieText: string = this.cookieService.get(COOKIE_NAME) || "";
-
-        const anchors = cookieText.split(",");
-        for (let a=0; a<anchors.length; a++) {
-            if ((anchors[a] || "").length <= 0) {
-                continue;
-            }
-            const anchorText = decodeURIComponent(anchors[a]).trim();      //TODO: Do we need the encode/decode stuff? ngx-cookie may do it already
-            const dashIndex = anchorText.indexOf("/");
-            const address = anchorText.substr(0, dashIndex);
-            const domain = anchorText.substr(dashIndex+1);
-            customIssuers.push(new Account(address, domain));
-        }
-
-        return customIssuers;
-*/
     }
 
     /** Loads user's custom defined assets (code + anchor) */
@@ -304,7 +369,7 @@ export class AssetService {
             const issuerAddress = parts[1];
             const domain = parts[2] || null;
             const imageUrl = parts[3];
-            const issuer = this.getAnchorByAddress(issuerAddress);
+            const issuer = this.getAnchorByAddress(issuerAddress);      //mm-TODO: new Account(issuerAddress, domain)
             issuer.domain = domain;         //TODO: is this necessary if we've been able to retrieve the anchor from database?
             customAssets.push(new Asset(assetCode, assetCode, null, issuer, imageUrl));
         }

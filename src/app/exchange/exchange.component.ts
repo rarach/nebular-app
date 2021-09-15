@@ -38,17 +38,28 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     chartMessage: string = "Loading chart...";
 
     assetCodeOptions: DropdownOption<string>[] = [];
-    selectedBaseAssetCode: DropdownOption<string> = null;
+//DEL    selectedBaseAssetCode: DropdownOption<string> = null;
     selectedCounterAssetCode: DropdownOption<string> = null;
-    baseIssuerOptions: DropdownOption<string>[] = [];
+//DEL    baseIssuerOptions: DropdownOption<string>[] = [];
     counterIssuerOptions: DropdownOption<string>[] = []
     selectedBaseIssuer: DropdownOption<string> = null;
     selectedCounterIssuer: DropdownOption<string> = null;
 
 
+    assetOptions: Asset[] = [];
+    selectedBaseAsset: Asset = null;
+    selectedCounterAsset: Asset = null;
+    //mm-TODO: so DrowDownOption shouldn't be needed at all
+
+
+
     constructor(private readonly ngZone: NgZone, private route: ActivatedRoute, private router: Router, private titleService: Title,
                 private assetService: AssetService, private horizonService: HorizonRestService) {
         this.loadAssetCodes();
+
+
+        this.loadAvailableAssets();
+        this.assetOptions = assetService.availableAssets;
     }
 
 
@@ -73,7 +84,8 @@ export class ExchangeComponent implements OnInit, OnDestroy {
                 this.chartInterval = Utils.intervalAsMilliseconds(intParam);
             }
 
-            const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: this dependency feels wrong*/);
+//DEL            const baseAsset: Asset = Asset.ParseFromUrlParam(baseAssetString, this.assetService/*TODO: the other way round: service.getAsset(baseAssetString)*/);
+            const baseAsset: Asset = this.assetService.getAsset(baseAssetString);
             const counterAsset: Asset = Asset.ParseFromUrlParam(counterAssetString, this.assetService);
             this.exchange = new ExchangePair("asdf123", baseAsset, counterAsset);
             this.setupUi();
@@ -90,6 +102,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     private setupUi() {
+/*DEL
         //Set selected option in base asset code drop-down
         let baseCodeDdOption: DropdownOption<string> = null;
         for (let option of this.assetCodeOptions) {
@@ -105,6 +118,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.assetCodeOptions.splice(0, 0, baseCodeDdOption);
         }
         this.selectedBaseAssetCode = baseCodeDdOption;
+        */
 
         //Selected option in counter code drop-down
         let counCodeDdOption: DropdownOption<string> = null;
@@ -122,8 +136,30 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
         this.selectedCounterAssetCode = counCodeDdOption;
 
-        this.loadBaseIssuers();
+//DEL        this.loadBaseIssuers();
         this.loadCounterIssuers();
+
+
+
+
+
+        //Set selected option in base asset code drop-down
+        let baseAssetDdOption: Asset = null;
+        for (const asset of this.assetOptions) {
+            if (asset.code === this.exchange.baseAsset.code && asset.issuer.address === this.exchange.baseAsset.issuer.address) {   //TODO: introduce Asset.Id, compare them
+                baseAssetDdOption = asset;
+                break;
+            }
+        }
+        //User provided unknown asset code in URL
+        if (null === baseAssetDdOption) {
+            baseAssetDdOption = this.exchange.baseAsset;
+            this.assetOptions.splice(0, 0, baseAssetDdOption);
+        }
+        this.selectedBaseAsset = baseAssetDdOption;
+
+
+
 
         this.updateTradeHistory();
         this.renderCandlestickChart(true);
@@ -385,7 +421,21 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
+
+
+    private loadAvailableAssets() {
+        /*mm-TODO: Nope?
+        for (const asset of this.assetService.avaliableAssets) {
+            this.assetOptions.push(new DropdownOption(asset, asset.code, asset.fullName));
+        }
+        */
+    }
+
+
+
+
     /** Load list of valid anchors for selected base/counter asset codes */
+    /*DEL
     private loadBaseIssuers() {
         this.baseIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
@@ -419,6 +469,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.baseIssuerOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Manage", "Add anchor manually"));
         }
     }
+    */
 
     private loadCounterIssuers() {
         this.counterIssuerOptions = [];
@@ -454,7 +505,19 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
     }
 
-    
+
+
+    baseAssetChanged(event) {
+        if (null === this.selectedBaseAsset) {
+            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
+        }
+        else {
+            this.changeBaseAsset2();
+        }
+    }
+
+
+    /*DEL
     baseAssetCodeChanged(event) {
         if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value) {
             this.router.navigateByUrl(Constants.CONFIGURATION_URL);
@@ -463,6 +526,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.changeBaseAsset(false);
         }
     }
+    */
 
     counterAssetCodeChanged(event) {
         if ("ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
@@ -474,21 +538,24 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
 
     issuerChanged(event) {
+        /*DEL
         if ("ADD_CUSTOM"  === this.selectedBaseIssuer.value) {
             const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + this.selectedBaseAssetCode.value;
             this.router.navigateByUrl(url);
         }
-        else if ("ADD_CUSTOM" === this.selectedCounterIssuer.value) {
+        else */ if ("ADD_CUSTOM" === this.selectedCounterIssuer.value) {
             const url = Constants.CONFIGURATION_URL + ";" + GETParams.ASSET_TYPE + "=" + this.selectedCounterAssetCode.value;
             this.router.navigateByUrl(url);
         }
         else {
             //NOTE: it doesn't really matter whether we use base or counter drop-down here
-            this.changeBaseAsset(true);
+//DEL            this.changeBaseAsset(true);
+            this.changeBaseAsset2();
         }
     }
 
     /** After changing the base asset drop-down, compose respective exchange URL and navigate there. */
+    /*DEL
     private changeBaseAsset(selectingAnchor: boolean) {
         let urlAssets: string = this.selectedBaseAssetCode.value;
         if (selectingAnchor) {
@@ -505,9 +572,31 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
         this.router.navigateByUrl(newUrl);
     }
+    */
+
+
+
+
+    private changeBaseAsset2() {
+        let urlAssets: string = this.selectedBaseAsset.code;
+        if (!this.selectedBaseAsset.IsNative()) {
+            urlAssets += '-' + this.selectedBaseAsset.issuer.address;
+        }
+
+        urlAssets += "/" + this.selectedCounterAssetCode.value;
+        if (this.selectedCounterIssuer != null && this.selectedCounterIssuer.value != null) {
+            urlAssets += "-" + this.selectedCounterIssuer.value;
+        }
+
+        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+        this.router.navigateByUrl(newUrl);
+    }
+
+
+
 
     private changeCounterAsset(selectingAnchor: boolean) {
-        let urlAssets: string = this.selectedBaseAssetCode.value;
+        let urlAssets: string = this.selectedBaseAsset.code;    //mm-TODO: delete?    this.selectedBaseAssetCode.value;
         if (this.selectedBaseIssuer != null && this.selectedBaseIssuer.value != null) {
             urlAssets += "-" + this.selectedBaseIssuer.value;
         }
