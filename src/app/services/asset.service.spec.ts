@@ -42,7 +42,7 @@ describe('AssetService', () => {
                 {
                     provide: HorizonRestService,
                     useValue: {
-                        getIssuerConfigUrl: (code: string, assetIssuer: string) => of("asdf.com/stellar.toml")
+                        getIssuerConfigUrl: (code: string, assetIssuer: string) => of("ftp://scam-tok.en/stellar.toml")
                     }
                 },
                 { provide: TomlConfigService, useValue: new TomlConfigServiceStub() }
@@ -81,6 +81,41 @@ describe('AssetService', () => {
                              new Asset("xlm", "xlm", null, new Account(null, null)))
         ]);
     });
+
+    it('availableAssets contains commong + custom assets', () => {
+        expect(assetService.availableAssets.length).toBe(8+5);
+        expect(assetService.availableAssets[0]).toBe(KnownAssets.XLM);
+        expect(assetService.availableAssets[8]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
+    });
+
+    it('#getAsset returns native Assets for ID "XlM"', () => {
+        const asset = assetService.getAsset('XLM');
+        
+        expect(asset).toBe(KnownAssets.XLM);
+    });
+
+    it('#getAsset throws error for invalid asset ID format', () => {
+        expect(() => assetService.getAsset('TOKEN_by_GGGGGGACCOUNT')).toThrowError('Invalid asset identification: TOKEN_by_GGGGGGACCOUNT');
+    });
+
+    it('#getAsset returns Assets from loaded assets for recognized ID', () => {
+        const asset = assetService.getAsset('ZX0-GGGGGGK');
+        
+        expect(asset).toEqual(new Asset("ZX0", "ZX0", 'credit_alphanum4', new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"));
+    });
+
+    it('#getAsset creates Assets and loads details from network', () => {
+        const asset = assetService.getAsset('TEST-GGGTEST840512');
+        
+        expect(asset).toEqual(new Asset('TEST', 'Test-o-coin', 'credit_alphanum4', new Account('GGGTEST840512', 'scam-tok.en'), 'google.com/test.svg'));
+    });
+
+    it('#getAsset creates Assets and tries to load details from network, fills only domain when data from issuer is unavailable', () => {
+        const asset = assetService.getAsset('VOID-GENERAL');
+
+        expect(asset).toEqual(new Asset('VOID', 'VOID-GENERAL', 'credit_alphanum4', new Account("GENERAL", "scam-tok.en"), "./assets/images/asset_icons/unknown.png"));
+    });
+
 
     it("#getAllAnchors() returns common+custom anchors", () => {
         const issuers = assetService.getAllAnchors();
@@ -229,7 +264,7 @@ class TomlConfigServiceStub {
         const issuerConfig = {
             currencies: []
         } as unknown as IssuerConfiguration;
-        let tomlAsset = new TomlAsset("TEST", "GGGTEST");
+        let tomlAsset = new TomlAsset("TEST", "GGGTEST840512");
         tomlAsset.name = "Test-o-coin";
         tomlAsset.image = "google.com/test.svg";
         issuerConfig.currencies.push(tomlAsset);
