@@ -42,6 +42,14 @@ describe('ExchangeComponent', () => {
     it('should have a default chart message "Loading chart..."', () => {
         expect(exchComponent.chartMessage).toBe("Loading chart...");
     });
+
+    it('#constructor loads available assetOptions', () => {
+        expect(exchComponent.assetOptions).toEqual([
+            new Asset('GOLD', 'Tokenized gold', null, new Account('GOLDISSUER'), 'example.org/assets/gold.bmp'),
+            new Asset('SLVR', null, 'credit_alphanum4', new Account('GAA5555555', 'https://general-scam.eu'))
+        ]);
+    });
+
     it("should display error message when base asset is missing in URL", () => {
         exchComponent.exchange = new ExchangePair("test01", KnownAssets.XLM, KnownAssets["ETH-fchain"]);
         exchComponent.ngOnInit();
@@ -152,7 +160,40 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.lastPrice).toBe(-1);
         expect(exchComponent.lastTradeType).toBe("error");
     });
-    //TODO: and so on (after we finish refactoring to one drop-down per asset)
+    
+    
+    it('#assetChanged navigates to the Configuration screen if user chose to add new asset', () => {
+        const router = TestBed.inject(Router);
+        spyOn(router, 'navigateByUrl');
+
+        exchComponent.assetChanged({ value: null });
+
+        expect(router.navigateByUrl).toHaveBeenCalledOnceWith(Constants.CONFIGURATION_URL);
+    });
+
+    it('#assetChanged loads new exchange when user changes one of the assets - Pear/XLM', () => {
+        const router = TestBed.inject(Router);
+        spyOn(router, 'navigateByUrl');
+        exchComponent.selectedBaseAsset = new Asset('Pear', null, null, new Account('GBBBBPEEEEEEEAAAAAAR'));
+        exchComponent.selectedCounterAsset = KnownAssets.XLM;
+        exchComponent.chartInterval = 123456;
+
+        exchComponent.assetChanged({ value: 1 });
+
+        expect(router.navigateByUrl).toHaveBeenCalledOnceWith('exchange/Pear-GBBBBPEEEEEEEAAAAAAR/XLM?interval=123456');
+    });
+
+    it('#assetChanged loads new exchange when user changes one of the assets - XLM/SOY', () => {
+        const router = TestBed.inject(Router);
+        spyOn(router, 'navigateByUrl');
+        exchComponent.selectedBaseAsset = KnownAssets.XLM;
+        exchComponent.selectedCounterAsset = new Asset('SOY', null, null, new Account('GCBHEYUTRE7878787'));
+        exchComponent.chartInterval = 8;
+
+        exchComponent.assetChanged({ value: 1 });
+
+        expect(router.navigateByUrl).toHaveBeenCalledOnceWith('exchange/XLM/SOY-GCBHEYUTRE7878787?interval=8');
+    });
 });
 
 class RouterStub {
@@ -193,7 +234,10 @@ class AssetServiceStub {
     }
 
     public get availableAssets(): Asset[] {
-        return new Array<Asset>();
+        return [
+            new Asset('GOLD', 'Tokenized gold', null, new Account('GOLDISSUER'), 'example.org/assets/gold.bmp'),
+            new Asset('SLVR', null, null, new Account('GAA5555555', 'https://general-scam.eu'))
+        ];
     }
 
     getAssetCodesForExchange(): string[] {      //mm-TODO: delete + all the other zombies after the change
