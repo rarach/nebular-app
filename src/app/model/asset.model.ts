@@ -1,5 +1,4 @@
 import { Account, KnownAccounts } from "./account.model";
-import { AssetService } from "../services/asset.service";
 import { Constants } from "./constants";
 
 
@@ -39,35 +38,6 @@ export class Asset {
     ToExchangeUrlParameter(): string {
         return this.code + (this.type == Constants.NATIVE_ASSET_TYPE ? "" : "-" + this.issuer.address);
     }
-
-    /**
-     * Create new Asset instance from its string description
-     * @param assetUrlParam asset definition, most likely gotten from URL, in form CODE-STELLAR_ADDRESS_OF_ISSUER
-     * @param assetService instance of AssetService
-     */
-    static ParseFromUrlParam(assetUrlParam: string, assetService: AssetService): Asset {   //TODO: this method doesn't really belong here. When you move it, delete the AssetService dependencies all the way up the call tree
-        const index = assetUrlParam.indexOf("-");
-        let assetCode;
-        let issuerAddress = null;
-        let assetType = null;
-        if (-1 === index) {
-            assetCode = assetUrlParam;
-            if (assetUrlParam != Constants.NATIVE_ASSET_CODE) {
-                //Try to find issuers of that asset among known accounts
-                issuerAddress = assetService.getFirstIssuerAddress(assetUrlParam);
-                if (!issuerAddress) {
-                    throw "Invalid URL parameters (missing issuer): " + assetUrlParam;
-                }
-            }
-            else assetType = Constants.NATIVE_ASSET_TYPE;   //"native" for XLM
-        }
-        else {
-            assetCode = assetUrlParam.substring(0, index);
-            issuerAddress = assetUrlParam.substring(index + 1);
-        }
-    
-        return new Asset(assetCode, null, assetType, new Account(issuerAddress, null));
-    }
 }
 
 
@@ -76,7 +46,6 @@ export const KnownAssets = {
     "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE),
     "ABDT" : new Asset("ABDT", "Atlantis Blue", null, KnownAccounts.AtlantisBlue),
     "BTC-Interstellar" : new Asset("BTC", "Bitcoin", null, KnownAccounts.Interstellar),
-    "BTC-NaoBTC" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.NaoBTC),
     "BTC-Papaya" : new Asset("BTC", "Bitcoin", "credit_alphanum4", KnownAccounts.Papaya2, 'https://apay.io/public/logo/btc.svg'),
     "CNY-RippleFox" : new Asset("CNY", "Chinese Yuan", "credit_alphanum4", KnownAccounts.RippleFox),
     "ETH-fchain" : new Asset("ETH", "Ethereum", null, new Account("GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU", "fchain.io")),

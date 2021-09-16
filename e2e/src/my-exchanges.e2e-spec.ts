@@ -43,8 +43,8 @@ describe('My Exchanges', () => {
 
         //Exchange 1
         let dropDowns = element.all(by.css("div#customExchange1234567 mat-select.selectedAssetOption"));
-        expect(dropDowns.get(0).getAttribute("title")).toBe("Bitcoin");
-        expect(dropDowns.get(0).getText()).toBe("BTC-naobtc.com");
+        expect(dropDowns.get(0).getAttribute("title")).toBe('BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
+        expect(dropDowns.get(0).getText()).toBe('BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
         expect(dropDowns.get(1).getAttribute("title")).toBe("Bitcoin");
         expect(dropDowns.get(1).getText()).toBe("BTC-apay.io");
 

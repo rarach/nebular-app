@@ -48,15 +48,16 @@ describe('AssetService', () => {
                 { provide: TomlConfigService, useValue: new TomlConfigServiceStub() }
             ]
         });
-        const cookieService = TestBed.get(CookieService);
+        const cookieService = TestBed.inject(CookieService);
         const horizonService = TestBed.inject(HorizonRestService);
         const configService = TestBed.inject(TomlConfigService);
         assetService = new AssetService(cookieService, horizonService, configService);
     });
 
-    it('should load custom assets and exchanges', () => {
-        const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415", "GGGGGGGGaposdyuh...");
+    it('#constructor should load custom assets and exchanges from cookie', () => {
+        const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415");
         acc.domain = null;
+
         expect(assetService.customAssets).toEqual([
             new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"),
             new Asset("abcdef", "abcdef", "credit_alphanum12", acc, "asdf://vilence.jpg"),
@@ -80,50 +81,31 @@ describe('AssetService', () => {
                              new Asset("xlm", "xlm", null, new Account(null, null)))
         ]);
     });
-    it("#getAssetCodesForExchange() ", () => {
-        const codes = assetService.getAssetCodesForExchange();
-        expect(codes).toEqual(["XLM", "BTC", "CNY", "ETH", "EURT", "MOBI", "RMT", "SLT", "ABC", "abcdef", "btC", "ZX0"]);
-    });
+
     it("#getAllAnchors() returns common+custom anchors", () => {
         const issuers = assetService.getAllAnchors();
-        expect(issuers.length).toBe(12);
+        expect(issuers.length).toBe(11);
         expect(issuers[0]).toEqual(new Account(null, null));
-        expect(issuers[1]).toEqual(KnownAccounts.NaoBTC);
-        expect(issuers[2]).toEqual(KnownAccounts.Papaya2);      //etc...
+        expect(issuers[1]).toEqual(KnownAccounts.Papaya2);
+        expect(issuers[2]).toEqual(KnownAccounts.RippleFox);      //etc...
         expect(issuers).toContain(new Account("G0101010101010101", "google.com"));
-        expect(issuers).toContain(new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"));
+        expect(issuers).toContain(new Account("GGGGGGK", "example.com"));
     });
-    it("#GetIssuersByAssetCode('CNY') gives common+custom assets", () => {
-        assetService.AddCustomAsset("CNY", "GBELS050505050505050505");
-        const assets = assetService.GetIssuersByAssetCode("CNY");
-        expect(assets).toEqual([
-            KnownAccounts.RippleFox,
-            new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
-            new Account("GBELS050505050505050505", "GBELS05050505050...")
-        ]);
-    });
-    it("#getFirstIssuerAddress('BTC') returns address of first BTC anchor", () => {
-        expect(assetService.getFirstIssuerAddress("BTC")).toBe(/*naoBTC*/"GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH");
-    });
-    it("#getFirstIssuerAddress('NO_SUCH') returns null", () => {
-        expect(assetService.getFirstIssuerAddress("NO_SUCH")).toBeNull();
-    });
-    it("#GetIssuerByAddress('GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX') returns 'RippleFox' Account", () => {
-        const anchor = assetService.GetIssuerByAddress('GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX');
-        expect(anchor.domain).toBe("ripplefox.com");
-    });
-    it("#GetIssuerByAddress('GBDDD_NOPE') returns null", () => {
-        expect(assetService.GetIssuerByAddress("GBDDD_NOPE")).toBeNull();
-    });
+    //mm-TODO: availableAssets
+
     it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
         assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));
         expect(assetService.customAssets.length).toBe(6);
+
         expect(assetService.AddCustomAsset("JPY", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH")).toBeNull();
+
         expect(assetService.customAssets.length).toBe(6);
     });
     it("#AddCustomAsset() with known issuer", () => {
         expect(assetService.customAssets.length).toBe(5);
+
         const newAsset = assetService.AddCustomAsset("JPY", /*Mobius*/"GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH");
+
         expect(assetService.customAssets.length).toBe(6);
         expect(newAsset.code).toBe("JPY");
         expect(newAsset.fullName).toBe("JPY");
@@ -213,7 +195,7 @@ describe('AssetService', () => {
         //Call one of the methods that internally call serializeToCookie()
         assetService.CreateCustomExchange();
 
-        const cookieService = TestBed.get(CookieService);
+        const cookieService = TestBed.inject(CookieService) as unknown as CookieServiceStub;
         expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|null|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
         expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/xlm-null,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
     });

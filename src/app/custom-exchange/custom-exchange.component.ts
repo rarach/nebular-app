@@ -113,7 +113,7 @@ export class CustomExchangeComponent implements OnInit {
     }
 
     private loadAssets() {
-        for (let asset of this.assetService.getAvailableAssets()) {
+        for (let asset of this.assetService.availableAssets) {
             let longName = asset.code;
             if (!asset.IsNative()) {
                 longName += "-" + asset.issuer.domain;

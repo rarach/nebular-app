@@ -56,7 +56,7 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");
     });
-    it("should initialize exchange from URL parameters - know asset", () => {
+    it("should initialize exchange from URL parameters - known asset", () => {
         activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY", interval: "1hour" });
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         exchComponent.ngOnInit();
@@ -65,7 +65,7 @@ describe('ExchangeComponent', () => {
         //Code coverage...
         exchComponent.ngOnDestroy();
     });
-    it("should initialize exchange from URL parameters - unknow asset", () => {
+    it("should initialize exchange from URL parameters - unknown asset", () => {
         activRoute.setParamMap({ baseAssetId: "BBQ-GRILLED", counterAssetId: "UUUUH-G0000AASFJGSFG56ADS", interval: "900000" });
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         exchComponent.ngOnInit();
@@ -171,14 +171,23 @@ class AssetServiceStub {
         if ('BBQ-GRILLED' === assetId) {
             return new Asset('BBQ', null, null, null);
         }
+        if ('CCCP-G0PYNUGNNNNN' === assetId) {
+            return new Asset('CCCP', null, null, null);
+        }
+        if ('CUS-GBDEV84512' === assetId) {
+            return new Asset('CUS', null, null, null);
+        }
         if ('ERROR-GOTOHELL' === assetId) {
             return new Asset('ERROR', null, null, null);
         }
-        if ('CUS-GBDEV84512' === assetId) {
-            return new Asset('CUS', null, null, new Account('GBDEV84512'));
-        }
         if ('OLD-GCCFGS486G5ADFG51A' === assetId) {
-            return new Asset('OLD', null, null, new Account('GCCFGS486G5ADFG51A'));
+            return new Asset('OLD', null, null, null);
+        }
+        if ('UUUUH-G0000AASFJGSFG56ADS' === assetId) {
+            return new Asset('UUUUH', null, null, new Account('G0000AASFJGSFG56ADS'));
+        }
+        if ('XYZ-GAGALADY' === assetId) {
+            return new Asset('XYZ', null, null, null);
         }
         throw new Error('No test asset data prepared for assetId=' + assetId);
     }
