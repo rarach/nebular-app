@@ -20,5 +20,4 @@ export class Constants {
 
 export class GETParams {
     static readonly INTERVAL: string = "interval";
-    static readonly ASSET_TYPE: string = "assetType";
 };
