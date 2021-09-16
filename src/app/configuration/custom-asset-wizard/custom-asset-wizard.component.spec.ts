@@ -3,7 +3,6 @@ import { async, TestBed, inject } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { ActivatedRouteStub } from 'src/app/testing/activated-route-stub';
 import { Asset } from 'src/app/model/asset.model';
 import { AssetData } from 'src/app/model/asset-data.model';
 import { AssetService } from 'src/app/services/asset.service';
@@ -12,26 +11,6 @@ import { CustomAssetWizardComponent } from './custom-asset-wizard.component';
 import { HorizonRestService } from 'src/app/services/horizon-rest.service';
 import { TomlConfigService } from 'src/app/services/toml-config.service';
 import { TomlConfigServiceStub } from 'src/app/testing/stubs';
-
-
-describe("CustomAssetWizardComponent", () => {
-    it("#ngOnInit sets 'inputAssetCode' when it's given in URL", () => {
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: ActivatedRoute, useValue: new ActivatedRouteStub() }
-            ]
-        }).compileComponents();
-        const route = TestBed.get(ActivatedRoute);
-        route.setParamMap({assetType: "G0G0"});
-        const instance = new CustomAssetWizardComponent(route, null, null, null);
-
-        instance.ngOnInit();
-        expect(instance.inputAssetCode).toBe("G0G0");
-
-        //Teardown (and code coverage)
-        instance.ngOnDestroy();
-    });
-});
 
 
 describe('CustomAssetWizardComponent', () => {
