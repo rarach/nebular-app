@@ -1,5 +1,5 @@
-import { async, TestBed, inject } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
+import { inject, TestBed } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
@@ -19,7 +19,7 @@ describe('ExchangeThumbnailComponent', () => {
                                       new Asset("ABC", "ABC", null, new Account("GCCCP", null)),
                                       new Asset("ETH", "ETH", null, new Account("GETH841062WESTHDF", null)));
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: Router, useClass: RouterStub },
@@ -27,7 +27,7 @@ describe('ExchangeThumbnailComponent', () => {
             ]
         })
         .compileComponents();
-    }));
+    });
 
     beforeEach(inject([NgZone, Router, HorizonRestService, UiActionsService], (zone, router, horizonService, uiService) => {
         component = new ExchangeThumbnailComponent(zone, router, horizonService, uiService);
@@ -52,7 +52,7 @@ describe('ExchangeThumbnailComponent', () => {
         expect(routerSpy).toHaveBeenCalledWith("exchange/ABC-GCCCP/ETH-GETH841062WESTHDF");
     });
 
-    it("failed data retrieval sets error status and message", async(done) => {
+    it("failed data retrieval sets error status and message", async() => {
         component.exchange = new ExchangePair("error97451",
                                               new Asset("ERROR", "Error flag", null, new Account("GERRDA", null)),
                                               exchange.counterAsset);
@@ -61,10 +61,8 @@ describe('ExchangeThumbnailComponent', () => {
 
         expect(await component.dataStatus).toBe(DataStatus.Error);
         expect(await component.userMessage).toBe("Couldn't load data for this exchange (server: Violets are blue - Roses are red [4321])");
-
-        done();
     });
-    it("empty trade history sets status and message", async(done) => {
+    it("empty trade history sets status and message", async() => {
         component.exchange = new ExchangePair("no-data-78787878",
                                               new Asset("NoData", "", null, new Account("GEEZ", null)),
                                               exchange.counterAsset);
@@ -72,10 +70,8 @@ describe('ExchangeThumbnailComponent', () => {
 
         expect(await component.dataStatus).toBe(DataStatus.NoData);
         expect(await component.userMessage).toBe("No trades in last 24 hours");
-
-        done();
     });
-    it("outdated trade history sets status and message", async(done) => {
+    it("outdated trade history sets status and message", async() => {
         component.exchange = new ExchangePair("old-data-UKJYHTGF",
                                               new Asset("OLD", "", null, new Account("GEEZ", null)),
                                               exchange.counterAsset);
@@ -83,19 +79,15 @@ describe('ExchangeThumbnailComponent', () => {
 
         expect(await component.dataStatus).toBe(DataStatus.NoData);
         expect(await component.userMessage).toBe("No trades in last 24 hours");
-
-        done();
     });
-    it("full trade history creates a chart", async(done) => {
+    it("full trade history creates a chart", async() => {
         component.ngOnInit();
 
         expect(await component.dataStatus).toBe(DataStatus.OK);
         expect(await component.lastPrice).toBe("0.08396");
         expect(await component.dailyChangeDesc).toBe("+0.76%");
-
-        done();
     });
-    it("single OHLC candle still constructs the chart (code coverage :-| )", async(done) => {
+    it("single OHLC candle still constructs the chart (code coverage :-| )", async() => {
         component.dataStatus = DataStatus.OK;   //To avoid false positive
         component.exchange = new ExchangePair("sparse-data",
                                               new Asset("OneCandle", "", null, new Account("GASPHIODJSFZKSOI", null)),
@@ -105,8 +97,6 @@ describe('ExchangeThumbnailComponent', () => {
         expect(await component.dataStatus).toBe(DataStatus.OK);
         expect(await component.lastPrice).toBe("1.123");
         expect(await component.dailyChangeDesc).toBe("0.00%");
-
-        done();
     });
 });
 

@@ -2,7 +2,7 @@ import { TomlAsset } from "./toml-asset";
 
 /** Configuration of issuer's server, normally comming from their domain.com/.well-known/stellar.toml */
 export class IssuerConfiguration {
-    public currencies: TomlAsset[];
+    public readonly currencies: TomlAsset[];
 
     constructor(tomlData: string) {
         this.currencies = this.parseCurrencies(tomlData);

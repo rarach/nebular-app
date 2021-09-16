@@ -1,18 +1,19 @@
-import { ActivatedRoute, Router } from '@angular/router';
-import { async, TestBed, inject } from '@angular/core/testing';
+import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
+import { inject, TestBed } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
 
 import { Account } from '../model/account.model';
 import { ActivatedRouteStub } from '../testing/activated-route-stub';
+import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetService } from '../services/asset.service';
+import { Constants } from '../model/constants';
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangeComponent } from './exchange.component';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
-import { KnownAssets } from '../model/asset.model';
 import { TitleStub } from '../testing/stubs';
 
 
@@ -20,7 +21,7 @@ describe('ExchangeComponent', () => {
     let exchComponent: ExchangeComponent;
     let activRoute: ActivatedRouteStub;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         activRoute = new ActivatedRouteStub();
         TestBed.configureTestingModule({
             providers: [
@@ -32,7 +33,7 @@ describe('ExchangeComponent', () => {
             ]
         })
         .compileComponents();
-    }));
+    });
     beforeEach(inject([NgZone, ActivatedRoute, Router, Title, AssetService, HorizonRestService],
                       (zone, route, router, titleService, assetService, horizonRestService) => {
         exchComponent = new ExchangeComponent(zone, route, router, titleService, assetService, horizonRestService);
@@ -74,7 +75,7 @@ describe('ExchangeComponent', () => {
     });
 
     it("#swapAssets() should swap the assets in URL", () => {
-        const router = TestBed.get(Router);
+        const router = TestBed.inject(Router);
         const routerSpy = spyOn(router, "navigateByUrl");
         exchComponent.exchange = new ExchangePair("test01", KnownAssets.MOBI, KnownAssets.XLM);
 
@@ -83,8 +84,11 @@ describe('ExchangeComponent', () => {
     });
 
     it("#setChartInterval() should set correct chart interval", () => {
-        const router = TestBed.get(Router);
-        const routerSpy = spyOn(router, "createUrlTree").and.returnValue("https://google.com");
+        const router = TestBed.inject(Router);
+        const urlTreeStub = {
+            toString: () => 'https://www.google.com'
+        } as UrlTree;
+        const routerSpy = spyOn(router, "createUrlTree").and.returnValue(urlTreeStub);
         exchComponent.chartMessage = "whatever";
 
         exchComponent.setChartInterval("1w");
@@ -94,7 +98,7 @@ describe('ExchangeComponent', () => {
     });
 
     it("#renderCandlestickChart() isn't called if the component is not active", () => {
-        const horizon = TestBed.get(HorizonRestService);
+        const horizon = TestBed.inject(HorizonRestService);
         const horizonSpy = spyOn(horizon, "getTradeAggregations");
 
         exchComponent.initChartStream();
@@ -103,9 +107,9 @@ describe('ExchangeComponent', () => {
         expect(horizonSpy).not.toHaveBeenCalled();
     });
 
-    it("should initialize exchange from URL parameters - unknow asset", () => {
+    it("should initialize exchange from URL parameters - no trade history", () => {
         activRoute.setParamMap({ baseAssetId: "ASDF-GAAARGSAD0451", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "900000" });
-        const titleService = TestBed.get(Title);
+        const titleService = TestBed.inject(Title);
         spyOn(titleService, "setTitle");
 
         exchComponent.ngOnInit();
@@ -126,18 +130,17 @@ describe('ExchangeComponent', () => {
 
     it("should initialize exchange", () => {
         activRoute.setParamMap({ baseAssetId: "CUS-GBDEV84512", counterAssetId: "CCCP-G0PYNUGNNNNN", interval: "3600000" });
-        const jQuerySpy = spyOn($.fn, "text");
+        const jQuerySpy = spyOn($.fn, 'text').and.stub();
 
         exchComponent.ngOnInit();
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         expect(exchComponent.chartMessage).toBe("");
         expect(jQuerySpy).toHaveBeenCalledTimes(10);    //5 for given candle, 5 for added artificial candle
-/*TODO. Stopped working after Jasmine update :-(
         expect(jQuerySpy).toHaveBeenCalledWith('open: 99.4846694');
         expect(jQuerySpy).toHaveBeenCalledWith('high: 99.4955575');
         expect(jQuerySpy).toHaveBeenCalledWith('low: 99.4846694');
         expect(jQuerySpy).toHaveBeenCalledWith('close: 99.4955575');
-        expect(jQuerySpy).toHaveBeenCalledWith('volume: 64.9569426');  */
+        expect(jQuerySpy).toHaveBeenCalledWith('volume: 64.9569426');
     });
 
     it("should show error message when failed to get candle data", () => {
@@ -158,7 +161,33 @@ class RouterStub {
 }
 
 class AssetServiceStub {
-    getAssetCodesForExchange(): string[] {
+    public getAsset(assetId: string): Asset {
+        if (Constants.NATIVE_ASSET_CODE === assetId) {
+            return KnownAssets.XLM;
+        }
+        if ('ASDF-GAAARGSAD0451' === assetId) {
+            return new Asset('ASDF', null, null, null);
+        }
+        if ('BBQ-GRILLED' === assetId) {
+            return new Asset('BBQ', null, null, null);
+        }
+        if ('ERROR-GOTOHELL' === assetId) {
+            return new Asset('ERROR', null, null, null);
+        }
+        if ('CUS-GBDEV84512' === assetId) {
+            return new Asset('CUS', null, null, new Account('GBDEV84512'));
+        }
+        if ('OLD-GCCFGS486G5ADFG51A' === assetId) {
+            return new Asset('OLD', null, null, new Account('GCCFGS486G5ADFG51A'));
+        }
+        throw new Error('No test asset data prepared for assetId=' + assetId);
+    }
+
+    public get availableAssets(): Asset[] {
+        return new Array<Asset>();
+    }
+
+    getAssetCodesForExchange(): string[] {      //mm-TODO: delete + all the other zombies after the change
         return [ "XLM", "XYZ" ];
     }
 
@@ -225,7 +254,7 @@ class HorizonRestServiceStub {
             });
         }
         if (exchange.baseAsset.code === "ERROR") {
-            return throwError(new HttpErrorResponse({
+            return throwError(() => new HttpErrorResponse({
                 error: { detail: "This server won't give us trade history" },
                 statusText: "wrong",
                 status: 429

@@ -1,27 +1,32 @@
 import { TestBed, inject } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie';
+import { Observable, of } from 'rxjs';
 
 import { AssetService } from './asset.service';
 import { Account, KnownAccounts } from '../model/account.model';
 import { Asset, KnownAssets } from '../model/asset.model';
 import { Constants } from '../model/constants';
 import { ExchangePair } from '../model/exchange-pair.model';
+import { HorizonRestService } from './horizon-rest.service';
+import { IssuerConfiguration } from '../model/toml/issuer-configuration';
+import { TomlAsset } from '../model/toml/toml-asset';
+import { TomlConfigService } from './toml-config.service';
 
 
 describe('AssetService', () => {
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [ {
-                provide: CookieService,
-                useValue: {
-                    get: (key) => ""    //Always return empty cookie
-                }
-            } ]
+                    provide: CookieService,
+                    useValue: {
+                        get: (key) => ""    //Always return empty cookie
+                    }
+                } ]
         });
     });
 
     it('should be instantiated', inject([CookieService], (cookieService) => {
-        const assetService = new AssetService(cookieService);
+        const assetService = new AssetService(cookieService, null, null);
         expect(assetService).not.toBeNull();
         expect(assetService.customAssets.length).toBe(0);
     }));
@@ -32,10 +37,21 @@ describe('AssetService', () => {
 
     beforeEach(() => {
         TestBed.configureTestingModule({
-            providers: [{ provide: CookieService, useClass: CookieServiceStub }]
+            providers: [
+                { provide: CookieService, useClass: CookieServiceStub },
+                {
+                    provide: HorizonRestService,
+                    useValue: {
+                        getIssuerConfigUrl: (code: string, assetIssuer: string) => of("asdf.com/stellar.toml")
+                    }
+                },
+                { provide: TomlConfigService, useValue: new TomlConfigServiceStub() }
+            ]
         });
         const cookieService = TestBed.get(CookieService);
-        assetService = new AssetService(cookieService);
+        const horizonService = TestBed.inject(HorizonRestService);
+        const configService = TestBed.inject(TomlConfigService);
+        assetService = new AssetService(cookieService, horizonService, configService);
     });
 
     it('should load custom assets and exchanges', () => {
@@ -225,3 +241,21 @@ class CookieServiceStub {
         throw `No test data ready for inputs key=${key}; value=${value}`;
     }
 }
+
+class TomlConfigServiceStub {
+    public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
+        const issuerConfig = {
+            currencies: []
+        } as unknown as IssuerConfiguration;
+        let tomlAsset = new TomlAsset("TEST", "GGGTEST");
+        tomlAsset.name = "Test-o-coin";
+        tomlAsset.image = "google.com/test.svg";
+        issuerConfig.currencies.push(tomlAsset);
+
+        tomlAsset = new TomlAsset("TOK8", "GASDFtest");
+        tomlAsset.name = "Anemic token";
+        issuerConfig.currencies.push(tomlAsset);
+
+        return of(issuerConfig);
+    }
+} 
