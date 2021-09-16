@@ -16,7 +16,6 @@ import { Utils } from '../utils';
 export class AssetService {
     private readonly _commonAssets: Asset[] = [         //TODO: load from backend, just very short basic list
         KnownAssets.XLM,
-        KnownAssets["BTC-NaoBTC"],
         KnownAssets["BTC-Papaya"],
         KnownAssets["CNY-RippleFox"],
         KnownAssets["ETH-Papaya"],
@@ -60,20 +59,6 @@ export class AssetService {
 
 
     //mm-TODO: DELETE
-
-    /** Get array of asset codes available to the user (i.e. basic ones + from user's custom assets). */
-    getAssetCodesForExchange(): string[] {
-        const codes: string[] = this._commonAssetCodes.slice();
-        for (let i = 0; i < this.customAssets.length; i++) {
-            //Filter out overlaps
-            if (-1 === codes.indexOf(this.customAssets[i].code)) {
-                codes.push(this.customAssets[i].code);
-            }
-        }
-
-        return codes;
-    }
-
     /** All anchors, i.e. common + user defined (even if they aren't used in a custom asset) */
     getAllAnchors(): Account[] {
         return this._commonAnchors.concat(this._customAnchors);
@@ -85,13 +70,6 @@ export class AssetService {
     public get availableAssets(): Asset[] {
         return this._commonAssets.concat(this.customAssets);
     }
-
-    //mm-TODO: delete this
-    /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
-    getAvailableAssets(): Asset[] {
-        return this._commonAssets.concat(this.customAssets);
-    }
-
 
     /** Retrieve asset reference based on its ID. The ID has form CODE-ISSUER_ADDRESS */
     public getAsset(assetId: string): Asset {
@@ -125,52 +103,6 @@ export class AssetService {
 
 
 
-    /**
-     * Returns all available anchors issuing given asset code.
-     * @param assetCode Asset code, ideally one from available assets
-     */
-    GetIssuersByAssetCode(assetCode: string): Account[] {
-        const issuers: Account[] = new Array();
-        const assets = this.getAvailableAssets();
-        for (let i=0; i<assets.length; i++) {
-            if (assetCode === assets[i].code) {
-                issuers.push(assets[i].issuer);
-            }
-        }
-
-        return issuers;
-    }
-
-    /**
-     * Return first anchor from that issues given asset code or NULL if there's no such among available anchors
-     * @param assetCode Asset code
-     */
-    getFirstIssuerAddress(assetCode: string): string {
-        const assets = this.getAvailableAssets();
-        for (let i=0; i<assets.length; i++) {
-            if (assetCode === assets[i].code) {
-                return assets[i].issuer.address;
-            }
-        }
-
-        return null;
-    }
-
-
-    //mm-TODO: DELETE
-
-    /** Return anchor with given address or NULL if there's no such among available anchors  */
-    GetIssuerByAddress(address: string): Account {
-        //NOTE: user can register a known anchor. In that case first mathing address is returned
-        const anchors: Array<Account> = this.getAllAnchors();          
-        for (let i=0; i<anchors.length; i++) {
-            if (address === anchors[i].address) {
-                return anchors[i];
-            }
-        }
-
-        return null;
-    }
 
     /**
      * Add new asset with given code and issuer's address

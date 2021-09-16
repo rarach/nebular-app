@@ -38,7 +38,7 @@ describe('MyExchangesComponent', () => {
         expect(component).toBeTruthy();
         expect(component.exchanges.length).toBe(1);
         expect(component.exchanges[0].id).toBe("blahBlahOOO000");
-        expect(component.exchanges[0].counterAsset.issuer.domain).toBe("naobtc.com");
+        expect(component.exchanges[0].counterAsset.issuer.domain).toBe("mobius.network");
     });
     
     it('Page title Should be "My Exchanges"', () => {
@@ -54,7 +54,7 @@ describe('MyExchangesComponent', () => {
 });
 
 class AssetServiceStub {
-    customExchanges = [ new ExchangePair("blahBlahOOO000", new Asset("ABCDEF", null, null, null), KnownAssets["BTC-NaoBTC"]) ];
+    customExchanges = [ new ExchangePair("blahBlahOOO000", new Asset("ABCDEF", null, null, null), KnownAssets.MOBI) ];
 
     CreateCustomExchange(): ExchangePair {
         const newExch = new ExchangePair("xlm--xlm", KnownAssets.XLM, KnownAssets.XLM);

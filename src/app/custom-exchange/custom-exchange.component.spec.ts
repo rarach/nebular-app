@@ -181,7 +181,7 @@ describe("CustomExchangeComponent", () => {
 
 
 class AssetServiceStub {
-    getAvailableAssets(): Asset[] {
+    public get availableAssets(): Asset[] {
         return [
             KnownAssets.XLM,
             KnownAssets["USD-AnchorUsd"]
