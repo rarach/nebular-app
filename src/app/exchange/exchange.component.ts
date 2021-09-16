@@ -58,7 +58,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.loadAssetCodes();
 
 
-        this.loadAvailableAssets();
         this.assetOptions = assetService.availableAssets;
     }
 
@@ -354,7 +353,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             const errorResponse = error as HttpErrorResponse;
             const message = "Couldn't load trade history for this exchange (server: " +
                             errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-            console.log(message);
+            console.error(message);
             this.dataStatus = DataStatus.Error;
             this.lastPrice = -1;
             this.lastTradeType = "error";
@@ -422,56 +421,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         this.assetCodeOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Add", "Add asset manually"));
     }
 
-
-
-    private loadAvailableAssets() {
-        /*mm-TODO: Nope?
-        for (const asset of this.assetService.avaliableAssets) {
-            this.assetOptions.push(new DropdownOption(asset, asset.code, asset.fullName));
-        }
-        */
-    }
-
-
-
-
-    /** Load list of valid anchors for selected base/counter asset codes */
-    /*DEL
-    private loadBaseIssuers() {
-        this.baseIssuerOptions = [];
-        const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.baseAsset.code);
-        const issuerAccount = this.assetService.GetIssuerByAddress(this.exchange.baseAsset.issuer.address);
-        let found = this.exchange.baseAsset.issuer.IsNativeIssuer();
-
-        for (let i=0; i<issuersArray.length; i++) {
-            const ddOption = new DropdownOption(issuersArray[i].address, issuersArray[i].domain, issuersArray[i].domain);
-            this.baseIssuerOptions.push(ddOption);
-            //By default, pre-select the first option
-            if (0 === i) {
-                this.selectedBaseIssuer = ddOption;
-            }
-            if (null != issuerAccount && issuersArray[i].address === issuerAccount.address) {
-                found = true;
-                this.selectedBaseIssuer = ddOption;
-            }
-        }
-
-        //Some unknown address, probably from manual URL
-        if (!found) {
-            //Insert at the beginning
-            const ddOption = new DropdownOption(this.exchange.baseAsset.issuer.address,
-                                                this.exchange.baseAsset.issuer.domain,
-                                                "unknown (" + this.exchange.baseAsset.issuer.address + ")");
-            this.baseIssuerOptions.splice(0, 0, ddOption);
-            this.selectedBaseIssuer = ddOption;
-        }
-
-        if (null == issuerAccount || !issuerAccount.IsNativeIssuer()) {  //No need to manage XLM 'anchor'
-            this.baseIssuerOptions.push(new DropdownOption("ADD_CUSTOM", "[+] Manage", "Add anchor manually"));
-        }
-    }
-    */
-
     private loadCounterIssuers() {
         this.counterIssuerOptions = [];
         const issuersArray = this.assetService.GetIssuersByAssetCode(this.exchange.counterAsset.code);
@@ -517,18 +466,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
         }
     }
 
-
-    /*DEL
-    baseAssetCodeChanged(event) {
-        if ("ADD_CUSTOM" === this.selectedBaseAssetCode.value) {
-            this.router.navigateByUrl(Constants.CONFIGURATION_URL);
-        }
-        else {
-            this.changeBaseAsset(false);
-        }
-    }
-    */
-
     counterAssetCodeChanged(event) {
         if ("ADD_CUSTOM" == this.selectedCounterAssetCode.value) {
             this.router.navigateByUrl(Constants.CONFIGURATION_URL);
@@ -554,26 +491,6 @@ export class ExchangeComponent implements OnInit, OnDestroy {
             this.changeBaseAsset2();
         }
     }
-
-    /** After changing the base asset drop-down, compose respective exchange URL and navigate there. */
-    /*DEL
-    private changeBaseAsset(selectingAnchor: boolean) {
-        let urlAssets: string = this.selectedBaseAssetCode.value;
-        if (selectingAnchor) {
-            if (this.selectedBaseIssuer != null && this.selectedBaseIssuer.value != null) {
-                urlAssets += "-" + this.selectedBaseIssuer.value;
-            }
-        }
-
-        urlAssets += "/" + this.selectedCounterAssetCode.value;
-        if (this.selectedCounterIssuer != null && this.selectedCounterIssuer.value != null) {
-            urlAssets += "-" + this.selectedCounterIssuer.value;
-        }
-
-        let newUrl = "exchange/" + urlAssets + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
-        this.router.navigateByUrl(newUrl);
-    }
-    */
 
 
 
