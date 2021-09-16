@@ -21,8 +21,7 @@ describe('AssetService', () => {
                     useValue: {
                         get: (key) => ""    //Always return empty cookie
                     }
-                }
-            ]
+                } ]
         });
     });
 
@@ -46,10 +45,7 @@ describe('AssetService', () => {
                         getIssuerConfigUrl: (code: string, assetIssuer: string) => of("asdf.com/stellar.toml")
                     }
                 },
-                {
-                    provide: TomlConfigService,
-                    useValue: new TomlConfigServiceStub()
-                }
+                { provide: TomlConfigService, useValue: new TomlConfigServiceStub() }
             ]
         });
         const cookieService = TestBed.get(CookieService);

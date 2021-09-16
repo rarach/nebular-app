@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { CookieService, CookieOptions } from 'ngx-cookie';
+import { CookieOptions, CookieService } from 'ngx-cookie';
 
 import { Account } from "../model/account.model";
 import { Asset, KnownAssets } from '../model/asset.model';
@@ -88,7 +88,7 @@ export class AssetService {
 
     //mm-TODO: delete this
     /** Get array of assets available to the user (i.e. common assets + user's custom assets) */
-    public getAvailableAssets(): Asset[] {
+    getAvailableAssets(): Asset[] {
         return this._commonAssets.concat(this.customAssets);
     }
 
