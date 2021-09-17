@@ -24,14 +24,13 @@ export class AssetService {
         KnownAssets.RMT,
         KnownAssets.SLT
     ];
-    private _commonAssetCodes: string[] = new Array<string>();
     private _commonAnchors: Account[] = new Array<Account>();
     private _customAnchors: Account[] = new Array<Account>();
 
     /** User's custom defined assets */
-    readonly customAssets: Asset[];    
+    public readonly customAssets: Asset[];    
     /** Return custom exchanges (i.e. array of ExchangePair objects) defined by the user */
-    readonly customExchanges: ExchangePair[];
+    public readonly customExchanges: ExchangePair[];
 
 
     constructor(
@@ -40,11 +39,6 @@ export class AssetService {
         private readonly configService: TomlConfigService) {
         //Derive common asset codes and anchors from assets
         for (let i=0; i<this._commonAssets.length; i++) {
-            //Take asset codes from the common assets
-            const assetCode: string = this._commonAssets[i].code;
-            if (-1 === this._commonAssetCodes.indexOf(assetCode)) {
-                this._commonAssetCodes.push(assetCode);
-            }
             //Take anchors from the common assets
             const anchor: Account = this._commonAssets[i].issuer;
             if (-1 === this._commonAnchors.indexOf(anchor)) {
@@ -100,10 +94,6 @@ export class AssetService {
         return asset;
     }
 
-
-
-
-
     /**
      * Add new asset with given code and issuer's address
      * @param assetCode - existing asset code
@@ -111,7 +101,7 @@ export class AssetService {
      * @param issuerDomain - anchor web domain
      * @returns - returns newly created asset in case of success, otherwise null
      */
-    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset {
+    public AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset {
         //Don't add if it's already there
         for (let i=0; i<this.customAssets.length; i++) {
             if (assetCode === this.customAssets[i].code && issuerAddress === this.customAssets[i].issuer.address) {
@@ -153,7 +143,7 @@ export class AssetService {
      * @param issuerAddress - address of an anchor
      * @returns {boolean} - true on success, false if given asset is not registered here
      */
-    RemoveCustomAsset(assetCode: string, issuerAddress: string): boolean {
+    public RemoveCustomAsset(assetCode: string, issuerAddress: string): boolean {
         for (var i=0; i<this.customAssets.length; i++) {
             if (this.customAssets[i].code === assetCode && this.customAssets[i].issuer.address === issuerAddress) {
                 this.customAssets.splice(i, 1);
@@ -165,8 +155,8 @@ export class AssetService {
         return false;
     }
 
-    /** @public Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
-    CreateCustomExchange(): ExchangePair {
+    /** Add dummy pair (XLM/XLM) to custom exchanges, return the instance. */
+    public CreateCustomExchange(): ExchangePair {
         const id = (new Date()).getTime().toString();
         const newExchange = new ExchangePair(id, KnownAssets.XLM, KnownAssets.XLM);
         this.customExchanges.push(newExchange);
@@ -177,10 +167,9 @@ export class AssetService {
 
     /**
      * Change custom exchange with given ID
-     * @public
      * @returns {ExchangePair} updated instance
      */
-    UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset): ExchangePair {
+    public UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset): ExchangePair {
         for (let i=0; i<this.customExchanges.length; i++) {
             if (this.customExchanges[i].id === exchangeId) {
                 this.customExchanges[i] = new ExchangePair(exchangeId, baseAsset, counterAsset);
@@ -192,8 +181,8 @@ export class AssetService {
         return null;
     }
 
-    /** @public Delete exchange by its ID in the array of custom exchanges */
-    RemoveCustomExchange(exchangeId: string): boolean {
+    /** Delete exchange by its ID in the array of custom exchanges */
+    public RemoveCustomExchange(exchangeId: string): boolean {
         for (let i=0; i<this.customExchanges.length; i++) {
             if (this.customExchanges[i].id === exchangeId) {
                 this.customExchanges.splice(i, 1);
@@ -208,7 +197,7 @@ export class AssetService {
     /**
      * Swap positions of saved custom exchanges.
      */
-    SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair) {
+    public SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair) {
         let exch1Index: number;
         let exch2Index: number;
 

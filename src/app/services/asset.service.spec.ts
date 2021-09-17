@@ -117,6 +117,7 @@ describe('AssetService', () => {
     });
 
 
+    //mm-TODO: delete
     it("#getAllAnchors() returns common+custom anchors", () => {
         const issuers = assetService.getAllAnchors();
         expect(issuers.length).toBe(11);
@@ -126,7 +127,8 @@ describe('AssetService', () => {
         expect(issuers).toContain(new Account("G0101010101010101", "google.com"));
         expect(issuers).toContain(new Account("GGGGGGK", "example.com"));
     });
-    //mm-TODO: availableAssets
+    
+
 
     it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
         assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));

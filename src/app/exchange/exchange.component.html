@@ -8,12 +8,11 @@
                 <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
                             [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }">
                     <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                        <!-- mm-TODO: real image logic here of course -->
-                        <img src="{{asset.imageUrl}}" style="width: 32px; height: 32px;"/>
+                        <img src="{{asset.imageUrl}}" class="assetImage"/>
                         {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
                     </mat-option>
                     <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                        [+] Add
+                        [+] Add to shortlist
                     </mat-option>
                 </mat-select>
             </mat-form-field>
@@ -29,12 +28,11 @@
                 <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
                             [title]="selectedCounterAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedCounterAsset?.imageUrl + ')' }">
                     <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                        <!-- mm-TODO: real image logic here of course -->
-                        <img src="{{asset.imageUrl}}" style="width: 32px; height: 32px;"/>
+                        <img src="{{asset.imageUrl}}" class="assetImage"/>
                         {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
                     </mat-option>
                     <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                        [+] Add
+                        [+] Add to shortlist
                     </mat-option>
                 </mat-select>
             </mat-form-field>

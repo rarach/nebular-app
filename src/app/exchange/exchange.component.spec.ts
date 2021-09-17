@@ -239,18 +239,6 @@ class AssetServiceStub {
             new Asset('SLVR', null, null, new Account('GAA5555555', 'https://general-scam.eu'))
         ];
     }
-
-    getAssetCodesForExchange(): string[] {      //mm-TODO: delete + all the other zombies after the change
-        return [ "XLM", "XYZ" ];
-    }
-
-    GetIssuersByAssetCode(assetCode: string): Account[] {
-        return [];
-    }
-
-    GetIssuerByAddress(address: string): Account {
-        return null;
-    }
 }
 
 class HorizonRestServiceStub {

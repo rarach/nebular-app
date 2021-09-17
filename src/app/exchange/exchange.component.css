@@ -59,15 +59,9 @@ div.chartWarning {
     text-align: center;
 }
 
-/** Material drop-downs */
-mat-form-field {
-    border: 1px solid #ccc;
-}
-
-.mat-option {
-    border-bottom: 1px solid #ddd;
-    font-size: .92rem !important;
-    font-family: consolas,"Liberation Mono",courier,monospace;
+.assetImage {
+    width: 32px;
+    height: 32px;
 }
 
 .selectedAsset {
@@ -77,4 +71,16 @@ mat-form-field {
     background-position: 4px 50%;
     background-repeat: no-repeat;
     background-size: 32px 32px;
+}
+
+
+/** Material drop-downs */
+mat-form-field {
+    border: 1px solid #ccc;
+}
+
+.mat-option {
+    border-bottom: 1px solid #ddd;
+    font-size: .92rem !important;
+    font-family: consolas,"Liberation Mono",courier,monospace;
 }

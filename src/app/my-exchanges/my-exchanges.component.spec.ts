@@ -54,7 +54,7 @@ describe('MyExchangesComponent', () => {
 });
 
 class AssetServiceStub {
-    customExchanges = [ new ExchangePair("blahBlahOOO000", new Asset("ABCDEF", null, null, null), KnownAssets.MOBI) ];
+    public readonly customExchanges = [ new ExchangePair("blahBlahOOO000", new Asset("ABCDEF", null, null, null), KnownAssets.MOBI) ];
 
     CreateCustomExchange(): ExchangePair {
         const newExch = new ExchangePair("xlm--xlm", KnownAssets.XLM, KnownAssets.XLM);

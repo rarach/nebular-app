@@ -188,24 +188,6 @@ class AssetServiceStub {
         ];
     }
 
-    GetIssuersByAssetCode(code: string): Account[] {
-        if ("RRR" === code || "BONY" === code)
-        {
-            return [ new Account("GULIWER", "gu.li") ];
-        }
-        if ("altte" === code || "UNITA" === code) {
-            return [ ];
-        }
-        throw new Error("No data prepared for given input (asset code='" + code + "')");
-    }
-
-    GetIssuerByAddress(address: string): Account {
-        if ("GABRIELASABATINI" === address || "G014" === address || "GCD5DG453SER745C415CG" === address || "GORE" === address) {
-            return null;
-        }
-        throw new Error("No data prepared for given input (address=" + address + ")");
-    }
-
     updateCalled = false;
     UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
         if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer.address &&
