@@ -1,4 +1,4 @@
-import { TestBed, inject } from '@angular/core/testing';
+import { TestBed } from '@angular/core/testing';
 import { CookieService } from 'ngx-cookie';
 import { Observable, of } from 'rxjs';
 
@@ -14,38 +14,14 @@ import { TomlConfigService } from './toml-config.service';
 
 
 describe('AssetService', () => {
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [ {
-                    provide: CookieService,
-                    useValue: {
-                        get: (key) => ""    //Always return empty cookie
-                    }
-                } ]
-        });
-    });
-
-    it('should be instantiated', inject([CookieService], (cookieService) => {
-        const assetService = new AssetService(cookieService, null, null);
-        expect(assetService).not.toBeNull();
-        expect(assetService.customAssets.length).toBe(0);
-    }));
-});
-
-describe('AssetService', () => {
     let assetService: AssetService;
 
     beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: CookieService, useClass: CookieServiceStub },
-                {
-                    provide: HorizonRestService,
-                    useValue: {
-                        getIssuerConfigUrl: (code: string, assetIssuer: string) => of("ftp://scam-tok.en/stellar.toml")
-                    }
-                },
-                { provide: TomlConfigService, useValue: new TomlConfigServiceStub() }
+                { provide: HorizonRestService, useClass: HorizonRestServiceStub },
+                { provide: TomlConfigService, useClass: TomlConfigServiceStub }
             ]
         });
         const cookieService = TestBed.inject(CookieService);
@@ -56,7 +32,6 @@ describe('AssetService', () => {
 
     it('#constructor should load custom assets and exchanges from cookie', () => {
         const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415");
-        acc.domain = null;
 
         expect(assetService.customAssets).toEqual([
             new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"),
@@ -71,16 +46,17 @@ describe('AssetService', () => {
         ]);
         expect(assetService.customExchanges).toEqual([
             new ExchangePair("5555",
-                             new Asset("USD", "USD", null, new Account("GAAAASLIMIT", "GAAAASLIMIT...")),
-                             new Asset("XLM", "XLM", null, new Account(/*native*/null, null))),
+                             new Asset("USD", 'USD-GAAAASLIMIT', null, new Account("GAAAASLIMIT", "GAAAASLIMIT...")),
+                             new Asset("XLM", 'Lumen', null, new Account(/*native*/null, null))),
             new ExchangePair("12345",
-                             new Asset("lightcoin", "lightcoin", "credit_alphanum12", new Account("GIBRALTARRRRR458743551", "GIBRALTARRRRR458...")),
-                             new Asset("XrP", "XrP", "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0..."))),
+                             new Asset("lightcoin", 'lightcoin-GIBRALTARRRRR458743551', "credit_alphanum12", new Account("GIBRALTARRRRR458743551", 'money.gibralt.ar')),
+                             new Asset("XrP", 'XrP-G0G0G0G0', "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0..."))),
             new ExchangePair("10101010",
-                             new Asset("XLM", "XLM", "native", new Account(null, null), "./assets/images/asset_icons/XLM.png"),
-                             new Asset("xlm", "xlm", null, new Account(null, null)))
+                             new Asset("XLM", 'Lumen', "native", new Account(null, null), "./assets/images/asset_icons/XLM.png"),
+                             new Asset("cat", 'catoken', null, new Account('GCATHOUSE', 'cat.nip')))
         ]);
     });
+    //mm-TODO: verify that loadExchanges() downloads the additional data from network
 
     it('availableAssets contains commong + custom assets', () => {
         expect(assetService.availableAssets.length).toBe(8+5);
@@ -116,20 +92,6 @@ describe('AssetService', () => {
         expect(asset).toEqual(new Asset('VOID', 'VOID-GENERAL', 'credit_alphanum4', new Account("GENERAL", "scam-tok.en"), "./assets/images/asset_icons/unknown.png"));
     });
 
-
-    //mm-TODO: delete
-    it("#getAllAnchors() returns common+custom anchors", () => {
-        const issuers = assetService.getAllAnchors();
-        expect(issuers.length).toBe(11);
-        expect(issuers[0]).toEqual(new Account(null, null));
-        expect(issuers[1]).toEqual(KnownAccounts.Papaya2);
-        expect(issuers[2]).toEqual(KnownAccounts.RippleFox);      //etc...
-        expect(issuers).toContain(new Account("G0101010101010101", "google.com"));
-        expect(issuers).toContain(new Account("GGGGGGK", "example.com"));
-    });
-    
-
-
     it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
         assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));
         expect(assetService.customAssets.length).toBe(6);
@@ -138,20 +100,12 @@ describe('AssetService', () => {
 
         expect(assetService.customAssets.length).toBe(6);
     });
-    it("#AddCustomAsset() with known issuer", () => {
-        expect(assetService.customAssets.length).toBe(5);
-
-        const newAsset = assetService.AddCustomAsset("JPY", /*Mobius*/"GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH");
-
-        expect(assetService.customAssets.length).toBe(6);
-        expect(newAsset.code).toBe("JPY");
-        expect(newAsset.fullName).toBe("JPY");
-        expect(newAsset.type).toBe("credit_alphanum4");
-        expect(newAsset.issuer).toBe(KnownAccounts.Mobius);
-    });
+    
     it("#AddCustomAsset() with unknown issuer", () => {
         expect(assetService.customAssets.length).toBe(5);
+
         const newAsset = assetService.AddCustomAsset("04", "GWYNETH");
+
         expect(assetService.customAssets.length).toBe(6);
         expect(newAsset.code).toBe("04");
         expect(newAsset.fullName).toBe("04");
@@ -233,8 +187,8 @@ describe('AssetService', () => {
         assetService.CreateCustomExchange();
 
         const cookieService = TestBed.inject(CookieService) as unknown as CookieServiceStub;
-        expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|null|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
-        expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/xlm-null,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
+        expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|GGGGGGGGaposdyuh...|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
+        expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/cat-GCATHOUSE,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
     });
 });
 
@@ -245,7 +199,7 @@ class CookieServiceStub {
             return "ABC|G0101010101010101|google.com|https://google.com/dog.png, abcdef|GGGGGGGGaposdyuhfjkasndfm8415||asdf://vilence.jpg,btC|GGGGGGK|example.com|,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|";
         }
         if ("exc" === key) {
-            return "5555#USD-GAAAASLIMIT/XLM,12345#lightcoin-GIBRALTARRRRR458743551/XrP-G0G0G0G0, 10101010#XLM/xlm";
+            return "5555#USD-GAAAASLIMIT/XLM,12345#lightcoin-GIBRALTARRRRR458743551/XrP-G0G0G0G0, 10101010#XLM/cat-GCATHOUSE";
         }
         else throw new Error("No test data ready for given inputs (cookie key = '" + key + "')");
     }
@@ -261,6 +215,22 @@ class CookieServiceStub {
     }
 }
 
+class HorizonRestServiceStub {
+    public getIssuerConfigUrl (code: string, assetIssuer: string): Observable<string> {
+        if ('GAAAASLIMIT' === assetIssuer || 'G0G0G0G0' === assetIssuer) {
+            return of(null);
+        }
+        if ('GIBRALTARRRRR458743551' === assetIssuer) {
+            return of('http://money.gibralt.ar/asf');
+        }
+        if ('GCATHOUSE' === assetIssuer) {
+            return of('https://cat.nip');
+        }
+
+        return of("ftp://scam-tok.en/stellar.toml")
+    };
+}
+
 class TomlConfigServiceStub {
     public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
         const issuerConfig = {
@@ -273,6 +243,10 @@ class TomlConfigServiceStub {
 
         tomlAsset = new TomlAsset("TOK8", "GASDFtest");
         tomlAsset.name = "Anemic token";
+        issuerConfig.currencies.push(tomlAsset);
+
+        tomlAsset = new TomlAsset('cat', 'GCATHOUSE');
+        tomlAsset.name = 'catoken';
         issuerConfig.currencies.push(tomlAsset);
 
         return of(issuerConfig);

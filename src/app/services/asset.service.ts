@@ -24,8 +24,6 @@ export class AssetService {
         KnownAssets.RMT,
         KnownAssets.SLT
     ];
-    private _commonAnchors: Account[] = new Array<Account>();
-    private _customAnchors: Account[] = new Array<Account>();
 
     /** User's custom defined assets */
     public readonly customAssets: Asset[];    
@@ -37,28 +35,9 @@ export class AssetService {
         private readonly cookieService: CookieService,
         private readonly horizonService: HorizonRestService,
         private readonly configService: TomlConfigService) {
-        //Derive common asset codes and anchors from assets
-        for (let i=0; i<this._commonAssets.length; i++) {
-            //Take anchors from the common assets
-            const anchor: Account = this._commonAssets[i].issuer;
-            if (-1 === this._commonAnchors.indexOf(anchor)) {
-                this._commonAnchors.push(anchor);
-            }
-        }
-
         this.customAssets = this.loadAssets();
-        this.loadAnchors();         //mm-TODO: DELETE?
         this.customExchanges = this.loadExchanges();
     }
-
-
-    //mm-TODO: DELETE
-    /** All anchors, i.e. common + user defined (even if they aren't used in a custom asset) */
-    getAllAnchors(): Account[] {
-        return this._commonAnchors.concat(this._customAnchors);
-    }
-
-
 
 
     public get availableAssets(): Asset[] {
@@ -109,27 +88,7 @@ export class AssetService {
             }
         }
 
-
-        //mm-TODO: THIS WHOLE BLOCK AND THE CONDITION FROM THE NEXT IF SHOULDN'T BE NEEDED
-
-        //Try to match the address with known issuer.
-        let issuer = null;
-        const anchors = this.getAllAnchors();
-        for (let a=0; a<anchors.length; a++) {
-            if (issuerAddress === anchors[a].address) {
-                issuer = anchors[a];
-                break;
-            }
-        }
-
-        //Not a problem if issuer's not found (user might have deleted anchor meanwhile), simply crate a dummy
-        if (null === issuer) {
-            issuer = new Account(issuerAddress, issuerDomain);
-        }
-
-
-
-
+        const issuer = new Account(issuerAddress, issuerDomain);
         const newAsset = new Asset(assetCode, assetCode, null, issuer, imageUrl);
         this.customAssets.push(newAsset);
         this.serializeToCookie();
@@ -215,27 +174,12 @@ export class AssetService {
         this.serializeToCookie();
     }
 
-    /**
-     * Get issuer by their Stellar address
-     * @param issuerAddress public key of an issuer
-     * @returns first issuer with given address or NULL if no such is registered here
-     */
-    private getAnchorByAddress(issuerAddress: string): Account {
-        const allAnchors: Account[] = this.getAllAnchors();
-        for (let i=0; i<allAnchors.length; i++) {
-            if (issuerAddress === allAnchors[i].address) {
-                return allAnchors[i];
-            }
-        }
-
-        //Anchor not found among know issuers. Don't give up and create a dummy one
-        return new Account(issuerAddress, null);
-    }
-
 
     /** Load full data for a given basic asset definition. */
     private loadAssetData(asset: Asset) {
         asset.fullName = `${asset.code}-${asset.issuer.address}`;
+        asset.imageUrl = Constants.UNKNOWN_ASSET_IMAGE;
+
         this.horizonService.getIssuerConfigUrl(asset.code, asset.issuer.address).subscribe(configUrl => {
             if (configUrl) {
                 this.configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
@@ -243,8 +187,12 @@ export class AssetService {
                         return configAsset.code === asset.code && configAsset.issuer === asset.issuer.address;
                     });
                     if (theAsset) {
-                        asset.imageUrl = theAsset.image;
-                        asset.fullName = theAsset.name;
+                        if (theAsset.name) {
+                            asset.fullName = theAsset.name;
+                        }
+                        if (theAsset.image) {
+                            asset.imageUrl = theAsset.image;
+                        }
                     }
                 });
 
@@ -253,24 +201,6 @@ export class AssetService {
                 asset.issuer.domain = domain;
             }
         });
-    }
-
-
-
-    /**
-     * Load and return custom anchor accounts (name+domain) as extracted from user's assets.
-     * @return Array of Account instances
-     */
-    private loadAnchors() {
-        this._customAnchors = new Array<Account>();
-        //Also performs UNION with _commonAnchors to ease further processing
-        for (let asset of this.customAssets) {
-            if (asset.issuer &&
-                -1 === this._customAnchors.findIndex(iss => iss.address === asset.issuer.address) &&
-                -1 === this._commonAnchors.findIndex(anch => anch.address === asset.issuer.address)) {
-                    this._customAnchors.push(asset.issuer);
-            }
-        }
     }
 
     /** Loads user's custom defined assets (code + anchor) */
@@ -290,8 +220,7 @@ export class AssetService {
             const issuerAddress = parts[1];
             const domain = parts[2] || null;
             const imageUrl = parts[3];
-            const issuer = this.getAnchorByAddress(issuerAddress);      //mm-TODO: new Account(issuerAddress, domain)
-            issuer.domain = domain;         //TODO: is this necessary if we've been able to retrieve the anchor from database?
+            const issuer = new Account(issuerAddress, domain)
             customAssets.push(new Asset(assetCode, assetCode, null, issuer, imageUrl));
         }
 
@@ -316,20 +245,11 @@ export class AssetService {
             const hashtagIndex = exchangeText.indexOf("#");
             const id = exchangeText.substr(0, hashtagIndex);
             const slashIndex = exchangeText.indexOf("/");
-            //Base asset
+
             const baseAssetText = exchangeText.substring(hashtagIndex+1, slashIndex);
-            let dashIndex = baseAssetText.indexOf("-");
-            const baseAssetCode = dashIndex > 0 ? baseAssetText.substr(0, dashIndex) : baseAssetText/*XLM*/;
-            const baseIssuerAddress = dashIndex > 0 ? baseAssetText.substr(dashIndex+1) : null/*native*/;
-            const baseIssuer = this.getAnchorByAddress(baseIssuerAddress);
-            const baseAsset = new Asset(baseAssetCode, baseAssetCode, null, baseIssuer);
-            //Counter asset
+            const baseAsset = this.getAsset(baseAssetText);
             const counterAssetText = exchangeText.substr(slashIndex+1);
-            dashIndex = counterAssetText.indexOf("-");
-            const counterAssetCode = dashIndex > 0 ? counterAssetText.substr(0, dashIndex) : counterAssetText;
-            const counterIssuerAddress = dashIndex > 0 ? counterAssetText.substr(dashIndex+1) : null/*native*/;
-            const counterIssuer = this.getAnchorByAddress(counterIssuerAddress);
-            const counterAsset = new Asset(counterAssetCode, counterAssetCode, null, counterIssuer);
+            const counterAsset = this.getAsset(counterAssetText);
 
             userExchanges.push(new ExchangePair(id, baseAsset, counterAsset));
         }
