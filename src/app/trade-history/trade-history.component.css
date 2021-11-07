@@ -8,6 +8,10 @@
     border-top: 2px solid #5B6A72;
 }
 
+#tradeHistoryTable tr.poolTrade {
+    font-style: italic;
+}
+
 #tradeHistoryData td.buy {
     color: #46B446;
 }
