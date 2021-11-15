@@ -18,12 +18,14 @@ export class AssetStatistics {
                 private issuer: string) {
         horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
             if (configUrl) {
-                configService.getIssuerConfig(configUrl).subscribe(issuerConfig => {
-                    this.loadAssetData(issuerConfig);
-                },
-                error => {
-                    //Usually a request blocked by the browser or proxy
-                    this.assetIcon = Constants.UNKNOWN_ASSET_IMAGE;
+                configService.getIssuerConfig(configUrl).subscribe({
+                    next: (issuerConfig) => {
+                        this.loadAssetData(issuerConfig);
+                    },
+                    error: (err) => {
+                        //Usually a request blocked by the browser or proxy
+                        this.assetIcon = Constants.UNKNOWN_ASSET_IMAGE;
+                    }
                 });
 
                 //Derive asset's domain from config URL
