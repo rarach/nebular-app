@@ -22,6 +22,7 @@
                 [class.lastInDay]="trade.isLastOfDay"
                 [class.poolTrade]="trade.isPoolTrade"
                 title="date: {{trade.time | date:'d MMM'}}
+price: {{trade.price}}
 seller: {{trade.seller}}
 buyer: {{trade.buyer}}">
                 <td>{{trade.time | date:'HH:mm:ss'}}</td> 

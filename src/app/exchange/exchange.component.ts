@@ -260,58 +260,58 @@ export class ExchangeComponent implements OnInit, OnDestroy {
 
     /****************************** Trade history (right side panel) ******************************/
     private updateTradeHistory() {
-        this.horizonService.getTradeHistory(this.exchange, 40).subscribe(
-        success => {
-            const data = success as any;
+        this.horizonService.getTradeHistory(this.exchange, 40).subscribe({
+            next: (success) => {
+                const data = success as any;
 
-            this.tradeHistory = new Array<ExecutedTrade>();
-            if (data._embedded.records.length === 0) {
-                this.titleService.setTitle(this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code);
-                this.lastPrice = 0.0;
-                this.lastTradeType = "";
-                this.lastTradeTime = null;
-            }
-            else {
-                const pageTitle = this.currentPriceTitle(data._embedded.records[0]);
-                if (!this._isActive) {
-                    return;     //Little bit of race condition here. If user just left this page we don't want to overwrite the title.
+                this.tradeHistory = new Array<ExecutedTrade>();
+                if (data._embedded.records.length === 0) {
+                    this.titleService.setTitle(this.exchange.baseAsset.code + "/" + this.exchange.counterAsset.code);
+                    this.lastPrice = 0.0;
+                    this.lastTradeType = "";
+                    this.lastTradeTime = null;
                 }
-                this.titleService.setTitle(pageTitle);
-
-                //Check age of last trade, show only trades for specific number of last days, depending on current scale
-                const minDate = new Date();
-                const chartRangeInDays = this.getChartRangeByInterval();
-                minDate.setDate(minDate.getDate() - chartRangeInDays);
-                const rangeStart = minDate.getTime();
-                const firstTimestamp = new Date(data._embedded.records[0].ledger_close_time).getTime();
-                if (firstTimestamp < rangeStart) {
-                    //Last trade is older than date range => we have no data
-                    return;
-                }
-
-                let lastDay = -1;
-                for(let record of data._embedded.records) {
-                    if (record.timestamp < rangeStart) {
-                        break;    //Break at first value older than range start
+                else {
+                    const pageTitle = this.currentPriceTitle(data._embedded.records[0]);
+                    if (!this._isActive) {
+                        return;     //Little bit of race condition here. If user just left this page we don't want to overwrite the title.
                     }
-                    const sellPrice = record.price.n / record.price.d;
-                    const amount = parseFloat(record.base_amount);
-                    const time = new Date(record.ledger_close_time);
-                    const tradeType = record.base_is_seller ? "buy" : "sell";
-                    const isLastThatDay = lastDay > -1 && time.getDay() != lastDay;
-                    lastDay = time.getDay();
-                    this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account, isLastThatDay));
+                    this.titleService.setTitle(pageTitle);
+
+                    //Check age of last trade, show only trades for specific number of last days, depending on current scale
+                    const minDate = new Date();
+                    const chartRangeInDays = this.getChartRangeByInterval();
+                    minDate.setDate(minDate.getDate() - chartRangeInDays);
+                    const rangeStart = minDate.getTime();
+                    const firstTimestamp = new Date(data._embedded.records[0].ledger_close_time).getTime();
+                    if (firstTimestamp < rangeStart) {
+                        //Last trade is older than date range => we have no data
+                        return;
+                    }
+
+                    let lastDay = -1;
+                    for(let record of data._embedded.records) {
+                        if (record.timestamp < rangeStart) {
+                            break;    //Break at first value older than range start
+                        }
+                        const sellPrice = record.price.n / record.price.d;
+                        const amount = parseFloat(record.base_amount);
+                        const time = new Date(record.ledger_close_time);
+                        const tradeType = record.base_is_seller ? "buy" : "sell";
+                        const isLastThatDay = lastDay > -1 && time.getDay() != lastDay;
+                        lastDay = time.getDay();
+                        this.tradeHistory.push(new ExecutedTrade(time, tradeType, sellPrice, amount, record.base_account, record.counter_account, isLastThatDay));
+                    }
                 }
+            },
+        error: (err) => {
+                const errorResponse = err as HttpErrorResponse;
+                const message = `Couldn't load trade history for this exchange (server: ${errorResponse.error.detail} - ${errorResponse.statusText} [${errorResponse.status}])`;
+                console.warn(message);
+                this.dataStatus = DataStatus.Error;
+                this.lastPrice = -1;
+                this.lastTradeType = "error";
             }
-        },
-        error => {
-            const errorResponse = error as HttpErrorResponse;
-            const message = "Couldn't load trade history for this exchange (server: " +
-                            errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-            console.warn(message);
-            this.dataStatus = DataStatus.Error;
-            this.lastPrice = -1;
-            this.lastTradeType = "error";
         });
     }
 

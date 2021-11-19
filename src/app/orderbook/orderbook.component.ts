@@ -101,7 +101,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
                 if (price > buyPrice) {
                     const newBid = {
                         "amount": amount,
-                        "price": price,
+                        "price_r": { n: price, d: 1 },
                         "isCrossLinked" : true
                     };
                     masterOrderBook.bids.splice(i, 0, newBid);
@@ -113,7 +113,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
             if (!added) {
                 masterOrderBook.bids.push({
                     "amount": amount,
-                    "price" : price,
+                    "price_r" : { d: price, n: 1 },
                     "isCrossLinked" : true
                 });
             }
@@ -135,7 +135,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
                 if (price < sellPrice) {
                     const newAsk = {
                         "amount": amount,
-                        "price": price,
+                        "price_r": { n: price, d: 1 },
                         "isCrossLinked" : true
                     };
                     masterOrderBook.asks.splice(i, 0, newAsk);
@@ -147,7 +147,7 @@ export class OrderbookComponent implements OnInit, OnDestroy {
             if (!added) {
                 masterOrderBook.asks.push({
                     "amount": amount,
-                    "price": price,
+                    "price_r": { n: price, d: 1 },
                     "isCrossLinked" : true
                 });
             }
@@ -162,14 +162,14 @@ export class OrderbookComponent implements OnInit, OnDestroy {
         this.orderbook = new Orderbook();
 
         for (let bid of completeOrderBook.bids) {
-            const price: number = parseFloat(bid.price);
+            const price: number = bid.price_r.n / bid.price_r.d;
             const amount: number = parseFloat(bid.amount) / price;
             sumBidsAmount += amount;
             const offer = new Offer(price, amount, sumBidsAmount, bid.isCrossLinked);
             this.orderbook.bids.push(offer);
         }
         for (let ask of completeOrderBook.asks) {
-            const price: number = parseFloat(ask.price);
+            const price: number = ask.price_r.n / ask.price_r.d;
             const amount: number = parseFloat(ask.amount);
             sumAsksAmount += amount;
             const offer = new Offer(price, amount, sumAsksAmount, ask.isCrossLinked);

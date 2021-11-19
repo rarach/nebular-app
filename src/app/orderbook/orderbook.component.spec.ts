@@ -1,26 +1,26 @@
-import { async, TestBed, inject } from '@angular/core/testing';
 import { HttpErrorResponse } from '@angular/common/http';
+import { TestBed, inject } from '@angular/core/testing';
 import { Observable, of, throwError } from 'rxjs';
 
 import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { KnownAssets, Asset } from '../model/asset.model';
-import { OrderbookComponent } from './orderbook.component';
 import { Offer, Orderbook } from '../model/orderbook.model';
+import { OrderbookComponent } from './orderbook.component';
 
 
 describe('OrderbookComponent', () => {
     let component: OrderbookComponent;
 
-    beforeEach(async(() => {
+    beforeEach(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: HorizonRestService, useClass: HorizonSericeStub }
             ]
         })
         .compileComponents();
-    }));
+    });
 
     beforeEach(inject([HorizonRestService], (horizonService) => {
         component = new OrderbookComponent(horizonService);
@@ -58,14 +58,14 @@ describe('OrderbookComponent', () => {
         expect(component._exchange.baseAsset.code).toBe("XLM");
         expect(component._exchange.counterAsset.issuer.address).toBe(KnownAssets.GTN.issuer.address);
         expect(component.orderbook.bids).toEqual([
-            new Offer(5524.8618785, 41.580660599658465, 41.580660599658465, false),
-            new Offer(5263.1578947, 0.8047200000146331, 41.580660599658465 + 0.8047200000146331, false)
+            new Offer(5524.861878453039, 41.580660600011896, 41.580660600011896, false),
+            new Offer(5263.1578947368425, 0.8047200000089999, 41.580660600011896 + 0.8047200000089999, false)
         ]);
         expect(component.orderbook.asks).toEqual([
-            new Offer(5617.9775281, 0.0000001, 0.0000001, false),
-            new Offer(5882.3529412, 1.6199, 1.6199001, false)
+            new Offer(5617.9775280898875, 0.0000001, 0.0000001, false),
+            new Offer(5882.35294117647, 1.6199, 1.6199001, false)
         ]);
-        expect(component.maxCumulativeAmount).toBe(42.3853805996731);
+        expect(component.maxCumulativeAmount).toBe(42.385380600020895);
         expect(component.dataStatus).toBe(DataStatus.OK);
     });
 
@@ -78,8 +78,8 @@ describe('OrderbookComponent', () => {
         expect(component.orderbook.bids).toEqual([
             new Offer(1.001, 1050.768194705295, 1050.768194705295, false),
             new Offer(1.000511, 2672.8614465008386, 3723.629641206134, false),
-            new Offer(1.0005, 99326.53959910045, 103050.16924030658, false),
-            new Offer(0.9920000000000001, 1219.4328824141517, 104269.60212272074, true)
+            new Offer(1.0005000499249526, 99326.53464270612, 103050.16428391225, false),
+            new Offer(1.0080645161290323, 1199.9999999999998, 104250.16428391225, true)
         ]);
         expect(component.orderbook.asks).toEqual([
             new Offer(1.002, 447.7333038, 447.7333038, false),
@@ -99,7 +99,7 @@ describe('OrderbookComponent', () => {
         expect(component.orderbook.bids).toEqual([
             new Offer(1.001, 1050.768194705295, 1050.768194705295, false),
             new Offer(1.000511, 2672.8614465008386, 3723.629641206134, false),
-            new Offer(1.0005, 99326.53959910045, 103050.16924030658, false)
+            new Offer(1.0005000499249526, 99326.53464270612, 103050.16428391225, false)
         ]);
         expect(component.orderbook.asks).toEqual([
             new Offer(1.002, 447.7333038, 447.7333038, false),
@@ -118,7 +118,7 @@ describe('OrderbookComponent', () => {
         expect(component.orderbook.bids).toEqual([
             new Offer(1.001, 1050.768194705295, 1050.768194705295, false),
             new Offer(1.000511, 2672.8614465008386, 3723.629641206134, false),
-            new Offer(1.0005, 99326.53959910045, 103050.16924030658, false)
+            new Offer(1.0005000499249526, 99326.53464270612, 103050.16428391225, false)
         ]);
         expect(component.orderbook.asks).toEqual([
             new Offer(1.002, 447.7333038, 447.7333038, false),
