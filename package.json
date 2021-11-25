@@ -2,7 +2,7 @@
   "name": "nebular",
   "version": "21.11.25",
   "engines": {
-    "node": "15.3.x"
+    "node": "16.8.x"
   },
   "scripts": {
     "ng": "ng",
