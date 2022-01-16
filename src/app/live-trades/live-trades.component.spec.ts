@@ -5,6 +5,7 @@ import { Observable, of } from 'rxjs';
 
 import { Asset } from '../model/asset.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { LiveTradeItem } from './live-trade-item';
 import { LiveTradesComponent } from './live-trades.component';
 import { TitleStub, TomlConfigServiceStub } from '../testing/stubs';
 import { TomlConfigService } from '../services/toml-config.service';
@@ -53,9 +54,13 @@ name = "glance token (or something)"`) }
 
     it('should contain 5 trades fetched from data API', () => {
         component.ngOnInit();
-        expect(component.trades.length).toBe(5);
-        expect(component.trades).toContain(jasmine.objectContaining({linkHref: "/exchange/XLM/ASDF-GASDF"}));
-        expect(component.trades).toContain(jasmine.objectContaining({linkHref: "/exchange/zero-coin-GAZERO/GTN-GBETLEHEM"}));
+        expect(component.trades.size).toBe(5);
+        const tradesCopy = new Array<LiveTradeItem>();
+        for (const trade of component.trades) {
+            tradesCopy.push(trade);
+        }
+        expect(tradesCopy).toContain(jasmine.objectContaining({linkHref: "/exchange/XLM/ASDF-GASDF"}));
+        expect(tradesCopy).toContain(jasmine.objectContaining({linkHref: "/exchange/zero-coin-GAZERO/GTN-GBETLEHEM"}));
         component.ngOnDestroy();    //Ehm... code coverage
     });
 
