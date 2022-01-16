@@ -3,15 +3,16 @@ import { Sort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 
+import { Account } from '../model/account.model';
+import { Asset } from '../model/asset.model';
 import { AssetStatistics } from '../model/asset-statistics';
 import { Constants } from '../model/constants';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { LiveTradeItem } from './live-trade-item';
+import { Queue } from '../queue';
 import { TomlConfigService } from '../services/toml-config.service';
 import { Trade } from '../model/trade.model';
 import { Utils } from '../utils';
-import { Asset } from '../model/asset.model';
-import { Account } from '../model/account.model';
 
 
 @Component({
@@ -27,21 +28,23 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 
     Utils = Utils;          // Template access
     public duration = "5s";    // TODO: No! Do it as template pipe that gets the timespan as number
-    public trades = new Array<LiveTradeItem>();
+    public readonly trades = new Queue<LiveTradeItem>(500);
     public sortedStatistics: AssetStatistics[] = null;
     private currentSort: Sort = { active: "asset", direction: "asc" };
 
 
     constructor(private readonly ngZone: NgZone,
                 titleService: Title,
-                private horizonService: HorizonRestService,
-                private tomlService: TomlConfigService) {
+                private readonly horizonService: HorizonRestService,
+                private readonly tomlService: TomlConfigService) {
         titleService.setTitle("Live Trades");
     }
 
-    ngOnInit() {
+    public ngOnInit() {
+        let counter = 0;
         this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
-            this.trades.splice(0, 0, new LiveTradeItem(trade, this.trades.length % 2 == 0));
+            const newTrade = new LiveTradeItem(trade, counter++ % 2 == 0);
+            this.trades.add(newTrade);
             this.updateStatistics(trade);
         });
         this.streamStart = new Date();
@@ -54,11 +57,12 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         });
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy() {
         if (this.tradesStream) {
             this.tradesStream.unsubscribe();
         }
     }
+
 
     private updateTime() {     //TODO: to formatting pipe
         let timeDiff = new Date().getTime() - this.streamStart.getTime();
@@ -113,7 +117,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
         }
     }
 
-    sortStatistics(sort: Sort) {
+    public sortStatistics(sort: Sort) {
         this.currentSort = sort;
         const data = new Array<AssetStatistics>();
         //Slightly cumbersome way of converting hash-set values into array

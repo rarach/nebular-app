@@ -1,7 +1,7 @@
 
 <div class="row">
     <div class="col-lg-6 col-md-6 col-sm-12">
-        <h4 *ngIf="trades.length <= 0">Waiting for trade stream...</h4>
+        <h4 *ngIf="trades.size <= 0">Waiting for trade stream...</h4>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12 duration-header">
         <h4>Currencies traded in past {{duration}}:</h4>
