@@ -10,6 +10,7 @@
 
 #tradeHistoryTable tr.poolTrade {
     font-style: italic;
+    color: #8e9ca4;
 }
 
 #tradeHistoryData td.buy {
