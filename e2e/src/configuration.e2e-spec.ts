@@ -41,7 +41,7 @@ describe('Configuration page', () => {
 
         //Check for most common BTC anchors
         const anchorRow1 = resultsTable.element(by.css("tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF"));
-        expect(anchorRow1.getText()).toBe("BTC-apay.io Add");
+        expect(anchorRow1.getText()).toBe("BTC-dead.apay.io Add");
         const anchorImage1 = anchorRow1.element(by.css("img.asset-icon"));
         const anchorRow2 = resultsTable.element(by.css("tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5"));
         expect(anchorRow2.getText()).toBe("BTC-stellarport.io Add");
