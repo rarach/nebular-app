@@ -38,7 +38,7 @@ jobs:
         google-chrome --version
 
     - name: E2E tests
-      run: npm run e2e -- --protractorConfig=e2e/protractor-ci.conf.js
+      run: npm run e2e -- --configuration=ci
 
     - name: PROD build
       run: npm run build -- --prod
