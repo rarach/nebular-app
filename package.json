@@ -11,7 +11,9 @@
     "test": "ng test --watch=false --source-map --code-coverage --browsers=\"ChromeHeadless\"",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js"
+    "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run"
   },
   "private": true,
   "dependencies": {
@@ -40,6 +42,7 @@
     "@angular/cli": "^14.2.11",
     "@angular/compiler-cli": "^14.3.0",
     "@angular/language-service": "^14.3.0",
+    "@cypress/schematic": "^2.5.0",
     "@nguniversal/express-engine": "^14.2.3",
     "@types/jasmine": "^3.10.2",
     "@types/jasminewd2": "^2.0.10",
@@ -60,6 +63,7 @@
     "ts-node": "~10.8.1",
     "tslint": "~5.20.1",
     "typescript": "^4.8.4",
-    "webdriver-manager": "^12.1.8"
+    "webdriver-manager": "^12.1.8",
+    "cypress": "latest"
   }
 }
