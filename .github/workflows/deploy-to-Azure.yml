@@ -38,7 +38,8 @@ jobs:
         google-chrome --version
 
     - name: E2E tests
-      run: npm run e2e -- --configuration=ci
+#old Protractor stuff      run: npm run e2e -- --configuration=ci
+      uses: cypress-io/github-action@v5
 
     - name: PROD build
       run: npm run build -- --prod
