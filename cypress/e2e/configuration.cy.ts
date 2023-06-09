@@ -1,12 +1,3 @@
-describe('My First Test', () => {
-  //TODO: delete
-  it('Visits the initial project page', () => {
-    cy.visit('/')
-    cy.contains('Stellar charts')
-  })
-})
-
-
 describe('Configuration page', () => {
   it('should display title "Nebular - Configuration" and cookie agreement prompt', () => {
     cy.visit('/configuration');
@@ -19,4 +10,3 @@ describe('Configuration page', () => {
     assetCodeInput.should('be.visible');
   })
 })
-

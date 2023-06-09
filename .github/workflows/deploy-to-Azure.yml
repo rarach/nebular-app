@@ -40,6 +40,9 @@ jobs:
     - name: E2E tests
 #old Protractor stuff      run: npm run e2e -- --configuration=ci
       uses: cypress-io/github-action@v5
+      with:
+        start: npm start
+        wait-on: 'http://localhost:4200'
 
     - name: PROD build
       run: npm run build -- --prod
