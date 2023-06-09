@@ -45,7 +45,7 @@ jobs:
         wait-on: 'http://localhost:4200'
 
     - name: PROD build
-      run: npm run build -- --prod
+      run: npm run build
 
     - name: 'Deploy to Azure webapp'
       uses: azure/webapps-deploy@v2
