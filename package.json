@@ -1,6 +1,6 @@
 {
   "name": "nebular",
-  "version": "23.06.09",
+  "version": "23.06.10",
   "engines": {
     "node": ">=16.14.2"
   },
@@ -10,8 +10,8 @@
     "build": "ng build",
     "test": "ng test --watch=false --source-map --code-coverage --browsers=\"ChromeHeadless\"",
     "lint": "ng lint",
-    "e2e": "ng e2e",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
+    "e2e": "ng e2e",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },
@@ -50,6 +50,7 @@
     "@types/node": "^15.14.9",
     "codelyzer": "^6.0.2",
     "coveralls": "^3.1.1",
+    "cypress": "^12.13.0",
     "jasmine-core": "~3.9.0",
     "jasmine-spec-reporter": "~7.0.0",
     "karma": "^6.4.2",
@@ -58,12 +59,10 @@
     "karma-jasmine": "^4.0.1",
     "karma-jasmine-html-reporter": "^1.7.0",
     "karma-jquery": "^0.2.4",
-    "protractor": "^7.0.0",
     "tar": "^6.1.11",
     "ts-node": "~10.8.1",
     "tslint": "~5.20.1",
     "typescript": "^4.8.4",
-    "webdriver-manager": "^12.1.8",
-    "cypress": "latest"
+    "webdriver-manager": "^12.1.8"
   }
 }
