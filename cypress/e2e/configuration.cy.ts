@@ -11,6 +11,7 @@ describe('Configuration page', () => {
   });
 
   it('finds and adds two new custom assets (BTC anchors)', () => {
+    cy.intercept({ method: 'GET', hostname: 'stellarport.io' }).as('boundaryRequest');
     //Trick: go to invalid page to load the web without calling the dependent services, setup a cookie
     cy.visit('/no-such-page');
     cy.setCookie('agr', 'true');
@@ -22,8 +23,9 @@ describe('Configuration page', () => {
     assetCodeInput.type('BTC');
 
     cy.get('button#findAssetCodeBtn').click();
+    cy.wait('@boundaryRequest', { timeout: 60000 });
 
-    const resultsTable = () => cy.get('table#foundAssetsTable', { timeout: 5000 });
+    const resultsTable = () => cy.get('table#foundAssetsTable');
 
     //Check for most common BTC anchors
     const anchorRow1 = () => resultsTable().find('tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF');    
