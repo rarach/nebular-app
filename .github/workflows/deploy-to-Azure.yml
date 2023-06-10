@@ -31,19 +31,9 @@ jobs:
       with:
         github-token: ${{ secrets.GITHUB_TOKEN }}
 
-    - name: Update Chrome before E2E
-      run: |
-        sudo apt-get update
-        sudo apt-get --only-upgrade install google-chrome-stable
-        google-chrome --version
-
-    - name: TEST of E2E tests
-      run: npm run e2e-auto
-
-    - name: E2E tests on Chrome
+    - name: E2E tests (on Electron)
       uses: cypress-io/github-action@v5
       with:
-        browser: chrome
         start: npm start
         wait-on: 'http://localhost:4200'
     - uses: actions/upload-artifact@v3
@@ -52,11 +42,22 @@ jobs:
         name: cypress-videos
         path: cypress/videos
 
-    - name: E2E tests
+    - name: Update Chrome before E2E
+      run: |
+        sudo apt-get update
+        sudo apt-get --only-upgrade install google-chrome-stable
+        google-chrome --version
+
+    - name: E2E tests (on Chrome)
       uses: cypress-io/github-action@v5
       with:
-        start: npm start
+        browser: chrome
         wait-on: 'http://localhost:4200'
+    - uses: actions/upload-artifact@v3
+      if: failure()
+      with:
+        name: cypress-videos
+        path: cypress/videos
 
     - name: PROD build
       run: npm run build
