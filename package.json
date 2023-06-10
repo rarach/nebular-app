@@ -12,6 +12,7 @@
     "lint": "ng lint",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "e2e": "ng e2e",
+    "e2e-auto": "ng run nebular:e2e-headless",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },

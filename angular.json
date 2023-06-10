@@ -143,11 +143,11 @@
             }
           }
         },
-        "e2e-alone": {
+        "e2e-headless": {
           "builder": "@cypress/schematic:cypress",
           "options": {
             "devServerTarget": "nebular:serve",
-            "headless": false
+            "headless": true
           },
           "configurations": {
             "production": {

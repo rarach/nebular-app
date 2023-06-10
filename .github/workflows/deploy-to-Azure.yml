@@ -37,8 +37,17 @@ jobs:
         sudo apt-get --only-upgrade install google-chrome-stable
         google-chrome --version
 
+    - name: TEST of E2E tests
+      run: npm run e2e-auto
+
+    - name: E2E tests on Chrome
+      uses: cypress-io/github-action@v5
+      with:
+        browser: chrome
+        start: npm start
+        wait-on: 'http://localhost:4200'
+
     - name: E2E tests
-#old Protractor stuff      run: npm run e2e -- --configuration=ci
       uses: cypress-io/github-action@v5
       with:
         start: npm start
