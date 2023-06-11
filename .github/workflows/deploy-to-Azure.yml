@@ -50,10 +50,12 @@ jobs:
 
     - name: E2E tests (on Chrome)
       uses: cypress-io/github-action@v5
+      env:
+        CYPRESS_BASE_URL: 'http://localhost:4255'
       with:
         browser: chrome
-        start: npm start
-        wait-on: 'http://localhost:4200'
+        start: npm run start-for-ci
+        wait-on: 'http://localhost:4255'
     - uses: actions/upload-artifact@v3
       if: failure()
       with:

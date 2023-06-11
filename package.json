@@ -7,12 +7,13 @@
   "scripts": {
     "ng": "ng",
     "start": "ng serve",
+    "start-for-ci": "ng serve --port 4255",
     "build": "ng build",
     "test": "ng test --watch=false --source-map --code-coverage --browsers=\"ChromeHeadless\"",
     "lint": "ng lint",
     "coveralls": "cat ./coverage/lcov.info | ./node_modules/coveralls/bin/coveralls.js",
     "e2e": "ng e2e",
-    "e2e-auto": "ng run nebular:e2e-headless",
+    "e2e-auto": "ng run nebular:e2e-headless:test",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run"
   },

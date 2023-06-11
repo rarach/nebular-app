@@ -65,6 +65,18 @@
             }
           }
         },
+        "serve4255": {
+          "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "browserTarget": "nebular:build",
+            "port": 4255
+          },
+          "configurations": {
+            "production": {
+              "browserTarget": "nebular:build:production"
+            }
+          }
+        },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
@@ -150,8 +162,8 @@
             "headless": true
           },
           "configurations": {
-            "production": {
-              "devServerTarget": "nebular:serve:production"
+            "test": {
+              "devServerTarget": "nebular:serve4255:production"
             }
           }
         }
