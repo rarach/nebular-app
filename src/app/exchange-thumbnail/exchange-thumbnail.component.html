@@ -8,7 +8,7 @@
             <span class="slash">{{this.showAssetNames ? "/" : ""}}</span>
             <div class="counterAssetDesc">
                 <span class="counterAssetCode">{{this.showAssetNames ? exchange.counterAsset.code : ""}}</span><br/>
-                <span class="counterAssetIssuer">{{this.showAssetNames && exchange.counterAsset.issuer ? exchange.counterAsset.issuer.domain : ""}}</span>
+                <span class="counterAssetIssuer">{{this.showAssetNames && exchange.counterAsset.issuer ? exchange.counterAsset.issuer.domain : ""}}&nbsp;</span>
             </div>
         <div [className]="dailyChangeDesc.startsWith('-') ? 'dailyChangePercent red' : 'dailyChangePercent green'">{{dailyChangeDesc}}</div>
     </div>
