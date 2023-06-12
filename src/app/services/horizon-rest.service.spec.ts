@@ -113,13 +113,13 @@ describe('HorizonRestService', () => {
           }`);
     });
     it("#getLastPriceInNative() returns -1 if there's no trade for the asset", () => {
-        service.getLastPriceInNative(KnownAssets.REPO).subscribe(priceInXlm => {
+        service.getLastPriceInNative(KnownAssets.SLT).subscribe(priceInXlm => {
             expect(priceInXlm).toBe(-1);
         });
 
         const req = httpMock.expectOne(req => req.url.endsWith("/trades" +
-                                        "?base_asset_code=REPO&base_asset_type=credit_alphanum4" +
-                                        "&base_asset_issuer=GCZNF24HPMYTV6NOEHI7Q5RJFFUI23JKUKY3H3XTQAFBQIBOHD5OXG3B" +
+                                        "?base_asset_code=SLT&base_asset_type=credit_alphanum4" +
+                                        "&base_asset_issuer=GCKA6K5PCQ6PNF5RQBF7PQDJWRHO6UOGFMRLK3DYHDOI244V47XKQ4GP" +
                                         "&counter_asset_code=XLM&counter_asset_type=native" +
                                         "&order=desc&limit=1"));
         expect(req.request.method).toBe("GET");

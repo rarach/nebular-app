@@ -24,7 +24,7 @@ describe('My Exchanges', () => {
     cy.setCookie('exc',
                  "1234567#" +
                  "BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH/" +        //BTC-NaoBTC
-                 "BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF" +         //BTC-apay.io
+                 "BTC-GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P" +         //BTC-interstellar.exchange
                  ",333000444#" +
                  "XLM/EURT-GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S" +    //Euro
                  ",88888888#" +
@@ -41,7 +41,7 @@ describe('My Exchanges', () => {
     dropDowns().eq(0).invoke('attr', 'title').should('eq', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
     dropDowns().eq(0).should('have.text', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
     dropDowns().eq(1).invoke('attr', 'title').should('eq', 'Bitcoin');
-    dropDowns().eq(1).should('have.text', 'BTC-apay.io');
+    dropDowns().eq(1).should('have.text', 'BTC-interstellar.exchange');
 
     //Exchange 2
     dropDowns = () => cy.get("div#customExchange333000444 mat-select.selectedAssetOption");
@@ -68,7 +68,7 @@ describe('My Exchanges', () => {
     const exchangePanel = () => cy.get('div.customExchange');
     exchangePanel().should('have.length', 2);
     exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
-    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'BTC-apay.io');
+    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'BTC-interstellar.exchange');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'XCN-fchain.io');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'HKDT-mover.scam');
   });

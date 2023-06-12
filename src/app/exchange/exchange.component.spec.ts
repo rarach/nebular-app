@@ -59,7 +59,7 @@ describe('ExchangeComponent', () => {
     });
     it("should display error message when counter asset is missing in URL", () => {
         activRoute.setParamMap({ baseAssetId: "XLM" });
-        exchComponent.exchange = new ExchangePair("test02", KnownAssets.ABDT, KnownAssets.XCN);
+        exchComponent.exchange = new ExchangePair("test02", KnownAssets['BTC-Interstellar'], KnownAssets.XCN);
         exchComponent.ngOnInit();
         expect(exchComponent.dataStatus).toBe(DataStatus.Error);
         expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");

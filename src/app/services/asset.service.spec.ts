@@ -58,10 +58,10 @@ describe('AssetService', () => {
     });
     //mm-TODO: verify that loadExchanges() downloads the additional data from network
 
-    it('availableAssets contains commong + custom assets', () => {
-        expect(assetService.availableAssets.length).toBe(8+5);
+    it('availableAssets contains common + custom assets', () => {
+        expect(assetService.availableAssets.length).toBe(6+5);
         expect(assetService.availableAssets[0]).toBe(KnownAssets.XLM);
-        expect(assetService.availableAssets[8]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
+        expect(assetService.availableAssets[6]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
     });
 
     it('#getAsset returns native Assets for ID "XlM"', () => {

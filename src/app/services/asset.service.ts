@@ -16,12 +16,10 @@ import { Utils } from '../utils';
 export class AssetService {
     private readonly _commonAssets: Asset[] = [         //TODO: load from backend, just very short basic list
         KnownAssets.XLM,
-        KnownAssets["BTC-Papaya"],
+        KnownAssets['BTC-Interstellar'],
         KnownAssets["CNY-RippleFox"],
-        KnownAssets["ETH-Papaya"],
         KnownAssets.EURT,
         KnownAssets.MOBI,
-        KnownAssets.RMT,
         KnownAssets.SLT
     ];
 
