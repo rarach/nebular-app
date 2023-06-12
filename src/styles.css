@@ -95,5 +95,5 @@ div.exchange-link-chart {
 
 /** This is sad but the only way we can affect the Material SELECT styling being baked in deeply in the component */
 div.mat-select-panel {
-    max-height: none;
+    max-height: 400px;
 }
