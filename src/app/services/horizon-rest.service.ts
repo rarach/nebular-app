@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 
 import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetData } from '../model/asset-data.model';
+import { DelayingHttpClient } from './delaying-http-client';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { Trade } from '../model/trade.model';
 
@@ -13,19 +14,24 @@ import { Trade } from '../model/trade.model';
     providedIn: 'root'
 })
 export class HorizonRestService {
-    private readonly API_URLS = [ 
-        "https://horizon.stellar.org" /*TODO: find reliable publicly available instances,
-        "https://stellar-horizon.satoshipay.io",
+    private readonly API_URLS = [
+        //Semi-maintained list of some public Horizon instances is at https://stellarbeat.io (section Horizon APIs)
+        "https://horizon.stellar.org",
         "https://horizon.stellar.lobstr.co",
-        "https://horizon.stellar.coinqvest.com" */
-     ];
+        "https://h.fchain.io",
+        "https://horizon.publicnode.org"
+      ];
+    private readonly http: DelayingHttpClient;
+    private reqCounter = 0;
 
-    constructor(private http: HttpClient) { }
+    constructor(http: HttpClient) {
+        this.http = new DelayingHttpClient(http);
+    }
 
 
     private getApiUrl(): string {
-        const random = (new Date()).getTime() % this.API_URLS.length;
-        return this.API_URLS[random];
+        this.reqCounter = ++this.reqCounter % this.API_URLS.length;
+        return this.API_URLS[this.reqCounter];
     }
 
 
