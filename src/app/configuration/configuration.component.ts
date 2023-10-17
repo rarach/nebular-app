@@ -5,7 +5,7 @@ import { NebularService } from '../services/nebular.service';
 
 
 @Component({
-    selector: 'app-configuration',
+    selector: 'nebular-configuration',
     templateUrl: './configuration.component.html',
     styleUrls: ['./configuration.component.css']
 })

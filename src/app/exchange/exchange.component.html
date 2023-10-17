@@ -58,11 +58,16 @@
 
     <div class="col-xs-5 col-md-pull-7 col-md-2">
         <br/>
-        <app-orderbook [exchange]="exchange" [lastPrice]="lastPrice" [lastTradeType]="lastTradeType" [lastTradeTime]="lastTradeTime"></app-orderbook>
+        <nebular-orderbook
+            [exchange]="exchange"
+            [lastPrice]="lastPrice"
+            [lastTradeType]="lastTradeType"
+            [lastTradeTime]="lastTradeTime">
+        </nebular-orderbook>
     </div>
 
     <div class="col-xs-7 col-md-3">
         <br/>
-        <app-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></app-trade-history>
+        <nebular-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></nebular-trade-history>
     </div>
 </div>

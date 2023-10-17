@@ -7,12 +7,13 @@
 
 <div *ngIf="this.nebularService.CookieAgreement" class="row paddedRow" style="margin-bottom: 60px;">
     <div class="col-lg-6 col-md-6 col-sm-12">
-        <app-custom-asset-wizard (assetAdded)="customAssets.highlightLastAddedAsset($event)"
-                                 (addAssetFailed)="customAssets.highlightDuplicateAsset($event)"></app-custom-asset-wizard>
+        <nebular-custom-asset-wizard (assetAdded)="customAssets.highlightLastAddedAsset($event)"
+            (addAssetFailed)="customAssets.highlightDuplicateAsset($event)">
+        </nebular-custom-asset-wizard>
     </div>
     <div class="col-lg-6 col-md-6 col-sm-12">
-        <app-custom-assets #customAssets></app-custom-assets>
+        <nebular-custom-assets #customAssets></nebular-custom-assets>
     </div>
 </div>
 
-<app-cookie-consent *ngIf="!this.nebularService.CookieAgreement"></app-cookie-consent>
+<nebular-cookie-consent *ngIf="!this.nebularService.CookieAgreement"></nebular-cookie-consent>

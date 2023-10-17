@@ -11,7 +11,7 @@ import { TomlConfigService } from 'src/app/services/toml-config.service';
 
 
 @Component({
-  selector: 'app-custom-asset-wizard',
+  selector: 'nebular-custom-asset-wizard',
   templateUrl: './custom-asset-wizard.component.html',
   styleUrls: ['./custom-asset-wizard.component.css']
 })

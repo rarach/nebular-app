@@ -8,7 +8,7 @@ import { UiActionsService } from '../services/ui-actions.service';
 
 
 @Component({
-    selector: 'app-my-exchanges',
+    selector: 'nebular-my-exchanges',
     templateUrl: './my-exchanges.component.html',
     styleUrls: ['./my-exchanges.component.css']
 })

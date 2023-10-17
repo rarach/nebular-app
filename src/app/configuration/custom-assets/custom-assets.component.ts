@@ -7,7 +7,7 @@ import { DropdownOption } from 'src/app/model/dropdown-option';
 
 
 @Component({
-    selector: 'app-custom-assets',
+    selector: 'nebular-custom-assets',
     templateUrl: './custom-assets.component.html',
     styleUrls: ['./custom-assets.component.css']
 })

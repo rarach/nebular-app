@@ -16,7 +16,7 @@ import { Utils } from '../utils';
 
 
 @Component({
-    selector: 'app-live-trades',
+    selector: 'nebular-live-trades',
     templateUrl: './live-trades.component.html',
     styleUrls: ['./live-trades.component.css']
 })
