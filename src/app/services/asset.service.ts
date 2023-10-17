@@ -19,7 +19,6 @@ export class AssetService {
         KnownAssets['BTC-Interstellar'],
         KnownAssets["CNY-RippleFox"],
         KnownAssets.EURT,
-        KnownAssets.MOBI,
         KnownAssets.SLT
     ];
 
