@@ -13,7 +13,7 @@ import { Utils } from 'src/app/utils';
 
 
 @Component({
-    selector: 'app-exchange-thumbnail',
+    selector: 'nebular-exchange-thumbnail',
     templateUrl: './exchange-thumbnail.component.html',
     styleUrls: ['./exchange-thumbnail.component.css']
 })

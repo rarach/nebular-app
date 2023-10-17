@@ -5,7 +5,7 @@ import { Utils } from '../utils';
 
 
 @Component({
-    selector: 'app-trade-history',
+    selector: 'nebular-trade-history',
     templateUrl: './trade-history.component.html',
     styleUrls: ['./trade-history.component.css']
 })

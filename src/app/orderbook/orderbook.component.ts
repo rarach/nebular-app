@@ -12,7 +12,7 @@ import { Utils } from '../utils';
 
 
 @Component({
-    selector: 'app-orderbook',
+    selector: 'nebular-orderbook',
     templateUrl: './orderbook.component.html',
     styleUrls: ['./orderbook.component.css']
 })

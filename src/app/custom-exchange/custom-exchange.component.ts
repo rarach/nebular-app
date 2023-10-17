@@ -10,7 +10,7 @@ import { UiActionsService } from '../services/ui-actions.service';
 
 
 @Component({
-    selector: 'app-custom-exchange',
+    selector: 'nebular-custom-exchange',
     templateUrl: './custom-exchange.component.html',
     styleUrls: ['./custom-exchange.component.css']
 })

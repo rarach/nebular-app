@@ -17,7 +17,7 @@ import { Utils } from '../utils';
 
 
 @Component({
-    selector: 'app-exchange',
+    selector: 'nebular-exchange',
     templateUrl: './exchange.component.html',
     styleUrls: ['./exchange.component.css']
 })
