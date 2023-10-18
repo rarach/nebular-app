@@ -5,7 +5,7 @@ import { Constants } from "./constants";
 export class Asset {
     constructor(public readonly code: string,
                 public fullName: string,
-                public readonly type: string,
+                public readonly type: string | null,
                 public readonly issuer: Account,
                 public imageUrl: string = null) {
         this.imageUrl = imageUrl || Constants.UNKNOWN_ASSET_IMAGE;

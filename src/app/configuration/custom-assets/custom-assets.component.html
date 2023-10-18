@@ -9,7 +9,7 @@
             <th style="width: 50px;"></th>
         </tr>
         <tr *ngFor="let asset of customAssets" id="{{asset.code}}-{{asset.issuer.address}}" class="asset-item"
-            [class.highlight]="null != lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
+            [class.highlight]="null !== lastAddedAsset && asset.code === lastAddedAsset.code && asset.issuer.address === lastAddedAsset.issuer.address"
             [class.duplicate]="duplicateAsset === (asset.code + '-' + asset.issuer.address)">
             <td>
                 <img class="asset-icon" src="{{asset.imageUrl}}"/>
