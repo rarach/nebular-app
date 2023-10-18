@@ -131,12 +131,11 @@ describe('My Exchanges', () => {
     cy.get('div.exchange-link').eq(1).click();
     exchangePanel().should('have.length', 2);
 
-    cy.wait(2000);  //sucks but works :-( Too fast clicking derails loading a chart. Only acceptable as the fast clicking isn't very realistic.
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(0).click();
     cy.get('mat-option').contains('TZS-connect.clickpesa.com').should('be.visible');
     cy.get('mat-option').contains('TZS-connect.clickpesa.com').click();
 
-    cy.wait(2000);  //sucks but works :-(
+    cy.wait(5000);  //sucks but works :-( Too fast clicking derails loading a chart. Only acceptable as the fast clicking isn't very realistic.
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(1).click();
     cy.get('mat-option').contains('XCN-fchain.io').should('be.visible');
     cy.get('mat-option').contains('XCN-fchain.io').click();
