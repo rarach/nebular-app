@@ -1,5 +1,8 @@
 export class Account {
-    constructor(public readonly address: string, public domain: string = null){
+    constructor(
+        public readonly address: string,
+        public domain: string|null = null
+    ) {
         if ((domain || "").length <= 0 && null != address) {
             this.domain = address.substring(0, 16) + "...";
         }

@@ -1,13 +1,12 @@
 import { Account, KnownAccounts } from "./account.model";
 import { Constants } from "./constants";
 
-
 export class Asset {
     constructor(public readonly code: string,
                 public fullName: string,
-                public readonly type: string | null,
-                public readonly issuer: Account,
-                public imageUrl: string = null) {
+                public readonly type: string|null,
+                public readonly issuer: Account|null,
+                public imageUrl: string|null = null) {
         this.imageUrl = imageUrl || Constants.UNKNOWN_ASSET_IMAGE;
         this.code = code || Constants.NATIVE_ASSET_CODE;
         if (null === type) {

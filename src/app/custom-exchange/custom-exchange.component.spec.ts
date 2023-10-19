@@ -58,12 +58,12 @@ describe('CustomExchangeComponent', () => {
 
     it("#updateExchange() calls service.UpdateCustomExchange with correct inputs", () => {
         expect(component.exchange.baseAsset.code).toBe("RRR");
-        expect(component.exchange.counterAsset.issuer.address).toBe("G014");
+        expect(component.exchange.counterAsset.issuer!.address).toBe("G014");
 
-        component.selectedBaseAsset = new DropdownOption(new Asset("ABC", null, null, new Account("GARGAMELLL", "rag.gar")),
-                                                         "ABC-GARGame.l", null);
-        component.selectedCounterAsset = new DropdownOption(new Asset("CHF", null, null, new Account("GANything", null)),
-                                                            "CHF-GANything (swiss franck)", null);
+        component.selectedBaseAsset = new DropdownOption(new Asset("ABC", "abc muney", null, new Account("GARGAMELLL", "rag.gar")),
+                                                         "ABC-GARGame.l", "tip");
+        component.selectedCounterAsset = new DropdownOption(new Asset("CHF", "Swiss Frank", null, new Account("GANything", null)),
+                                                            "CHF-GANything (swiss franck)", "good ol' frank");
         const assetService = TestBed.get(AssetService);
         expect(assetService.updateCalled).toBeFalsy();
         component.updateExchange(null);
@@ -73,8 +73,8 @@ describe('CustomExchangeComponent', () => {
     it("#onMouseOver() should highlight border if another exchange pair is being dragged", () => {
         const uiService : UiActionsService = TestBed.get(UiActionsService);
         const dummyExch = new ExchangePair("test-exch",
-                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
-                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+                                           new Asset("TEST", "TesToken", null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", "NopeKoin", null, new Account("GDDD", "whet.ever")));
         spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
 
         expect(component.highlightDropTarget).toBe(false);
@@ -87,8 +87,8 @@ describe('CustomExchangeComponent', () => {
     it("#onClick() should swap exchanges with right IDs if another exchange is being dragged", () => {
         const uiService : UiActionsService = TestBed.get(UiActionsService);
         const dummyExch = new ExchangePair("ex_to_swap",
-                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
-                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+                                           new Asset("TEST", "TestCoin", null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", "NoToken", null, new Account("GDDD", "whet.ever")));
         spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
 
         let stopPropagationCalled = false;
@@ -104,8 +104,8 @@ describe('CustomExchangeComponent', () => {
     it("#startDrag() calls UiActions.draggingStarted with current exchange", () => {
         const uiService : UiActionsService = TestBed.get(UiActionsService);
         const dummyExch = new ExchangePair("test-exch",
-                                           new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
-                                           new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
+                                           new Asset("TEST", "testCoin", null, new Account("GABRIELSSSSSS096", "test.org")),
+                                           new Asset("NopE", "NoCoin", null, new Account("GDDD", "whet.ever")));
         spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
         spyOn(uiService, "draggingStarted").and.callFake(() => {});
 
@@ -121,8 +121,8 @@ describe('CustomExchangeComponent', () => {
     it("#isDragged() should return true if current exchange pair is being dragged", () => {
         const uiService : UiActionsService = TestBed.get(UiActionsService);
         const dummyExch = new ExchangePair("cust_ex96984",
-                                           new Asset("DOESN'T", null, null, null),
-                                           new Asset("MATTER", null, null, new Account("GAAASGHASFGGDH4561", "HERE")));
+                                           new Asset("DOESN'T", "", null, null),
+                                           new Asset("MATTER", "matt", null, new Account("GAAASGHASFGGDH4561", "HERE")));
         spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
 
         let value = component.isDragged;
@@ -190,8 +190,8 @@ class AssetServiceStub {
 
     updateCalled = false;
     UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
-        if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer.address &&
-            "CHF" === counterAsset.code && "GANything" === counterAsset.issuer.address)
+        if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer!.address &&
+            "CHF" === counterAsset.code && "GANything" === counterAsset.issuer!.address)
         {
             this.updateCalled = true;
             return null;
@@ -200,7 +200,7 @@ class AssetServiceStub {
             return null;
         }
 
-        throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer.address} ...)`);
+        throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer!.address} ...)`);
     }
 
     removeCalled = false;
