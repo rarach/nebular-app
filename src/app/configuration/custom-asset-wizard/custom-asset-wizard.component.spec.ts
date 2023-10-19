@@ -3,14 +3,14 @@ import { async, TestBed, inject } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { Asset } from 'src/app/model/asset.model';
-import { AssetData } from 'src/app/model/asset-data.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { Constants } from 'src/app/model/constants';
+import { Asset } from '../../model/asset.model';
+import { AssetData } from '../../model/asset-data.model';
+import { AssetService } from '../../services/asset.service';
+import { Constants } from '../../model/constants';
 import { CustomAssetWizardComponent } from './custom-asset-wizard.component';
-import { HorizonRestService } from 'src/app/services/horizon-rest.service';
-import { TomlConfigService } from 'src/app/services/toml-config.service';
-import { TomlConfigServiceStub } from 'src/app/testing/stubs';
+import { HorizonRestService } from '../../services/horizon-rest.service';
+import { TomlConfigService } from '../../services/toml-config.service';
+import { TomlConfigServiceStub } from '../../testing/stubs';
 
 
 describe('CustomAssetWizardComponent', () => {

@@ -1,9 +1,9 @@
 import { ActivatedRoute } from '@angular/router';
 import { async, inject, TestBed } from '@angular/core/testing';
 
-import { Account } from 'src/app/model/account.model';
-import { Asset } from 'src/app/model/asset.model';
-import { AssetService } from 'src/app/services/asset.service';
+import { Account } from '../../model/account.model';
+import { Asset } from '../../model/asset.model';
+import { AssetService } from '../../services/asset.service';
 import { CustomAssetsComponent } from './custom-assets.component';
 
 

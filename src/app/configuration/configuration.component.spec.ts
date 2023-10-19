@@ -1,7 +1,7 @@
 import { async, TestBed, inject } from '@angular/core/testing';
+import { Title } from '@angular/platform-browser';
 
 import { ConfigurationComponent } from './configuration.component';
-import { Title } from '@angular/platform-browser';
 import { TitleStub } from '../testing/stubs';
 import { NebularService } from '../services/nebular.service';
 

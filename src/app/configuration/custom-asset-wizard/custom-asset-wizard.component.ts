@@ -2,12 +2,12 @@ import { ActivatedRoute } from '@angular/router';
 import { Component, EventEmitter, Output } from '@angular/core';
 import { NgForm } from '@angular/forms';
 
-import { AssetData } from 'src/app/model/asset-data.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { Constants } from 'src/app/model/constants';
-import { HorizonRestService } from 'src/app/services/horizon-rest.service';
-import { IssuerConfiguration } from 'src/app/model/toml/issuer-configuration';
-import { TomlConfigService } from 'src/app/services/toml-config.service';
+import { AssetData } from '../../model/asset-data.model';
+import { AssetService } from '../../services/asset.service';
+import { Constants } from '../../model/constants';
+import { HorizonRestService } from '../../services/horizon-rest.service';
+import { IssuerConfiguration } from '../../model/toml/issuer-configuration';
+import { TomlConfigService } from '../../services/toml-config.service';
 
 
 @Component({

@@ -1,9 +1,9 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 
-import { Asset } from 'src/app/model/asset.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { DropdownOption } from 'src/app/model/dropdown-option';
+import { Asset } from '../../model/asset.model';
+import { AssetService } from '../../services/asset.service';
+import { DropdownOption } from '../../model/dropdown-option';
 
 
 @Component({
