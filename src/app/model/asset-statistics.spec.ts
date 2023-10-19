@@ -4,19 +4,17 @@ import { AssetStatistics } from './asset-statistics';
 import { Constants } from './constants';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { IssuerConfiguration } from './toml/issuer-configuration';
-import { TomlAsset } from './toml/toml-asset';
 import { TomlConfigService } from '../services/toml-config.service';
-
 
 describe('AssetStatistics', () => {
     //TODO: The positive case of constructor
 
-    it('#constructor tries to guess asset icon from basic set when it`s unavailable', () => {
+    it('#constructor sets asset icon to "UNKNONW" when it`s unavailable', () => {
         const tomlConfigServiceStub = {
             getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
                 const issuerConfig = {
                     currencies: [ ]
-                } as IssuerConfiguration;
+                } as unknown as IssuerConfiguration;
                 return of(issuerConfig);
             }
         } as TomlConfigService;
@@ -24,7 +22,7 @@ describe('AssetStatistics', () => {
         const assetStats = new AssetStatistics(new HorizonRestServiceStub() as HorizonRestService, tomlConfigServiceStub, 'ABC', 'GBDEV3333');
 
         expect(assetStats.assetTitle).toBe('ABC-asdf.com');
-        expect(assetStats.assetIcon).toBe('./assets/images/asset_icons/ABC.png');
+        expect(assetStats.assetIcon).toBe('./assets/images/asset_icons/unknown.png');
     });
 
     it('#constructor sets asset icon to "unknown" when unable to download it', () => {
@@ -41,12 +39,12 @@ describe('AssetStatistics', () => {
 
     it('#constructor sets asset`s title and icon only by ID when config file URL is unknown', () => {
         const horizonServiceStub = {
-            getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
+            getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string|null> {
                 return of(null);
             }          
         } as HorizonRestService;
 
-        const assetStats = new AssetStatistics(horizonServiceStub, null, 'OOO', 'GBUYYBXWCLT2MOSSHRFCKMEDFOVSCAXNIEW424GLN666OEXHAAWBDYMX');
+        const assetStats = new AssetStatistics(horizonServiceStub, null!, 'OOO', 'GBUYYBXWCLT2MOSSHRFCKMEDFOVSCAXNIEW424GLN666OEXHAAWBDYMX');
 
         expect(assetStats.assetTitle).toBe('OOO-GBUYYBXW...AAWBDYMX');
         expect(assetStats.assetIcon).toBe('./assets/images/asset_icons/OOO.png');

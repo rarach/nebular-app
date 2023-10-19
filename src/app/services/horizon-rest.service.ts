@@ -147,7 +147,7 @@ export class HorizonRestService {
     /**
      * Get URL of issuer configuration (usually a TOML file) containing given asset definition
      */
-    getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string> {
+    getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string|null> {
         const horizonUrl = this.getApiUrl();
         const url = horizonUrl + `/assets?asset_code=${assetCode}&asset_issuer=${assetIssuer}`;
 

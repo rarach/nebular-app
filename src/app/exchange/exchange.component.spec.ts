@@ -16,7 +16,6 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { TitleStub } from '../testing/stubs';
 
-
 describe('ExchangeComponent', () => {
     let exchComponent: ExchangeComponent;
     let activRoute: ActivatedRouteStub;
@@ -46,7 +45,7 @@ describe('ExchangeComponent', () => {
     it('#constructor loads available assetOptions', () => {
         expect(exchComponent.assetOptions).toEqual([
             new Asset('GOLD', 'Tokenized gold', null, new Account('GOLDISSUER'), 'example.org/assets/gold.bmp'),
-            new Asset('SLVR', null, 'credit_alphanum4', new Account('GAA5555555', 'https://general-scam.eu'))
+            new Asset('SLVR', 'silver bullion', 'credit_alphanum4', new Account('GAA5555555', 'https://general-scam.eu'))
         ]);
     });
 
@@ -78,7 +77,7 @@ describe('ExchangeComponent', () => {
         expect(exchComponent.dataStatus).toBe(DataStatus.OK);
         exchComponent.ngOnInit();
         expect(exchComponent.exchange.baseAsset.code).toBe("BBQ");
-        expect(exchComponent.exchange.counterAsset.issuer.address).toBe("G0000AASFJGSFG56ADS");
+        expect(exchComponent.exchange.counterAsset.issuer?.address).toBe("G0000AASFJGSFG56ADS");
         expect(exchComponent.chartInterval).toBe(900000);
     });
 
@@ -174,7 +173,7 @@ describe('ExchangeComponent', () => {
     it('#assetChanged loads new exchange when user changes one of the assets - Pear/XLM', () => {
         const router = TestBed.inject(Router);
         spyOn(router, 'navigateByUrl');
-        exchComponent.selectedBaseAsset = new Asset('Pear', null, null, new Account('GBBBBPEEEEEEEAAAAAAR'));
+        exchComponent.selectedBaseAsset = new Asset('Pear', 'pee coin', null, new Account('GBBBBPEEEEEEEAAAAAAR'));
         exchComponent.selectedCounterAsset = KnownAssets.XLM;
         exchComponent.chartInterval = 123456;
 
@@ -187,7 +186,7 @@ describe('ExchangeComponent', () => {
         const router = TestBed.inject(Router);
         spyOn(router, 'navigateByUrl');
         exchComponent.selectedBaseAsset = KnownAssets.XLM;
-        exchComponent.selectedCounterAsset = new Asset('SOY', null, null, new Account('GCBHEYUTRE7878787'));
+        exchComponent.selectedCounterAsset = new Asset('SOY', 'soY Token', null, new Account('GCBHEYUTRE7878787'));
         exchComponent.chartInterval = 8;
 
         exchComponent.assetChanged({ value: 1 });
@@ -207,28 +206,28 @@ class AssetServiceStub {
             return KnownAssets.XLM;
         }
         if ('ASDF-GAAARGSAD0451' === assetId) {
-            return new Asset('ASDF', null, null, null);
+            return new Asset('ASDF', null!, null, null);
         }
         if ('BBQ-GRILLED' === assetId) {
-            return new Asset('BBQ', null, null, null);
+            return new Asset('BBQ', null!, null, null);
         }
         if ('CCCP-G0PYNUGNNNNN' === assetId) {
-            return new Asset('CCCP', null, null, null);
+            return new Asset('CCCP', null!, null, null);
         }
         if ('CUS-GBDEV84512' === assetId) {
-            return new Asset('CUS', null, null, null);
+            return new Asset('CUS', null!, null, null);
         }
         if ('ERROR-GOTOHELL' === assetId) {
-            return new Asset('ERROR', null, null, null);
+            return new Asset('ERROR', null!, null, null);
         }
         if ('OLD-GCCFGS486G5ADFG51A' === assetId) {
-            return new Asset('OLD', null, null, null);
+            return new Asset('OLD', null!, null, null);
         }
         if ('UUUUH-G0000AASFJGSFG56ADS' === assetId) {
-            return new Asset('UUUUH', null, null, new Account('G0000AASFJGSFG56ADS'));
+            return new Asset('UUUUH', null!, null, new Account('G0000AASFJGSFG56ADS'));
         }
         if ('XYZ-GAGALADY' === assetId) {
-            return new Asset('XYZ', null, null, null);
+            return new Asset('XYZ', null!, null, null);
         }
         throw new Error('No test asset data prepared for assetId=' + assetId);
     }
@@ -236,7 +235,7 @@ class AssetServiceStub {
     public get availableAssets(): Asset[] {
         return [
             new Asset('GOLD', 'Tokenized gold', null, new Account('GOLDISSUER'), 'example.org/assets/gold.bmp'),
-            new Asset('SLVR', null, null, new Account('GAA5555555', 'https://general-scam.eu'))
+            new Asset('SLVR', 'silver bullion', null, new Account('GAA5555555', 'https://general-scam.eu'))
         ];
     }
 }

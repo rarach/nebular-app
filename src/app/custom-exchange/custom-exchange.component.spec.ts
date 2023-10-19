@@ -1,4 +1,4 @@
-import { async, ComponentFixture, TestBed } from '@angular/core/testing';
+import { ComponentFixture, TestBed, waitForAsync } from '@angular/core/testing';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatRippleModule } from '@angular/material/core';
 import { MatSelectModule } from '@angular/material/select';
@@ -21,7 +21,7 @@ describe('CustomExchangeComponent', () => {
     let component: CustomExchangeComponent;
     let fixture: ComponentFixture<CustomExchangeComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [ BrowserAnimationsModule, MatRippleModule, MatSelectModule, OverlayModule ],
             declarations: [ CustomExchangeComponent, ExchangeThumbnailComponent ],
@@ -135,7 +135,7 @@ describe("CustomExchangeComponent", () => {
     let component: CustomExchangeComponent;
     let fixture: ComponentFixture<CustomExchangeComponent>;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             imports: [ BrowserAnimationsModule, MatRippleModule, MatSelectModule, OverlayModule ],
             declarations: [ CustomExchangeComponent, ExchangeThumbnailComponent ],

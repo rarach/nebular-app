@@ -1,7 +1,6 @@
 import { Asset } from "./asset.model";
 import { Constants } from "./constants";
 
-
 describe("Asset (model)", () => {
     it("empty asset code/type in constructor defaults to XLM (native)", () => {
         const asset = new Asset(null, "Looomens", null, null);
@@ -13,7 +12,7 @@ describe("Asset (model)", () => {
     });
 
     it("short asset code constructs Asset with type='credit_alphanum4'", () => {
-        const asset = new Asset('COIN', null, null, null);
+        const asset = new Asset('COIN', 'random fingo', null, null);
 
         expect(asset.code).toBe('COIN');
         expect(asset.type).toBe('credit_alphanum4');

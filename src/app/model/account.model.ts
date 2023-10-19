@@ -1,6 +1,6 @@
 export class Account {
     constructor(
-        public readonly address: string,
+        public readonly address: string|null,
         public domain: string|null = null
     ) {
         if ((domain || "").length <= 0 && null != address) {

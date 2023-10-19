@@ -1,5 +1,5 @@
 import { ActivatedRoute } from '@angular/router';
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
@@ -12,11 +12,10 @@ import { HorizonRestService } from '../../services/horizon-rest.service';
 import { TomlConfigService } from '../../services/toml-config.service';
 import { TomlConfigServiceStub } from '../../testing/stubs';
 
-
 describe('CustomAssetWizardComponent', () => {
   let component: CustomAssetWizardComponent;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
         declarations: [ CustomAssetWizardComponent ],
         imports: [ FormsModule ],
@@ -149,7 +148,7 @@ class HorizonRestServiceStub {
         }
         if ("TOML_ERROR" === assetCode) {
             return of([
-                new AssetData("THROW_ERROR", null, null, -1)
+                new AssetData("THROW_ERROR", null!, null!, -1)
             ]);
         }
         throw new Error("No test data ready for the input asset code " + assetCode);
@@ -157,7 +156,7 @@ class HorizonRestServiceStub {
 }
 
 class AssetServiceStub {
-    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset | null {
+    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string, imageUrl: string): Asset | null {
         if ("TWO" === assetCode && "GATWO" === issuerAddress) {
             return {} as Asset;
         }

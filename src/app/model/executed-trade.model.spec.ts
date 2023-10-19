@@ -17,7 +17,7 @@ describe("ExecutedTrade (model)", () => {
 
     it("creates instance with liquidity pool as seller", () => {
         const trade = new ExecutedTrade(new Date(1627578655555), 'sell', 18.04, 555.0,
-                                        undefined,
+                                        null,
                                         'GDPRRTJDRHSFGZAAAXT0000000000000000000000GWSRDUIYJFHSGDH');
         expect(trade.time.getFullYear()).toBe(2021);
         expect(trade.tradeType).toBe('sell');

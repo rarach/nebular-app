@@ -2,7 +2,7 @@ import { Account, KnownAccounts } from "./account.model";
 import { Constants } from "./constants";
 
 export class Asset {
-    constructor(public readonly code: string,
+    constructor(public readonly code: string|null,
                 public fullName: string,
                 public readonly type: string|null,
                 public readonly issuer: Account|null,

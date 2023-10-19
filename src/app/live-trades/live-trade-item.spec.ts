@@ -2,7 +2,6 @@ import { HorizonRestServiceStub } from "./live-trades.component.spec";
 import { LiveTradeItem } from "./live-trade-item";
 import { Trade } from "../model/trade.model";
 
-
 describe("LiveTradeItem", () => {
     it("should create instance with correct properties", () => {
         const item = new LiveTradeItem(new HorizonRestServiceStub().fakeTrades[0], true);
@@ -21,8 +20,7 @@ describe("LiveTradeItem", () => {
             base_asset_code: "NGN",
             base_asset_issuer: "GDDExchange",
             base_amount: "422.0",
-            counter_asset_type: null,
-            counter_asset_code: null,
+            counter_asset_type: "native",
             counter_amount: "16522.1007",
             price: { n: 1, d: 707.0707 }
         };

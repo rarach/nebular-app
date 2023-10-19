@@ -1,4 +1,4 @@
-import { async, inject, TestBed } from '@angular/core/testing';
+import { inject, TestBed, waitForAsync } from '@angular/core/testing';
 
 import { Account } from '../../model/account.model';
 import { Asset } from '../../model/asset.model';
@@ -9,7 +9,7 @@ import { CustomAssetListComponent } from './custom-asset-list.component';
 describe('CustomAssetListComponent', () => {
     let component: CustomAssetListComponent;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: AssetService, useClass: AssetServiceStub }
