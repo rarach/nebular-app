@@ -227,7 +227,6 @@ describe('HorizonRestService', () => {
         service.getAssetIssuers("EURT").subscribe(data => {
             expect(data.length).toBe(1);
             expect(data[0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
-                                              "credit_alphanum4",
                                               "EURT",
                                               "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
                                               10815));

@@ -16,7 +16,7 @@ export class CustomAssetsComponent {
     selectedIssuerAddress: string = "";
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
-    duplicateAsset: string = null;
+    duplicateAsset: string | null = null;
 
 
     constructor(private route: ActivatedRoute, private assetService: AssetService) {
