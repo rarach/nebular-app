@@ -8,10 +8,10 @@ import { DropdownOption } from '../../model/dropdown-option';
 
 @Component({
     selector: 'nebular-custom-asset-list',
-    templateUrl: './custom-assets.component.html',
-    styleUrls: ['./custom-assets.component.css']
+    templateUrl: './custom-asset-list.component.html',
+    styleUrls: ['./custom-asset-list.component.css']
 })
-export class CustomAssetsComponent {
+export class CustomAssetListComponent {
     assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
     customAssets: Asset[];

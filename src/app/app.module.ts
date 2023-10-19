@@ -22,7 +22,7 @@ import { NebularService } from './services/nebular.service';
 import { TradeHistoryComponent } from './trade-history/trade-history.component';
 import { OrderbookComponent } from './orderbook/orderbook.component';
 import { CustomExchangeComponent } from './custom-exchange/custom-exchange.component';
-import { CustomAssetsComponent } from './configuration/custom-assets/custom-assets.component';
+import { CustomAssetListComponent } from './configuration/custom-assets/custom-asset-list.component';
 import { ExchangeAnalyticsComponent } from './exchange-analytics/exchange-analytics.component';
 import { LiveTradesComponent } from './live-trades/live-trades.component';
 import { CustomAssetWizardComponent } from './configuration/custom-asset-wizard/custom-asset-wizard.component';
@@ -41,7 +41,7 @@ import { CookieConsentComponent } from './cookie-consent/cookie-consent.componen
         TradeHistoryComponent,
         OrderbookComponent,
         CustomExchangeComponent,
-        CustomAssetsComponent,
+        CustomAssetListComponent,
         ExchangeAnalyticsComponent,
         LiveTradesComponent,
         CustomAssetWizardComponent,
