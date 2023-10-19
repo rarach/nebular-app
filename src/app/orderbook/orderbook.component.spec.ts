@@ -56,7 +56,7 @@ describe('OrderbookComponent', () => {
         component.ngOnInit();
 
         expect(component._exchange.baseAsset.code).toBe("XLM");
-        expect(component._exchange.counterAsset.issuer.address).toBe(KnownAssets.MOBI.issuer.address);
+        expect(component._exchange.counterAsset.issuer?.address).toBe(KnownAssets.MOBI.issuer?.address);
         expect(component.orderbook.bids).toEqual([
             new Offer(5524.861878453039, 41.580660600011896, 41.580660600011896, false),
             new Offer(5263.1578947368425, 0.8047200000089999, 41.580660600011896 + 0.8047200000089999, false)

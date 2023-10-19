@@ -4,7 +4,6 @@ import { IssuerConfiguration } from "./toml/issuer-configuration";
 import { TomlConfigService } from "../services/toml-config.service";
 import { Utils } from "../utils";
 
-
 export class AssetStatistics {
     public assetTitle: string;
     public assetIcon: string;
@@ -14,8 +13,8 @@ export class AssetStatistics {
 
     constructor(horizonService: HorizonRestService,
                 configService: TomlConfigService,
-                public assetCode: string,
-                private issuer: string) {
+                public readonly assetCode: string,
+                private readonly issuer: string) {
         horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
             if (configUrl) {
                 configService.getIssuerConfig(configUrl).subscribe({

@@ -1,4 +1,3 @@
-import { ActivatedRoute } from '@angular/router';
 import { async, inject, TestBed } from '@angular/core/testing';
 
 import { Account } from '../../model/account.model';
@@ -13,15 +12,14 @@ describe('CustomAssetListComponent', () => {
     beforeEach(async(() => {
         TestBed.configureTestingModule({
             providers: [
-                { provide: ActivatedRoute, useValue: {} },
                 { provide: AssetService, useClass: AssetServiceStub }
             ]
         })
         .compileComponents();
     }));
 
-    beforeEach(inject([ActivatedRoute, AssetService], (route, assetService) => {
-        component = new CustomAssetListComponent(route, assetService);
+    beforeEach(inject([AssetService], (assetService) => {
+        component = new CustomAssetListComponent(assetService);
     }));
 
     it('should have custom assets loaded after instantiation', () => {
@@ -59,7 +57,7 @@ class AssetServiceStub {
         new Asset("ETC", "Ethereum classic", null, new Account("GORRILA", null))
     ];
 
-    AddCustomAsset(assetCode: string, issuerAddress: string): Asset {
+    AddCustomAsset(assetCode: string, issuerAddress: string): Asset|null {
         if (null === assetCode || null == issuerAddress) {
             throw Error("Both input parameters for asset are NULL!");
         }

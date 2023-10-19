@@ -18,8 +18,7 @@ export class AssetService {
         KnownAssets.XLM,
         KnownAssets['BTC-Interstellar'],
         KnownAssets["CNY-RippleFox"],
-        KnownAssets.EURT,
-        KnownAssets.SLT
+        KnownAssets.EURT
     ];
 
     /** User's custom defined assets */

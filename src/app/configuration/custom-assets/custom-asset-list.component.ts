@@ -1,10 +1,8 @@
-import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 
 import { Asset } from '../../model/asset.model';
 import { AssetService } from '../../services/asset.service';
 import { DropdownOption } from '../../model/dropdown-option';
-
 
 @Component({
     selector: 'nebular-custom-asset-list',
@@ -15,11 +13,11 @@ export class CustomAssetListComponent {
     assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
     customAssets: Asset[];
-    lastAddedAsset: Asset = null;
-    duplicateAsset: string | null = null;
+    lastAddedAsset: Asset|null = null;
+    duplicateAsset: string|null = null;
 
 
-    constructor(private route: ActivatedRoute, private assetService: AssetService) {
+    constructor(private readonly assetService: AssetService) {
         this.customAssets = assetService.customAssets;
     }
 
