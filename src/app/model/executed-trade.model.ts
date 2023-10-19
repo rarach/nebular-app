@@ -7,8 +7,8 @@ export class ExecutedTrade {
                 public readonly tradeType: string,
                 public readonly price: number,
                 public readonly amount: number,
-                sellingAccount: string,
-                buyingAccount: string,
+                sellingAccount: string|null,
+                buyingAccount: string|null,
                 public isLastOfDay: boolean = false) {
         if (sellingAccount) {
             this.seller = sellingAccount.substring(0, 8) + '...' + sellingAccount.substring(48);

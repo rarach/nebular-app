@@ -1,4 +1,4 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { Title } from '@angular/platform-browser';
 
 import { ConfigurationComponent } from './configuration.component';
@@ -8,7 +8,7 @@ import { NebularService } from '../services/nebular.service';
 
 describe('ConfigurationComponent', () => {
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             providers: [
                 { provide: Title, useClass: TitleStub },

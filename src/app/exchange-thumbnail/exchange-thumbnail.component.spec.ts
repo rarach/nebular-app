@@ -129,7 +129,7 @@ class HorizonRestServiceStub {
                 }
             });
         }
-        if (exchange.baseAsset.code === "ABC" && exchange.counterAsset.issuer.address === "GETH841062WESTHDF") {
+        if (exchange.baseAsset.code === "ABC" && exchange.counterAsset.issuer?.address === "GETH841062WESTHDF") {
             const now: number = new Date().valueOf();
             const MS_PER_MINUTE = 60000;
             const minuteAgo = new Date(now - 1 * MS_PER_MINUTE).valueOf();

@@ -1,4 +1,4 @@
-import { async, TestBed, inject } from '@angular/core/testing';
+import { TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
@@ -15,7 +15,7 @@ import { Trade } from '../model/trade.model';
 describe('LiveTradesComponent', () => {
     let component: LiveTradesComponent;
 
-    beforeEach(async(() => {
+    beforeEach(waitForAsync(() => {
         TestBed.configureTestingModule({
             declarations: [ LiveTradesComponent ],
             providers: [

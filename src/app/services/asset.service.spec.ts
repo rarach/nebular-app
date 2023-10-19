@@ -59,9 +59,9 @@ describe('AssetService', () => {
     //mm-TODO: verify that loadExchanges() downloads the additional data from network
 
     it('availableAssets contains common + custom assets', () => {
-        expect(assetService.availableAssets.length).toBe(5+5);
+        expect(assetService.availableAssets.length).toBe(4+5);
         expect(assetService.availableAssets[0]).toBe(KnownAssets.XLM);
-        expect(assetService.availableAssets[5]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
+        expect(assetService.availableAssets[4]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
     });
 
     it('#getAsset returns native Assets for ID "XlM"', () => {
@@ -107,22 +107,25 @@ describe('AssetService', () => {
         const newAsset = assetService.AddCustomAsset("04", "GWYNETH");
 
         expect(assetService.customAssets.length).toBe(6);
-        expect(newAsset.code).toBe("04");
-        expect(newAsset.fullName).toBe("04");
-        expect(newAsset.type).toBe("credit_alphanum4");
-        expect(newAsset.issuer).toEqual(new Account("GWYNETH", "GWYNETH..."))
+        expect(newAsset?.code).toBe("04");
+        expect(newAsset?.fullName).toBe("04");
+        expect(newAsset?.type).toBe("credit_alphanum4");
+        expect(newAsset?.issuer).toEqual(new Account("GWYNETH", "GWYNETH..."))
     });
+
     it("#RemoveCustomAsset() deletes custom asset", () => {
         assetService.customAssets.push(new Asset("TRY", "Turkish lyra", null, new Account("GOGODanceQQQ", "nebul.ar")));
         expect(assetService.customAssets.length).toBe(6);
         expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(true);
         expect(assetService.customAssets.length).toBe(5);
     });
+
     it("#RemoveCustomAsset() returns false and doesn't delete anything for missing asset", () => {
         expect(assetService.customAssets.length).toBe(5);
         expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(false);
         expect(assetService.customAssets.length).toBe(5);
     });
+
     it("#CreateCustomExchange() creates new XLM/XLM pair and adds to custom exchanges", () => {
         expect(assetService.customExchanges.length).toBe(3);
         const newPair = assetService.CreateCustomExchange();
@@ -135,18 +138,22 @@ describe('AssetService', () => {
     it("#UpdateCustomExchange() updates existing pair", () => {
         //Sanity checks first
         expect(assetService.customExchanges.length).toBe(3);
-        expect(assetService.customExchanges[1].baseAsset.issuer.address).toBe("GIBRALTARRRRR458743551");
+        expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GIBRALTARRRRR458743551");
         expect(assetService.customExchanges[1].counterAsset.code).toBe("XrP");
         const updatedExch = assetService.UpdateCustomExchange("12345", new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", null)),
-                                                                       new Asset("DDD", null, null, new Account("GBBBBBBBBBBBB", "hugo.boss")));
+                                                                       new Asset("DDD", "dungeon dollar", null, new Account("GBBBBBBBBBBBB", "hugo.boss")));
         expect(assetService.customExchanges.length).toBe(3);
         expect(updatedExch.id).toBe("12345");
         expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", "GUPDATED...")));
         expect(updatedExch).toBe(assetService.customExchanges[1]);
         expect(updatedExch.counterAsset.code).toBe("DDD");
     });
-    it("#UpdateCustomExchange() with bad exchange ID returns null", () => {
-        expect(assetService.UpdateCustomExchange("0w645612a", new Asset("ABC", null, null, new Account("G012", null)), null)).toBeNull();
+
+    it("#UpdateCustomExchange() with unknow exchange ID returns null", () => {
+        const exPair = assetService.UpdateCustomExchange("no_such_exchange_id",
+                                                         new Asset("ABC", "$", null, new Account("G012", null)),
+                                                         KnownAssets.XLM);
+        expect(exPair).toBeNull();
     });
 
     it("#RemoveCustomExchange() removes existing exchange pair", () => {
@@ -157,6 +164,7 @@ describe('AssetService', () => {
         expect(assetService.customExchanges).not.toContain(jasmine.objectContaining( { id : "12345"}));
         expect(assetService.customExchanges).toContain(jasmine.objectContaining( { id : "10101010" }));
     });
+
     it("#RemoveCustomExchange() doesn't remove non-existing exchange pair", () => {
         expect(assetService.customExchanges.length).toBe(3);
         expect(assetService.RemoveCustomExchange("0968dt4uwe5a6074d0gsdf")).toBe(false);
@@ -174,7 +182,7 @@ describe('AssetService', () => {
         expect(assetService.customExchanges[0].id).toBe("12345");
         expect(assetService.customExchanges[0].baseAsset.code).toBe("lightcoin");
         expect(assetService.customExchanges[1].id).toBe("5555");
-        expect(assetService.customExchanges[1].baseAsset.issuer.address).toBe("GAAAASLIMIT");
+        expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GAAAASLIMIT");
         expect(assetService.customExchanges[2].id).toBe("10101010");    //Must stay unchanged
     });
 
@@ -216,7 +224,7 @@ class CookieServiceStub {
 }
 
 class HorizonRestServiceStub {
-    public getIssuerConfigUrl (code: string, assetIssuer: string): Observable<string> {
+    public getIssuerConfigUrl (code: string, assetIssuer: string): Observable<string|null> {
         if ('GAAAASLIMIT' === assetIssuer || 'G0G0G0G0' === assetIssuer) {
             return of(null);
         }

@@ -11,10 +11,12 @@ export class AssetStatistics {
     public volume: number = 0.0;
     public volumeInNative: number = 0.0;
 
-    constructor(horizonService: HorizonRestService,
-                configService: TomlConfigService,
-                public readonly assetCode: string,
-                private readonly issuer: string) {
+    constructor(
+        horizonService: HorizonRestService,
+        configService: TomlConfigService,
+        public readonly assetCode: string,
+        private readonly issuer: string
+    ) {
         horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
             if (configUrl) {
                 configService.getIssuerConfig(configUrl).subscribe({
@@ -49,10 +51,6 @@ export class AssetStatistics {
         const theAsset = issuerConfig.currencies.find(asset => {
             return asset.code === this.assetCode && asset.issuer === this.issuer;
         });
-        this.assetIcon = theAsset ? theAsset.image : null;
-        if (!this.assetIcon) {
-            //If no icon was provided, try our basic database
-            this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
-        }
+        this.assetIcon = theAsset ? theAsset.image : './assets/images/asset_icons/unknown.png';
     }
 }
