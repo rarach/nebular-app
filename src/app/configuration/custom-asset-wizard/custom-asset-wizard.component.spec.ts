@@ -3,14 +3,14 @@ import { async, TestBed, inject } from '@angular/core/testing';
 import { FormsModule, NgForm } from '@angular/forms';
 import { Observable, of } from 'rxjs';
 
-import { Asset } from 'src/app/model/asset.model';
-import { AssetData } from 'src/app/model/asset-data.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { Constants } from 'src/app/model/constants';
+import { Asset } from '../../model/asset.model';
+import { AssetData } from '../../model/asset-data.model';
+import { AssetService } from '../../services/asset.service';
+import { Constants } from '../../model/constants';
 import { CustomAssetWizardComponent } from './custom-asset-wizard.component';
-import { HorizonRestService } from 'src/app/services/horizon-rest.service';
-import { TomlConfigService } from 'src/app/services/toml-config.service';
-import { TomlConfigServiceStub } from 'src/app/testing/stubs';
+import { HorizonRestService } from '../../services/horizon-rest.service';
+import { TomlConfigService } from '../../services/toml-config.service';
+import { TomlConfigServiceStub } from '../../testing/stubs';
 
 
 describe('CustomAssetWizardComponent', () => {
@@ -101,35 +101,35 @@ image = "ab.cd/ef.jpg"`) },
             value: { newAssetCode: "IRESA" }
         } as NgForm;
         component.searchAssetCodes(formStub);
-        const iresaAsset = new AssetData("google.com/.well-known/stellar.toml", null, "IRESA", "G00GLE", 65);
+        const iresaAsset = new AssetData("google.com/.well-known/stellar.toml", "IRESA", "G00GLE", 65);
         iresaAsset.iconUrl = "ab.cd/ef.jpg";
         expect(component.foundAssets).toEqual([
-            new AssetData(null, "alphanum4", "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80),
+            new AssetData(null, "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80),
             iresaAsset
         ]);
     });
 
     it("#addAsset() OK", () => {
         component.foundAssets = [
-            new AssetData(null, null, "ONE", "GONE", 10),
-            new AssetData(null, null, "TWO", "GATWO", 20),
-            new AssetData(null, null, "THREE", "GBBB3", 7)
+            new AssetData(null, "ONE", "GONE", 10),
+            new AssetData(null, "TWO", "GATWO", 20),
+            new AssetData(null, "THREE", "GBBB3", 7)
         ];
         spyOn(component.assetAdded, "emit");
 
-        component.addAsset(new AssetData("some.org/.well-known/stellar.toml", "alphanum4", "TWO", "GATWO", 12345));
+        component.addAsset(new AssetData("some.org/.well-known/stellar.toml", "TWO", "GATWO", 12345));
 
         expect(component.assetAdded.emit).toHaveBeenCalledWith({newAssetCode: "TWO", newAssetIssuer: "GATWO"});
         expect(component.foundAssets).toEqual([
-            new AssetData(null, null, "ONE", "GONE", 10),
-            new AssetData(null, null, "THREE", "GBBB3", 7)
+            new AssetData(null, "ONE", "GONE", 10),
+            new AssetData(null, "THREE", "GBBB3", 7)
         ]);
     });
     it("#addAsset() fails and emits 'addAssetFailed'", () => {
         component.foundAssets = [];
         spyOn(component.addAssetFailed, "emit");
 
-        component.addAsset(new AssetData("example.org/.well-known/stellar.toml", null, "FAIL", "GCCCCCCP", 8654));
+        component.addAsset(new AssetData("example.org/.well-known/stellar.toml", "FAIL", "GCCCCCCP", 8654));
 
         expect(component.addAssetFailed.emit).toHaveBeenCalledWith({ assetCode: "FAIL", assetIssuer: "GCCCCCCP"});
     });
@@ -137,19 +137,19 @@ image = "ab.cd/ef.jpg"`) },
 
 
 class HorizonRestServiceStub {
-    getAssetIssuers(assetCode: string) : Observable<AssetData[]> {
+    getAssetIssuers(assetCode: string) : Observable<AssetData[] | null> {
         if ("NoSuch" === assetCode) {
             return of(null);
         }
         if ("IRESA" === assetCode) {
             return of([
-                new AssetData("google.com/.well-known/stellar.toml", null, "IRESA", "G00GLE", 65),
-                new AssetData(null, "alphanum4", "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80)
+                new AssetData("google.com/.well-known/stellar.toml", "IRESA", "G00GLE", 65),
+                new AssetData(null, "IRESA", "GAAAABBBBBCCCCCCCCCC555", 80)
             ]);
         }
         if ("TOML_ERROR" === assetCode) {
             return of([
-                new AssetData("THROW_ERROR", null, null, null, -1)
+                new AssetData("THROW_ERROR", null, null, -1)
             ]);
         }
         throw new Error("No test data ready for the input asset code " + assetCode);
@@ -157,7 +157,7 @@ class HorizonRestServiceStub {
 }
 
 class AssetServiceStub {
-    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset {
+    AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset | null {
         if ("TWO" === assetCode && "GATWO" === issuerAddress) {
             return {} as Asset;
         }

@@ -9,7 +9,7 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { LineChartData } from '../model/line-chart-data';
 import { UiActionsService } from '../services/ui-actions.service';
-import { Utils } from 'src/app/utils';
+import { Utils } from '../../app/utils';
 
 
 @Component({

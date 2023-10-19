@@ -1,22 +1,22 @@
 import { ActivatedRoute } from '@angular/router';
 import { Component } from '@angular/core';
 
-import { Asset } from 'src/app/model/asset.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { DropdownOption } from 'src/app/model/dropdown-option';
+import { Asset } from '../../model/asset.model';
+import { AssetService } from '../../services/asset.service';
+import { DropdownOption } from '../../model/dropdown-option';
 
 
 @Component({
-    selector: 'nebular-custom-assets',
-    templateUrl: './custom-assets.component.html',
-    styleUrls: ['./custom-assets.component.css']
+    selector: 'nebular-custom-asset-list',
+    templateUrl: './custom-asset-list.component.html',
+    styleUrls: ['./custom-asset-list.component.css']
 })
-export class CustomAssetsComponent {
+export class CustomAssetListComponent {
     assetIssuers: DropdownOption<string>[] = null;
     selectedIssuerAddress: string = "";
     customAssets: Asset[];
     lastAddedAsset: Asset = null;
-    duplicateAsset: string = null;
+    duplicateAsset: string | null = null;
 
 
     constructor(private route: ActivatedRoute, private assetService: AssetService) {

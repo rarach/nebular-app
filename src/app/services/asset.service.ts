@@ -77,7 +77,7 @@ export class AssetService {
      * @param issuerDomain - anchor web domain
      * @returns - returns newly created asset in case of success, otherwise null
      */
-    public AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset {
+    public AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset | null {
         //Don't add if it's already there
         for (let i=0; i<this.customAssets.length; i++) {
             if (assetCode === this.customAssets[i].code && issuerAddress === this.customAssets[i].issuer.address) {

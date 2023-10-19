@@ -4,8 +4,11 @@ import { Utils } from "../utils";
 export class AssetData {
     public iconUrl: string = "./assets/images/asset_icons/unknown.png";
 
-    constructor(public tomlLink: string, public assetType: string, public code: string,
-                public issuerAddress: string, public trustlineCount: number) {
+    constructor(
+        public readonly tomlLink: string | null,
+        public readonly code: string,
+        public readonly issuerAddress: string,
+        public readonly trustlineCount: number) {
     }
 
     get domain(): string {

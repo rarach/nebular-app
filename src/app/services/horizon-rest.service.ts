@@ -124,7 +124,7 @@ export class HorizonRestService {
     }
 
     /** Get first 200 anchors issuing given asset */
-    getAssetIssuers(assetCode: string): Observable<AssetData[]> {
+    getAssetIssuers(assetCode: string): Observable<AssetData[] | null> {
         const horizonUrl = this.getApiUrl();
         const url = horizonUrl + `/assets?asset_code=${assetCode}&limit=200`;
 
@@ -138,7 +138,7 @@ export class HorizonRestService {
 
             const assetData = new Array<AssetData>();
             for(let record of data._embedded.records) {
-                assetData.push(new AssetData(record._links.toml.href, record.asset_type, record.asset_code, record.asset_issuer, record.num_accounts));
+                assetData.push(new AssetData(record._links.toml.href, record.asset_code, record.asset_issuer, record.num_accounts));
             }
             return assetData;
         }));

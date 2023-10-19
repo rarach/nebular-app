@@ -1,14 +1,14 @@
 import { ActivatedRoute } from '@angular/router';
 import { async, inject, TestBed } from '@angular/core/testing';
 
-import { Account } from 'src/app/model/account.model';
-import { Asset } from 'src/app/model/asset.model';
-import { AssetService } from 'src/app/services/asset.service';
-import { CustomAssetsComponent } from './custom-assets.component';
+import { Account } from '../../model/account.model';
+import { Asset } from '../../model/asset.model';
+import { AssetService } from '../../services/asset.service';
+import { CustomAssetListComponent } from './custom-asset-list.component';
 
 
-describe('CustomAssetsComponent', () => {
-    let component: CustomAssetsComponent;
+describe('CustomAssetListComponent', () => {
+    let component: CustomAssetListComponent;
 
     beforeEach(async(() => {
         TestBed.configureTestingModule({
@@ -21,7 +21,7 @@ describe('CustomAssetsComponent', () => {
     }));
 
     beforeEach(inject([ActivatedRoute, AssetService], (route, assetService) => {
-        component = new CustomAssetsComponent(route, assetService);
+        component = new CustomAssetListComponent(route, assetService);
     }));
 
     it('should have custom assets loaded after instantiation', () => {

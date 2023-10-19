@@ -14,7 +14,7 @@ describe('HorizonRestService', () => {
     let httpMock: HttpTestingController;
     const exchange = new ExchangePair("gyuhjk,",
                                       KnownAssets["XRP-Interstellar"],
-                                      new Asset("HUHU", null, null, new Account("GDENIM784152", "denim.ggg")));
+                                      new Asset('HUHU', 'some random coin', null, new Account('GDENIM784152', 'denim.ggg')));
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -225,12 +225,11 @@ describe('HorizonRestService', () => {
 
     it("#getAssetIssuers() returns correct AssetData array for existing asset code", fakeAsync(() => {
         service.getAssetIssuers("EURT").subscribe(data => {
-            expect(data.length).toBe(1);
-            expect(data[0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
-                                              "credit_alphanum4",
-                                              "EURT",
-                                              "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
-                                              10815));
+          expect(data!.length).toBe(1);
+          expect(data![0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
+                                                 "EURT",
+                                                 "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
+                                                 10815));
         });
 
         tick(10);
