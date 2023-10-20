@@ -8,24 +8,24 @@ import { NebularService } from '../services/nebular.service';
 
 describe('ConfigurationComponent', () => {
 
-    beforeEach(waitForAsync(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: Title, useClass: TitleStub },
-                {
-                    provide: NebularService,
-                    useValue: {
-                        CookieAgreement: true
-                    }
-                }
-            ]
-        })
-        .compileComponents();
-    }));
+  beforeEach(waitForAsync(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: Title, useClass: TitleStub },
+        {
+          provide: NebularService,
+          useValue: {
+            CookieAgreement: true
+          }
+        }
+      ]
+    })
+      .compileComponents();
+  }));
 
-    it('should create', inject([NebularService, Title], (nebularService, titleService) => {
-        const component = new ConfigurationComponent(nebularService, titleService);
-        expect(component).toBeTruthy();
-        expect(titleService.title).toBe("Nebular - Configuration");
-    }));
+  it('should create', inject([NebularService, Title], (nebularService, titleService) => {
+    const component = new ConfigurationComponent(nebularService, titleService);
+    expect(component).toBeTruthy();
+    expect(titleService.title).toBe("Nebular - Configuration");
+  }));
 });

@@ -2,8 +2,8 @@ import { IssuerConfiguration } from "./issuer-configuration";
 
 
 describe('IssuerConfiguration', () => {
-    it("should parse currencies from source data #1", () => {
-        const tomlData = `
+  it("should parse currencies from source data #1", () => {
+    const tomlData = `
 # Federation service provided by StellarID.io
 FEDERATION_SERVER="https://stellarid.io/federation/"
 TRANSFER_SERVER="https://thewwallet.com/ExtApi"
@@ -123,20 +123,20 @@ desc= "This is incomplete currency definition. Should not pass parsing"
 name ="Simply nope"
 
 `;
-        const issuerConfig = new IssuerConfiguration(tomlData);
+    const issuerConfig = new IssuerConfiguration(tomlData);
 
-        expect(issuerConfig.currencies.length).toBe(4);
-        expect(issuerConfig.currencies[0].code).toBe("WSD");
-        expect(issuerConfig.currencies[1].code).toBe("WSEUR");
-        expect(issuerConfig.currencies[2].code).toBe("WSGBP");
-        expect(issuerConfig.currencies[3].code).toBe("BSV");
-        expect(issuerConfig.currencies[0].desc).toBe("The White Standard is a stable coin 100% backed by and redeemable for $USD");
-        expect(issuerConfig.currencies[1].name).toBe("White Standard Euro");
-        expect(issuerConfig.currencies[2].issuer).toBe("GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V");
-    });
+    expect(issuerConfig.currencies.length).toBe(4);
+    expect(issuerConfig.currencies[0].code).toBe("WSD");
+    expect(issuerConfig.currencies[1].code).toBe("WSEUR");
+    expect(issuerConfig.currencies[2].code).toBe("WSGBP");
+    expect(issuerConfig.currencies[3].code).toBe("BSV");
+    expect(issuerConfig.currencies[0].desc).toBe("The White Standard is a stable coin 100% backed by and redeemable for $USD");
+    expect(issuerConfig.currencies[1].name).toBe("White Standard Euro");
+    expect(issuerConfig.currencies[2].issuer).toBe("GDSVWEA7XV6M5XNLODVTPCGMAJTNBLZBXOFNQD3BNPNYALEYBNT6CE2V");
+  });
 
-    it("should parse currencies from source data #2", () => {
-        const tomlData = `# ----- Hope Coin Issuer <hopecoin.org> -----
+  it("should parse currencies from source data #2", () => {
+    const tomlData = `# ----- Hope Coin Issuer <hopecoin.org> -----
 
 ACCOUNTS=["GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO", "GCBPAV743BDUT5R3LHYOL6OSW3WRS4HKV27NMQ33ATQC6OSVZ5AABHCU", "GBUO5QHPC6HAWBW7SLCQLSED2SNH6KUWC5A4WQKF5QPVXCVI3TF4XFYY", "GDMADR66BLZDYNRT77JSTAMYXKR2VLTQZEVRXMR6QUMBT6PC4DRIN5P2", "GCU6JBLHU6AIJ7LDOHKMUWKMPX3MZTFY5SN4ZTCOAQCWV4OZADHLCM5X", "GDWHWNAYZWZWJLYCD2V2OFTWJLNIE7ICZVVGGMIH4Z7N5IWTLWMNFKK6"]
 
@@ -164,18 +164,18 @@ desc="Hope Coin is a digital token that gives you and lets you share Hope."
 image="https://hopecoin.org/hopecoin-icon.png"
 
 # ----- To live without hope is to cease to live! -----`;
-        const issuerConfig = new IssuerConfiguration(tomlData);
+    const issuerConfig = new IssuerConfiguration(tomlData);
 
-        expect(issuerConfig.currencies.length).toBe(1);
-        expect(issuerConfig.currencies[0].code).toBe("HOPE");
-        expect(issuerConfig.currencies[0].desc).toBe("Hope Coin is a digital token that gives you and lets you share Hope.");
-        expect(issuerConfig.currencies[0].name).toBe("Hope Coin");
-        expect(issuerConfig.currencies[0].issuer).toBe("GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO");
-        expect(issuerConfig.currencies[0].image).toBe("https://hopecoin.org/hopecoin-icon.png");
-    });
+    expect(issuerConfig.currencies.length).toBe(1);
+    expect(issuerConfig.currencies[0].code).toBe("HOPE");
+    expect(issuerConfig.currencies[0].desc).toBe("Hope Coin is a digital token that gives you and lets you share Hope.");
+    expect(issuerConfig.currencies[0].name).toBe("Hope Coin");
+    expect(issuerConfig.currencies[0].issuer).toBe("GBAOB4O4LUZYTPAG64PZQ7CVLV3PJWQA7B6D5VBCQM42W74HN5DDHKMO");
+    expect(issuerConfig.currencies[0].image).toBe("https://hopecoin.org/hopecoin-icon.png");
+  });
 
-    it("should parse currencies from source data #3", () => {
-        const tomlData = `# Sample stellar.toml
+  it("should parse currencies from source data #3", () => {
+    const tomlData = `# Sample stellar.toml
 
 #   The endpoint which clients should query to resolve stellar addresses
 #   for users on your domain.
@@ -206,18 +206,18 @@ image="https://etxco.com/etx.png"
 #           acct=<recipient account number at receiving bank>
 # Minimum Amount Forward: $2 USD
 # Maximum Amount Forward: $10000 USD`;
-        const issuerConfig = new IssuerConfiguration(tomlData);
+    const issuerConfig = new IssuerConfiguration(tomlData);
 
-        expect(issuerConfig.currencies.length).toBe(1);
-        expect(issuerConfig.currencies[0].code).toBe("ETX");
-        expect(issuerConfig.currencies[0].desc).toBe("Bringing Ethereum to the XLM blockchain");
-        expect(issuerConfig.currencies[0].name).toBe("Ethereum X");
-        expect(issuerConfig.currencies[0].issuer).toBe("GCEFMSNWXTALXQPRQFIXOMWJHZFDEQJBM26RGEDZUDFMU32JB6WJGRJX");
-        expect(issuerConfig.currencies[0].image).toBe("https://etxco.com/etx.png");
-    });
+    expect(issuerConfig.currencies.length).toBe(1);
+    expect(issuerConfig.currencies[0].code).toBe("ETX");
+    expect(issuerConfig.currencies[0].desc).toBe("Bringing Ethereum to the XLM blockchain");
+    expect(issuerConfig.currencies[0].name).toBe("Ethereum X");
+    expect(issuerConfig.currencies[0].issuer).toBe("GCEFMSNWXTALXQPRQFIXOMWJHZFDEQJBM26RGEDZUDFMU32JB6WJGRJX");
+    expect(issuerConfig.currencies[0].image).toBe("https://etxco.com/etx.png");
+  });
 
-    it("should parse currencies from source data #4", () => {
-        const tomlData = `# ----- Stronghold's Public Stellar Anchor <stronghold.co> -----
+  it("should parse currencies from source data #4", () => {
+    const tomlData = `# ----- Stronghold's Public Stellar Anchor <stronghold.co> -----
 
 ACCOUNTS=[
 "GBSTRUSD7IRX73RQZBL3RQUH6KS3O4NYFY3QCALDLZD77XMZOPWAVTUK",
@@ -290,19 +290,19 @@ name="Retired - Redeem Immeadiately (LTC)"
 desc="This asset has been retired. Please redeem this asset immeadiately."
 redemption_instructions="Sell this asset on the Stellar DEX or withdraw it via https://trade.stronghold.co. See https://medium.com/strongholdxchg/stronghold-creates-proprietary-order-book-for-business-customers-6c5ff02af050 for more information."
 image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
-        const issuerConfig = new IssuerConfiguration(tomlData);
+    const issuerConfig = new IssuerConfiguration(tomlData);
 
-        expect(issuerConfig.currencies.length).toBe(6);
-        expect(issuerConfig.currencies[0].code).toBe("SHX");
-        expect(issuerConfig.currencies[0].name).toBe("Stronghold Token");
-        expect(issuerConfig.currencies[0].issuer).toBe("GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH");
-        expect(issuerConfig.currencies[0].image).toBe("https://stronghold.co/img/Stronghold-Logo-100x100.png");
+    expect(issuerConfig.currencies.length).toBe(6);
+    expect(issuerConfig.currencies[0].code).toBe("SHX");
+    expect(issuerConfig.currencies[0].name).toBe("Stronghold Token");
+    expect(issuerConfig.currencies[0].issuer).toBe("GDSTRSHXHGJ7ZIVRBXEYE5Q74XUVCUSEKEBR7UCHEUUEK72N7I7KJ6JH");
+    expect(issuerConfig.currencies[0].image).toBe("https://stronghold.co/img/Stronghold-Logo-100x100.png");
 
-        expect(issuerConfig.currencies[3].image).toBe("https://firebasestorage.googleapis.com/v0/b/devcamp-api-151806.appspot.com/o/icon.png?alt=media&token=7323ad1f-7935-4018-b9a4-618c846ca428");
-    });
+    expect(issuerConfig.currencies[3].image).toBe("https://firebasestorage.googleapis.com/v0/b/devcamp-api-151806.appspot.com/o/icon.png?alt=media&token=7323ad1f-7935-4018-b9a4-618c846ca428");
+  });
     
-    it("should parse currencies from source data #5", () => {
-        const tomlData = `[[CURRENCIES]]
+  it("should parse currencies from source data #5", () => {
+    const tomlData = `[[CURRENCIES]]
         code="DICENS"
         issuer="GDNCVZVHMIZNXA3O6XNES42PHVAFKYO4XC2N7EQOJ54GR5VJPYJJEKFU"
         status="live"
@@ -319,10 +319,10 @@ image="https://stronghold.co/img/Stronghold-Logo-100x100.png"`;
         ORG_DESCRIPTION="You can start today to monetize your stories."
         ORG_OFFICIAL_EMAIL="sathosi@dicens.co"
         ORG_TWITTER="Dicens7"`;
-        const issuerConfig = new IssuerConfiguration(tomlData);
+    const issuerConfig = new IssuerConfiguration(tomlData);
 
-        expect(issuerConfig.currencies.length).toBe(1);
-        expect(issuerConfig.currencies[0].code).toBe("DICENS");
-        expect(issuerConfig.currencies[0].image).toBe("http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936");
-    });
+    expect(issuerConfig.currencies.length).toBe(1);
+    expect(issuerConfig.currencies[0].code).toBe("DICENS");
+    expect(issuerConfig.currencies[0].image).toBe("http://2.gravatar.com/avatar/079f925476dd929b7e2eb4ab0b9cb936");
+  });
 });

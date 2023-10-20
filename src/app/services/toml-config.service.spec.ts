@@ -5,33 +5,33 @@ import { TomlConfigService } from "./toml-config.service";
 
 
 describe('TomlConfigService', () => {
-    let injector: TestBed;
-    let service: TomlConfigService;
-    let httpMock: HttpTestingController;
+  let injector: TestBed;
+  let service: TomlConfigService;
+  let httpMock: HttpTestingController;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            imports: [HttpClientTestingModule],
-            providers: [
-                { provide: TomlConfigService, useClass: TomlConfigService },
-                { provide: HorizonRestService, useClass: HorizonRestServiceStub }
-            ]
-        });
-        injector = getTestBed();
-        service = injector.get(TomlConfigService);
-        httpMock = injector.get(HttpTestingController);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      imports: [HttpClientTestingModule],
+      providers: [
+        { provide: TomlConfigService, useClass: TomlConfigService },
+        { provide: HorizonRestService, useClass: HorizonRestServiceStub }
+      ]
+    });
+    injector = getTestBed();
+    service = injector.get(TomlConfigService);
+    httpMock = injector.get(HttpTestingController);
+  });
+
+  it("#getIssuerConfig() should retrieve and parse TOML data of an anchor", () => {
+    service.getIssuerConfig("google.com/.well-known/stellar.toml").subscribe(data => {
+      expect(data.currencies.length).toBe(2);
+      expect(data.currencies[0].code).toBe("WSD");
+      expect(data.currencies[1].desc).toBe("The White Standard Euro is a stable coin 100% backed by and redeemable for EURO");
     });
 
-    it("#getIssuerConfig() should retrieve and parse TOML data of an anchor", () => {
-        service.getIssuerConfig("google.com/.well-known/stellar.toml").subscribe(data => {
-            expect(data.currencies.length).toBe(2);
-            expect(data.currencies[0].code).toBe("WSD");
-            expect(data.currencies[1].desc).toBe("The White Standard Euro is a stable coin 100% backed by and redeemable for EURO");
-        });
-
-        const req = httpMock.expectOne(req => req.url === 'google.com/.well-known/stellar.toml');
-        expect(req.request.method).toBe("GET");
-        req.flush(`# This is fake :-|
+    const req = httpMock.expectOne(req => req.url === 'google.com/.well-known/stellar.toml');
+    expect(req.request.method).toBe("GET");
+    req.flush(`# This is fake :-|
 [QUORUM_SET]
 VALIDATORS=[
 "$satoshipay1", "$satoshipay2", "$satoshipay3"
@@ -69,7 +69,7 @@ desc= "This is incomplete currency definition. Should not pass parsing"
 name ="Simply nope"
 
 `);
-    });
+  });
 });
 
 

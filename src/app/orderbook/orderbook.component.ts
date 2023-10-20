@@ -12,20 +12,20 @@ import { Utils } from '../utils';
 
 
 @Component({
-    selector: 'nebular-orderbook',
-    templateUrl: './orderbook.component.html',
-    styleUrls: ['./orderbook.component.css']
+  selector: 'nebular-orderbook',
+  templateUrl: './orderbook.component.html',
+  styleUrls: ['./orderbook.component.css']
 })
 export class OrderbookComponent implements OnInit, OnDestroy {
 
-    private _dataStream: Subscription;
+  private _dataStream: Subscription;
 
-    _exchange: ExchangePair;
+  _exchange: ExchangePair;
     @Input()
-    set exchange(exchange: ExchangePair) {
-        this._exchange = exchange;
-        this.initOrderBookStream();
-    }
+  set exchange(exchange: ExchangePair) {
+    this._exchange = exchange;
+    this.initOrderBookStream();
+  }
     @Input() readonly lastPrice: number = 0.0;
     @Input() readonly lastTradeType: string = "";
     @Input() readonly lastTradeTime: Date = null;
@@ -38,145 +38,145 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     constructor(private readonly horizonService: HorizonRestService){}
 
     ngOnInit() {
-        this.dataStatus = DataStatus.NoData;
-        this.initOrderBookStream();
+      this.dataStatus = DataStatus.NoData;
+      this.initOrderBookStream();
     }
 
     ngOnDestroy() {
-        if (this._dataStream) {
-            this._dataStream.unsubscribe();
-        }
+      if (this._dataStream) {
+        this._dataStream.unsubscribe();
+      }
     }
 
 
     /** Fetch the baseAsset/XLM order book for cross-linked offers */
     private addCrossLinkedOffers1(originalOrderBook: any) {
-        //Query XLM / baseAsset
-        const xlmBaseExch = new ExchangePair("XLM-"+this._exchange.baseAsset.code, KnownAssets.XLM, this._exchange.baseAsset);
-        this.horizonService.getOrderbook(xlmBaseExch).subscribe(
-            success => {
-                const data = success as any;
-                this.addCrossLinkedOffers2(originalOrderBook, data);
-            },
-            error => {
-                this.renderOrderBook(originalOrderBook);
-            }
-        );
+      //Query XLM / baseAsset
+      const xlmBaseExch = new ExchangePair("XLM-"+this._exchange.baseAsset.code, KnownAssets.XLM, this._exchange.baseAsset);
+      this.horizonService.getOrderbook(xlmBaseExch).subscribe(
+        success => {
+          const data = success as any;
+          this.addCrossLinkedOffers2(originalOrderBook, data);
+        },
+        error => {
+          this.renderOrderBook(originalOrderBook);
+        }
+      );
     }
 
     /** Fetch the XLM/counterAsset order book for cross-linked offers */
     private addCrossLinkedOffers2(originalOrderBook: any, baseAssetOrderBook: any) {
-        if (null === baseAssetOrderBook) {
-            this.renderOrderBook(originalOrderBook);
+      if (null === baseAssetOrderBook) {
+        this.renderOrderBook(originalOrderBook);
+      }
+      //Query XLM / counterAsset
+      const xlmCounterExch = new ExchangePair("XLM-"+this._exchange.counterAsset.code, KnownAssets.XLM, this._exchange.counterAsset);
+      this.horizonService.getOrderbook(xlmCounterExch).subscribe(
+        success => {
+          const data = success as any;
+          this.mergeOrderBooks(originalOrderBook, baseAssetOrderBook, data);
+        },
+        error =>  {
+          this.renderOrderBook(originalOrderBook);
         }
-        //Query XLM / counterAsset
-        const xlmCounterExch = new ExchangePair("XLM-"+this._exchange.counterAsset.code, KnownAssets.XLM, this._exchange.counterAsset);
-        this.horizonService.getOrderbook(xlmCounterExch).subscribe(
-            success => {
-                const data = success as any;
-                this.mergeOrderBooks(originalOrderBook, baseAssetOrderBook, data);
-            },
-            error =>  {
-                this.renderOrderBook(originalOrderBook);
-            }
-        );
+      );
     }
 
     /** Take original order book, ASSET1/XLM and ASSET2/XLM and merge them adding cross-linked items to the original book. */
     private mergeOrderBooks(masterOrderBook: any, baseSideOrderBook: any, counterSideOrderBook: any) {
-        //Do the math for "asks" (selling baseAsset)
-        if (baseSideOrderBook.asks.length > 0 && counterSideOrderBook.bids.length > 0) {
-            const amount1Xlm = parseFloat(baseSideOrderBook.asks[0].amount);
-            const baseBuyPrice = parseFloat(baseSideOrderBook.asks[0].price);       //Sell price of XLM in baseAsset
+      //Do the math for "asks" (selling baseAsset)
+      if (baseSideOrderBook.asks.length > 0 && counterSideOrderBook.bids.length > 0) {
+        const amount1Xlm = parseFloat(baseSideOrderBook.asks[0].amount);
+        const baseBuyPrice = parseFloat(baseSideOrderBook.asks[0].price);       //Sell price of XLM in baseAsset
 
-            let amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
-            const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price); //Price of XLM in counterAsset
-            amount2Xlm /= counterBuyPrice;
-            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
-            const price = counterBuyPrice / baseBuyPrice;
+        let amount2Xlm = parseFloat(counterSideOrderBook.bids[0].amount);
+        const counterBuyPrice = parseFloat(counterSideOrderBook.bids[0].price); //Price of XLM in counterAsset
+        amount2Xlm /= counterBuyPrice;
+        const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
+        const price = counterBuyPrice / baseBuyPrice;
 
-            let added = false;
-            for (let i=0; i<masterOrderBook.bids.length; i++) {
-                const buyPrice = parseFloat(masterOrderBook.bids[i].price);
-                if (price > buyPrice) {
-                    const newBid = {
-                        "amount": amount,
-                        "price_r": { n: price, d: 1 },
-                        "isCrossLinked" : true
-                    };
-                    masterOrderBook.bids.splice(i, 0, newBid);
-                    added = true;
-                    break;
-                }
-            }
-            //Couldn't place it inside current order book, put it at the end
-            if (!added) {
-                masterOrderBook.bids.push({
-                    "amount": amount,
-                    "price_r" : { d: price, n: 1 },
-                    "isCrossLinked" : true
-                });
-            }
+        let added = false;
+        for (let i=0; i<masterOrderBook.bids.length; i++) {
+          const buyPrice = parseFloat(masterOrderBook.bids[i].price);
+          if (price > buyPrice) {
+            const newBid = {
+              "amount": amount,
+              "price_r": { n: price, d: 1 },
+              "isCrossLinked" : true
+            };
+            masterOrderBook.bids.splice(i, 0, newBid);
+            added = true;
+            break;
+          }
         }
-        //Calculate "bids" (selling counterAsset)
-        if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {
-            const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
-            const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
-
-            let amount2Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
-            const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);       //Price of XLM in baseAsset
-            amount2Xlm /= baseBuyPrice;
-            const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
-            const price = counterBuyPrice / baseBuyPrice;
-
-            let added = false;
-            for (let i=0; i<masterOrderBook.asks.length; i++) {
-                const sellPrice = parseFloat(masterOrderBook.asks[i].price);
-                if (price < sellPrice) {
-                    const newAsk = {
-                        "amount": amount,
-                        "price_r": { n: price, d: 1 },
-                        "isCrossLinked" : true
-                    };
-                    masterOrderBook.asks.splice(i, 0, newAsk);
-                    added = true;
-                    break;
-                }
-            }
-            //Couldn't place it inside current order book, put it at the end
-            if (!added) {
-                masterOrderBook.asks.push({
-                    "amount": amount,
-                    "price_r": { n: price, d: 1 },
-                    "isCrossLinked" : true
-                });
-            }
+        //Couldn't place it inside current order book, put it at the end
+        if (!added) {
+          masterOrderBook.bids.push({
+            "amount": amount,
+            "price_r" : { d: price, n: 1 },
+            "isCrossLinked" : true
+          });
         }
+      }
+      //Calculate "bids" (selling counterAsset)
+      if (baseSideOrderBook.bids.length > 0 && counterSideOrderBook.asks.length > 0) {
+        const amount1Xlm = parseFloat(counterSideOrderBook.asks[0].amount);
+        const counterBuyPrice = parseFloat(counterSideOrderBook.asks[0].price); //Sell price of XLM in counterAsset
 
-        this.renderOrderBook(masterOrderBook);
+        let amount2Xlm = parseFloat(baseSideOrderBook.bids[0].amount);
+        const baseBuyPrice = parseFloat(baseSideOrderBook.bids[0].price);       //Price of XLM in baseAsset
+        amount2Xlm /= baseBuyPrice;
+        const amount = Math.min(amount1Xlm, amount2Xlm) * baseBuyPrice;
+        const price = counterBuyPrice / baseBuyPrice;
+
+        let added = false;
+        for (let i=0; i<masterOrderBook.asks.length; i++) {
+          const sellPrice = parseFloat(masterOrderBook.asks[i].price);
+          if (price < sellPrice) {
+            const newAsk = {
+              "amount": amount,
+              "price_r": { n: price, d: 1 },
+              "isCrossLinked" : true
+            };
+            masterOrderBook.asks.splice(i, 0, newAsk);
+            added = true;
+            break;
+          }
+        }
+        //Couldn't place it inside current order book, put it at the end
+        if (!added) {
+          masterOrderBook.asks.push({
+            "amount": amount,
+            "price_r": { n: price, d: 1 },
+            "isCrossLinked" : true
+          });
+        }
+      }
+
+      this.renderOrderBook(masterOrderBook);
     }
 
     private renderOrderBook(completeOrderBook: any) {
-        let sumBidsAmount = 0.0;
-        let sumAsksAmount = 0.0;
-        this.orderbook = new Orderbook();
+      let sumBidsAmount = 0.0;
+      let sumAsksAmount = 0.0;
+      this.orderbook = new Orderbook();
 
-        for (let bid of completeOrderBook.bids) {
-            const price: number = bid.price_r.n / bid.price_r.d;
-            const amount: number = parseFloat(bid.amount) / price;
-            sumBidsAmount += amount;
-            const offer = new Offer(price, amount, sumBidsAmount, bid.isCrossLinked);
-            this.orderbook.bids.push(offer);
-        }
-        for (let ask of completeOrderBook.asks) {
-            const price: number = ask.price_r.n / ask.price_r.d;
-            const amount: number = parseFloat(ask.amount);
-            sumAsksAmount += amount;
-            const offer = new Offer(price, amount, sumAsksAmount, ask.isCrossLinked);
-            this.orderbook.asks.push(offer);
-        }
+      for (const bid of completeOrderBook.bids) {
+        const price: number = bid.price_r.n / bid.price_r.d;
+        const amount: number = parseFloat(bid.amount) / price;
+        sumBidsAmount += amount;
+        const offer = new Offer(price, amount, sumBidsAmount, bid.isCrossLinked);
+        this.orderbook.bids.push(offer);
+      }
+      for (const ask of completeOrderBook.asks) {
+        const price: number = ask.price_r.n / ask.price_r.d;
+        const amount: number = parseFloat(ask.amount);
+        sumAsksAmount += amount;
+        const offer = new Offer(price, amount, sumAsksAmount, ask.isCrossLinked);
+        this.orderbook.asks.push(offer);
+      }
 
-        this.maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
+      this.maxCumulativeAmount = Math.max(sumBidsAmount, sumAsksAmount);
     }
 
     /**
@@ -188,35 +188,35 @@ export class OrderbookComponent implements OnInit, OnDestroy {
      *       to get the data in specific order.
      */
     private initOrderBookStream() {
-        if (this._dataStream) {
-            this._dataStream.unsubscribe();
-        }
+      if (this._dataStream) {
+        this._dataStream.unsubscribe();
+      }
 
-        this._dataStream = this.horizonService.streamOrderbook(this._exchange).subscribe(
-            success => {
-                const data = success as any;
+      this._dataStream = this.horizonService.streamOrderbook(this._exchange).subscribe(
+        success => {
+          const data = success as any;
 
-                if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
-                    this.renderOrderBook(data);
-                }
-                else {
-                    this.addCrossLinkedOffers1(data);
-                }
-                this.dataStatus = DataStatus.OK;
-            },
-            error => {
-                const errorResponse = error as HttpErrorResponse;
-                this.dataStatus = DataStatus.Error;
-                this.message = "Error loading order book (server: " +
+          if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
+            this.renderOrderBook(data);
+          }
+          else {
+            this.addCrossLinkedOffers1(data);
+          }
+          this.dataStatus = DataStatus.OK;
+        },
+        error => {
+          const errorResponse = error as HttpErrorResponse;
+          this.dataStatus = DataStatus.Error;
+          this.message = "Error loading order book (server: " +
                                 errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-            }
-        );
+        }
+      );
     }
 
     /** Set background of an offer item to visually indicate its volume (amount) relatively to cumulative volume of whole orderbook */
     getRowStyle(offer: Offer, offerType: string) {
-        const percentage = (offer.cummulativeAmount / this.maxCumulativeAmount * 100.0).toFixed(1) + "%";
-        const bgColor = offerType === 'ask' ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN;
-        return { "background": "linear-gradient(to right, " + bgColor + " " + percentage + ", rgba(255,255,255,0) " + percentage + ")"};
+      const percentage = (offer.cummulativeAmount / this.maxCumulativeAmount * 100.0).toFixed(1) + "%";
+      const bgColor = offerType === 'ask' ? Constants.Style.LIGHT_RED : Constants.Style.LIGHT_GREEN;
+      return { "background": "linear-gradient(to right, " + bgColor + " " + percentage + ", rgba(255,255,255,0) " + percentage + ")"};
     }
 }

@@ -6,15 +6,19 @@
   "overrides": [
     {
       "files": [
-        "*.ts"
+        "*.ts",
+        "*.js"
       ],
+      "env": { "es6": true },
       "parserOptions": {
+        "ecmaVersion": "latest",
         "project": [
           "tsconfig.json"
         ],
         "createDefaultProgram": true
       },
       "extends": [
+        "plugin:@typescript-eslint/recommended",
         "plugin:@angular-eslint/recommended",
         "plugin:@angular-eslint/template/process-inline-templates"
       ],
@@ -34,7 +38,9 @@
             "style": "camelCase",
             "type": "attribute"
           }
-        ]
+        ],
+        "@typescript-eslint/explicit-module-boundary-types": "error",
+        "indent": ["error", 2]    //Indentation of 2 spaces
       }
     },
     {

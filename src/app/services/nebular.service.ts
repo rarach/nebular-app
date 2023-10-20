@@ -8,51 +8,51 @@ import { OverviewData } from '../model/overview-data.model';
 
 
 @Injectable({
-    providedIn: 'root'
+  providedIn: 'root'
 })
 export class NebularService {
-    private readonly COOKIE_NAME = "agr";
-    private readonly API_URL = "https://nebularapi.azurewebsites.net/api";
+  private readonly COOKIE_NAME = "agr";
+  private readonly API_URL = "https://nebularapi.azurewebsites.net/api";
 
-    constructor(private readonly http: HttpClient,
+  constructor(private readonly http: HttpClient,
                 private readonly cookieService: CookieService) {
-                }
+  }
 
 
-    /**
+  /**
      * Retrieve list of exchanges with highest trade volume in past 24 hours.
      */
-    getTopVolumeExchanges() : Observable<OverviewData> {
-        const url = this.API_URL + "/topExchanges";
+  getTopVolumeExchanges() : Observable<OverviewData> {
+    const url = this.API_URL + "/topExchanges";
 
-        return this.http.get<string>(url).pipe(map<any, OverviewData>(data => {
-            if (typeof(data) == "string") {
-                data = JSON.parse(data);
-            }
-            return data;
-        }));
-    }
+    return this.http.get<string>(url).pipe(map<any, OverviewData>(data => {
+      if (typeof(data) == "string") {
+        data = JSON.parse(data);
+      }
+      return data;
+    }));
+  }
 
-    /**
+  /**
      * Returns true if user has agreed with using cookies.
      */
-    get CookieAgreement(): boolean {
-        const cookieText = this.cookieService.get(this.COOKIE_NAME);
+  get CookieAgreement(): boolean {
+    const cookieText = this.cookieService.get(this.COOKIE_NAME);
 
-        return "true" === cookieText;
-    }
+    return "true" === cookieText;
+  }
 
-    /**
+  /**
      * The user agreed with using cookies. Save this info to... a cookie.
      */
-    set CookieAgreement(value: boolean) {
-        //Make it expire in 200 days
-        const expiration = new Date();
-        expiration.setDate(expiration.getDate() + 200);
-        const options: CookieOptions = {
-            expires: expiration
-        };
+  set CookieAgreement(value: boolean) {
+    //Make it expire in 200 days
+    const expiration = new Date();
+    expiration.setDate(expiration.getDate() + 200);
+    const options: CookieOptions = {
+      expires: expiration
+    };
 
-        this.cookieService.put(this.COOKIE_NAME, ""+value, options);
-    }
+    this.cookieService.put(this.COOKIE_NAME, ""+value, options);
+  }
 }
