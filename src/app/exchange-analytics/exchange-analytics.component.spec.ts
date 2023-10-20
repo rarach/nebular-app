@@ -10,7 +10,7 @@ describe('ExchangeAnalyticsComponent', () => {
     TestBed.configureTestingModule({
       declarations: [ ExchangeAnalyticsComponent ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
   beforeEach(() => {

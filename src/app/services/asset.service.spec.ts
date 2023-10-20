@@ -14,249 +14,249 @@ import { TomlConfigService } from './toml-config.service';
 
 
 describe('AssetService', () => {
-    let assetService: AssetService;
+  let assetService: AssetService;
 
-    beforeEach(() => {
-        TestBed.configureTestingModule({
-            providers: [
-                { provide: CookieService, useClass: CookieServiceStub },
-                { provide: HorizonRestService, useClass: HorizonRestServiceStub },
-                { provide: TomlConfigService, useClass: TomlConfigServiceStub }
-            ]
-        });
-        const cookieService = TestBed.inject(CookieService);
-        const horizonService = TestBed.inject(HorizonRestService);
-        const configService = TestBed.inject(TomlConfigService);
-        assetService = new AssetService(cookieService, horizonService, configService);
+  beforeEach(() => {
+    TestBed.configureTestingModule({
+      providers: [
+        { provide: CookieService, useClass: CookieServiceStub },
+        { provide: HorizonRestService, useClass: HorizonRestServiceStub },
+        { provide: TomlConfigService, useClass: TomlConfigServiceStub }
+      ]
     });
+    const cookieService = TestBed.inject(CookieService);
+    const horizonService = TestBed.inject(HorizonRestService);
+    const configService = TestBed.inject(TomlConfigService);
+    assetService = new AssetService(cookieService, horizonService, configService);
+  });
 
-    it('#constructor should load custom assets and exchanges from cookie', () => {
-        const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415");
+  it('#constructor should load custom assets and exchanges from cookie', () => {
+    const acc = new Account("GGGGGGGGaposdyuhfjkasndfm8415");
 
-        expect(assetService.customAssets).toEqual([
-            new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"),
-            new Asset("abcdef", "abcdef", "credit_alphanum12", acc, "asdf://vilence.jpg"),
-            new Asset("btC", "btC", null, new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"),
-            new Asset("CNY", "CNY", "credit_alphanum4",
-                      new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
-                      "ripplefox.com/cny.png"),
-            new Asset("ZX0", "ZX0", 'credit_alphanum4',
-                      new Account("GGGGGGK", "example.com"),
-                      "./assets/images/asset_icons/unknown.png")
-        ]);
-        expect(assetService.customExchanges).toEqual([
-            new ExchangePair("5555",
-                             new Asset("USD", 'USD-GAAAASLIMIT', null, new Account("GAAAASLIMIT", "GAAAASLIMIT...")),
-                             new Asset("XLM", 'Lumen', null, new Account(/*native*/null, null))),
-            new ExchangePair("12345",
-                             new Asset("lightcoin", 'lightcoin-GIBRALTARRRRR458743551', "credit_alphanum12", new Account("GIBRALTARRRRR458743551", 'money.gibralt.ar')),
-                             new Asset("XrP", 'XrP-G0G0G0G0', "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0..."))),
-            new ExchangePair("10101010",
-                             new Asset("XLM", 'Lumen', "native", new Account(null, null), "./assets/images/asset_icons/XLM.png"),
-                             new Asset("cat", 'catoken', null, new Account('GCATHOUSE', 'cat.nip')))
-        ]);
-    });
-    //mm-TODO: verify that loadExchanges() downloads the additional data from network
+    expect(assetService.customAssets).toEqual([
+      new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"),
+      new Asset("abcdef", "abcdef", "credit_alphanum12", acc, "asdf://vilence.jpg"),
+      new Asset("btC", "btC", null, new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"),
+      new Asset("CNY", "CNY", "credit_alphanum4",
+        new Account("GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX", "ripplefox.com"),
+        "ripplefox.com/cny.png"),
+      new Asset("ZX0", "ZX0", 'credit_alphanum4',
+        new Account("GGGGGGK", "example.com"),
+        "./assets/images/asset_icons/unknown.png")
+    ]);
+    expect(assetService.customExchanges).toEqual([
+      new ExchangePair("5555",
+        new Asset("USD", 'USD-GAAAASLIMIT', null, new Account("GAAAASLIMIT", "GAAAASLIMIT...")),
+        new Asset("XLM", 'Lumen', null, new Account(/*native*/null, null))),
+      new ExchangePair("12345",
+        new Asset("lightcoin", 'lightcoin-GIBRALTARRRRR458743551', "credit_alphanum12", new Account("GIBRALTARRRRR458743551", 'money.gibralt.ar')),
+        new Asset("XrP", 'XrP-G0G0G0G0', "credit_alphanum4", new Account("G0G0G0G0", "G0G0G0G0..."))),
+      new ExchangePair("10101010",
+        new Asset("XLM", 'Lumen', "native", new Account(null, null), "./assets/images/asset_icons/XLM.png"),
+        new Asset("cat", 'catoken', null, new Account('GCATHOUSE', 'cat.nip')))
+    ]);
+  });
+  //mm-TODO: verify that loadExchanges() downloads the additional data from network
 
-    it('availableAssets contains common + custom assets', () => {
-        expect(assetService.availableAssets.length).toBe(4+5);
-        expect(assetService.availableAssets[0]).toBe(KnownAssets.XLM);
-        expect(assetService.availableAssets[4]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
-    });
+  it('availableAssets contains common + custom assets', () => {
+    expect(assetService.availableAssets.length).toBe(4+5);
+    expect(assetService.availableAssets[0]).toBe(KnownAssets.XLM);
+    expect(assetService.availableAssets[4]).toEqual(new Asset("ABC", "ABC", null, new Account("G0101010101010101", "google.com"), "https://google.com/dog.png"));
+  });
 
-    it('#getAsset returns native Assets for ID "XlM"', () => {
-        const asset = assetService.getAsset('XLM');
+  it('#getAsset returns native Assets for ID "XlM"', () => {
+    const asset = assetService.getAsset('XLM');
         
-        expect(asset).toBe(KnownAssets.XLM);
-    });
+    expect(asset).toBe(KnownAssets.XLM);
+  });
 
-    it('#getAsset throws error for invalid asset ID format', () => {
-        expect(() => assetService.getAsset('TOKEN_by_GGGGGGACCOUNT')).toThrowError('Invalid asset identification: TOKEN_by_GGGGGGACCOUNT');
-    });
+  it('#getAsset throws error for invalid asset ID format', () => {
+    expect(() => assetService.getAsset('TOKEN_by_GGGGGGACCOUNT')).toThrowError('Invalid asset identification: TOKEN_by_GGGGGGACCOUNT');
+  });
 
-    it('#getAsset returns Assets from loaded assets for recognized ID', () => {
-        const asset = assetService.getAsset('ZX0-GGGGGGK');
+  it('#getAsset returns Assets from loaded assets for recognized ID', () => {
+    const asset = assetService.getAsset('ZX0-GGGGGGK');
         
-        expect(asset).toEqual(new Asset("ZX0", "ZX0", 'credit_alphanum4', new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"));
-    });
+    expect(asset).toEqual(new Asset("ZX0", "ZX0", 'credit_alphanum4', new Account("GGGGGGK", "example.com"), "./assets/images/asset_icons/unknown.png"));
+  });
 
-    it('#getAsset creates Assets and loads details from network', () => {
-        const asset = assetService.getAsset('TEST-GGGTEST840512');
+  it('#getAsset creates Assets and loads details from network', () => {
+    const asset = assetService.getAsset('TEST-GGGTEST840512');
         
-        expect(asset).toEqual(new Asset('TEST', 'Test-o-coin', 'credit_alphanum4', new Account('GGGTEST840512', 'scam-tok.en'), 'google.com/test.svg'));
-    });
+    expect(asset).toEqual(new Asset('TEST', 'Test-o-coin', 'credit_alphanum4', new Account('GGGTEST840512', 'scam-tok.en'), 'google.com/test.svg'));
+  });
 
-    it('#getAsset creates Assets and tries to load details from network, fills only domain when data from issuer is unavailable', () => {
-        const asset = assetService.getAsset('VOID-GENERAL');
+  it('#getAsset creates Assets and tries to load details from network, fills only domain when data from issuer is unavailable', () => {
+    const asset = assetService.getAsset('VOID-GENERAL');
 
-        expect(asset).toEqual(new Asset('VOID', 'VOID-GENERAL', 'credit_alphanum4', new Account("GENERAL", "scam-tok.en"), "./assets/images/asset_icons/unknown.png"));
-    });
+    expect(asset).toEqual(new Asset('VOID', 'VOID-GENERAL', 'credit_alphanum4', new Account("GENERAL", "scam-tok.en"), "./assets/images/asset_icons/unknown.png"));
+  });
 
-    it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
-        assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));
-        expect(assetService.customAssets.length).toBe(6);
+  it("#AddCustomAsset() gives NULL for duplicate entry and doesn't add it", () => {
+    assetService.customAssets.push(new Asset("JPY", "Japanese yen", null, KnownAccounts.Mobius));
+    expect(assetService.customAssets.length).toBe(6);
 
-        expect(assetService.AddCustomAsset("JPY", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH")).toBeNull();
+    expect(assetService.AddCustomAsset("JPY", "GA6HCMBLTZS5VYYBCATRBRZ3BZJMAFUDKYYF6AH6MVCMGWMRDNSWJPIH")).toBeNull();
 
-        expect(assetService.customAssets.length).toBe(6);
-    });
+    expect(assetService.customAssets.length).toBe(6);
+  });
     
-    it("#AddCustomAsset() with unknown issuer", () => {
-        expect(assetService.customAssets.length).toBe(5);
+  it("#AddCustomAsset() with unknown issuer", () => {
+    expect(assetService.customAssets.length).toBe(5);
 
-        const newAsset = assetService.AddCustomAsset("04", "GWYNETH");
+    const newAsset = assetService.AddCustomAsset("04", "GWYNETH");
 
-        expect(assetService.customAssets.length).toBe(6);
-        expect(newAsset?.code).toBe("04");
-        expect(newAsset?.fullName).toBe("04");
-        expect(newAsset?.type).toBe("credit_alphanum4");
-        expect(newAsset?.issuer).toEqual(new Account("GWYNETH", "GWYNETH..."))
-    });
+    expect(assetService.customAssets.length).toBe(6);
+    expect(newAsset?.code).toBe("04");
+    expect(newAsset?.fullName).toBe("04");
+    expect(newAsset?.type).toBe("credit_alphanum4");
+    expect(newAsset?.issuer).toEqual(new Account("GWYNETH", "GWYNETH..."))
+  });
 
-    it("#RemoveCustomAsset() deletes custom asset", () => {
-        assetService.customAssets.push(new Asset("TRY", "Turkish lyra", null, new Account("GOGODanceQQQ", "nebul.ar")));
-        expect(assetService.customAssets.length).toBe(6);
-        expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(true);
-        expect(assetService.customAssets.length).toBe(5);
-    });
+  it("#RemoveCustomAsset() deletes custom asset", () => {
+    assetService.customAssets.push(new Asset("TRY", "Turkish lyra", null, new Account("GOGODanceQQQ", "nebul.ar")));
+    expect(assetService.customAssets.length).toBe(6);
+    expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(true);
+    expect(assetService.customAssets.length).toBe(5);
+  });
 
-    it("#RemoveCustomAsset() returns false and doesn't delete anything for missing asset", () => {
-        expect(assetService.customAssets.length).toBe(5);
-        expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(false);
-        expect(assetService.customAssets.length).toBe(5);
-    });
+  it("#RemoveCustomAsset() returns false and doesn't delete anything for missing asset", () => {
+    expect(assetService.customAssets.length).toBe(5);
+    expect(assetService.RemoveCustomAsset("TRY", "GOGODanceQQQ")).toBe(false);
+    expect(assetService.customAssets.length).toBe(5);
+  });
 
-    it("#CreateCustomExchange() creates new XLM/XLM pair and adds to custom exchanges", () => {
-        expect(assetService.customExchanges.length).toBe(3);
-        const newPair = assetService.CreateCustomExchange();
-        expect(assetService.customExchanges.length).toBe(4);
-        expect(newPair.id).toBeTruthy();
-        expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE));
-        expect(newPair.counterAsset.code).toBe("XLM");
-    });
+  it("#CreateCustomExchange() creates new XLM/XLM pair and adds to custom exchanges", () => {
+    expect(assetService.customExchanges.length).toBe(3);
+    const newPair = assetService.CreateCustomExchange();
+    expect(assetService.customExchanges.length).toBe(4);
+    expect(newPair.id).toBeTruthy();
+    expect(newPair.baseAsset).toEqual(new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE));
+    expect(newPair.counterAsset.code).toBe("XLM");
+  });
 
-    it("#UpdateCustomExchange() updates existing pair", () => {
-        //Sanity checks first
-        expect(assetService.customExchanges.length).toBe(3);
-        expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GIBRALTARRRRR458743551");
-        expect(assetService.customExchanges[1].counterAsset.code).toBe("XrP");
-        const updatedExch = assetService.UpdateCustomExchange("12345", new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", null)),
-                                                                       new Asset("DDD", "dungeon dollar", null, new Account("GBBBBBBBBBBBB", "hugo.boss")));
-        expect(assetService.customExchanges.length).toBe(3);
-        expect(updatedExch.id).toBe("12345");
-        expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", "GUPDATED...")));
-        expect(updatedExch).toBe(assetService.customExchanges[1]);
-        expect(updatedExch.counterAsset.code).toBe("DDD");
-    });
+  it("#UpdateCustomExchange() updates existing pair", () => {
+    //Sanity checks first
+    expect(assetService.customExchanges.length).toBe(3);
+    expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GIBRALTARRRRR458743551");
+    expect(assetService.customExchanges[1].counterAsset.code).toBe("XrP");
+    const updatedExch = assetService.UpdateCustomExchange("12345", new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", null)),
+      new Asset("DDD", "dungeon dollar", null, new Account("GBBBBBBBBBBBB", "hugo.boss")));
+    expect(assetService.customExchanges.length).toBe(3);
+    expect(updatedExch.id).toBe("12345");
+    expect(updatedExch.baseAsset).toEqual(new Asset("MXN", "Mexican peso", null, new Account("GUPDATED", "GUPDATED...")));
+    expect(updatedExch).toBe(assetService.customExchanges[1]);
+    expect(updatedExch.counterAsset.code).toBe("DDD");
+  });
 
-    it("#UpdateCustomExchange() with unknow exchange ID returns null", () => {
-        const exPair = assetService.UpdateCustomExchange("no_such_exchange_id",
-                                                         new Asset("ABC", "$", null, new Account("G012", null)),
-                                                         KnownAssets.XLM);
-        expect(exPair).toBeNull();
-    });
+  it("#UpdateCustomExchange() with unknow exchange ID returns null", () => {
+    const exPair = assetService.UpdateCustomExchange("no_such_exchange_id",
+      new Asset("ABC", "$", null, new Account("G012", null)),
+      KnownAssets.XLM);
+    expect(exPair).toBeNull();
+  });
 
-    it("#RemoveCustomExchange() removes existing exchange pair", () => {
-        expect(assetService.customExchanges.length).toBe(3);
-        expect(assetService.RemoveCustomExchange("12345")).toBe(true);
-        expect(assetService.customExchanges.length).toBe(2);
-        expect(assetService.customExchanges).toContain(jasmine.objectContaining( { id : "5555"}));
-        expect(assetService.customExchanges).not.toContain(jasmine.objectContaining( { id : "12345"}));
-        expect(assetService.customExchanges).toContain(jasmine.objectContaining( { id : "10101010" }));
-    });
+  it("#RemoveCustomExchange() removes existing exchange pair", () => {
+    expect(assetService.customExchanges.length).toBe(3);
+    expect(assetService.RemoveCustomExchange("12345")).toBe(true);
+    expect(assetService.customExchanges.length).toBe(2);
+    expect(assetService.customExchanges).toContain(jasmine.objectContaining( { id : "5555"}));
+    expect(assetService.customExchanges).not.toContain(jasmine.objectContaining( { id : "12345"}));
+    expect(assetService.customExchanges).toContain(jasmine.objectContaining( { id : "10101010" }));
+  });
 
-    it("#RemoveCustomExchange() doesn't remove non-existing exchange pair", () => {
-        expect(assetService.customExchanges.length).toBe(3);
-        expect(assetService.RemoveCustomExchange("0968dt4uwe5a6074d0gsdf")).toBe(false);
-        expect(assetService.customExchanges.length).toBe(3);
-    });
+  it("#RemoveCustomExchange() doesn't remove non-existing exchange pair", () => {
+    expect(assetService.customExchanges.length).toBe(3);
+    expect(assetService.RemoveCustomExchange("0968dt4uwe5a6074d0gsdf")).toBe(false);
+    expect(assetService.customExchanges.length).toBe(3);
+  });
 
-    it("#SwapCustomExchanges() switches 2 custom markets", () => {
-        //Sanity check before the swap
-        expect(assetService.customExchanges.length).toBe(3);
-        expect(assetService.customExchanges[0].id).toBe("5555");
-        expect(assetService.customExchanges[1].id).toBe("12345");
+  it("#SwapCustomExchanges() switches 2 custom markets", () => {
+    //Sanity check before the swap
+    expect(assetService.customExchanges.length).toBe(3);
+    expect(assetService.customExchanges[0].id).toBe("5555");
+    expect(assetService.customExchanges[1].id).toBe("12345");
 
-        assetService.SwapCustomExchanges(assetService.customExchanges[1], assetService.customExchanges[0]);
+    assetService.SwapCustomExchanges(assetService.customExchanges[1], assetService.customExchanges[0]);
 
-        expect(assetService.customExchanges[0].id).toBe("12345");
-        expect(assetService.customExchanges[0].baseAsset.code).toBe("lightcoin");
-        expect(assetService.customExchanges[1].id).toBe("5555");
-        expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GAAAASLIMIT");
-        expect(assetService.customExchanges[2].id).toBe("10101010");    //Must stay unchanged
-    });
+    expect(assetService.customExchanges[0].id).toBe("12345");
+    expect(assetService.customExchanges[0].baseAsset.code).toBe("lightcoin");
+    expect(assetService.customExchanges[1].id).toBe("5555");
+    expect(assetService.customExchanges[1].baseAsset.issuer?.address).toBe("GAAAASLIMIT");
+    expect(assetService.customExchanges[2].id).toBe("10101010");    //Must stay unchanged
+  });
 
-    it("#serializeToCookie() works", () => {
-        assetService.customAssets.push(KnownAssets["USD-AnchorUsd"]);
-        assetService.customExchanges.push(new ExchangePair("c00k1e",
-                                                          new Asset("C00K", "Cookie token", "credit_alpanum4", new Account("G0141414", "asdf.org")),
-                                                          KnownAssets["ETH-fchain"]));
-        //Call one of the methods that internally call serializeToCookie()
-        assetService.CreateCustomExchange();
+  it("#serializeToCookie() works", () => {
+    assetService.customAssets.push(KnownAssets["USD-AnchorUsd"]);
+    assetService.customExchanges.push(new ExchangePair("c00k1e",
+      new Asset("C00K", "Cookie token", "credit_alpanum4", new Account("G0141414", "asdf.org")),
+      KnownAssets["ETH-fchain"]));
+    //Call one of the methods that internally call serializeToCookie()
+    assetService.CreateCustomExchange();
 
-        const cookieService = TestBed.inject(CookieService) as unknown as CookieServiceStub;
-        expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|GGGGGGGGaposdyuh...|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
-        expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/cat-GCATHOUSE,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
-    });
+    const cookieService = TestBed.inject(CookieService) as unknown as CookieServiceStub;
+    expect(cookieService.values["ass"]).toBe("ABC|G0101010101010101|google.com|https://google.com/dog.png,abcdef|GGGGGGGGaposdyuhfjkasndfm8415|GGGGGGGGaposdyuh...|asdf://vilence.jpg,btC|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|./assets/images/asset_icons/unknown.png,USD|GDUKMGUGDZQK6YHYA5Z6AY2G4XDSZPSZ3SW5UN3ARVMO6QSRDWP5YLEX|anchorusd.com|./assets/images/asset_icons/unknown.png");
+    expect(cookieService.values["exc"]).toMatch(/5555#USD-GAAAASLIMIT\/XLM,12345#lightcoin-GIBRALTARRRRR458743551\/XrP-G0G0G0G0,10101010#XLM\/cat-GCATHOUSE,c00k1e#C00K-G0141414\/ETH-GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU,\d{13}#XLM\/XLM/);
+  });
 });
 
 
 class CookieServiceStub {
-    get(key: string): string {
-        if ("ass" === key) {
-            return "ABC|G0101010101010101|google.com|https://google.com/dog.png, abcdef|GGGGGGGGaposdyuhfjkasndfm8415||asdf://vilence.jpg,btC|GGGGGGK|example.com|,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|";
-        }
-        if ("exc" === key) {
-            return "5555#USD-GAAAASLIMIT/XLM,12345#lightcoin-GIBRALTARRRRR458743551/XrP-G0G0G0G0, 10101010#XLM/cat-GCATHOUSE";
-        }
-        else throw new Error("No test data ready for given inputs (cookie key = '" + key + "')");
+  get(key: string): string {
+    if ("ass" === key) {
+      return "ABC|G0101010101010101|google.com|https://google.com/dog.png, abcdef|GGGGGGGGaposdyuhfjkasndfm8415||asdf://vilence.jpg,btC|GGGGGGK|example.com|,CNY|GAREELUB43IRHWEASCFBLKHURCGMHE5IF6XSE7EXDLACYHGRHM43RFOX|ripplefox.com|ripplefox.com/cny.png,ZX0|GGGGGGK|example.com|";
+    }
+    if ("exc" === key) {
+      return "5555#USD-GAAAASLIMIT/XLM,12345#lightcoin-GIBRALTARRRRR458743551/XrP-G0G0G0G0, 10101010#XLM/cat-GCATHOUSE";
+    }
+    else throw new Error("No test data ready for given inputs (cookie key = '" + key + "')");
+  }
+
+  values = [];
+  put(key: string, value: string, options: any) {
+    if ("ass" === key || "exc" === key) {
+      this.values[key] = value;
+      return;
     }
 
-    values = new Array();
-    put(key: string, value: string, options: any) {
-        if ("ass" === key || "exc" === key) {
-            this.values[key] = value;
-            return;
-        }
-
-        throw `No test data ready for inputs key=${key}; value=${value}`;
-    }
+    throw `No test data ready for inputs key=${key}; value=${value}`;
+  }
 }
 
 class HorizonRestServiceStub {
-    public getIssuerConfigUrl (code: string, assetIssuer: string): Observable<string|null> {
-        if ('GAAAASLIMIT' === assetIssuer || 'G0G0G0G0' === assetIssuer) {
-            return of(null);
-        }
-        if ('GIBRALTARRRRR458743551' === assetIssuer) {
-            return of('http://money.gibralt.ar/asf');
-        }
-        if ('GCATHOUSE' === assetIssuer) {
-            return of('https://cat.nip');
-        }
+  public getIssuerConfigUrl (code: string, assetIssuer: string): Observable<string|null> {
+    if ('GAAAASLIMIT' === assetIssuer || 'G0G0G0G0' === assetIssuer) {
+      return of(null);
+    }
+    if ('GIBRALTARRRRR458743551' === assetIssuer) {
+      return of('http://money.gibralt.ar/asf');
+    }
+    if ('GCATHOUSE' === assetIssuer) {
+      return of('https://cat.nip');
+    }
 
-        return of("ftp://scam-tok.en/stellar.toml")
-    };
+    return of("ftp://scam-tok.en/stellar.toml")
+  }
 }
 
 class TomlConfigServiceStub {
-    public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
-        const issuerConfig = {
-            currencies: []
-        } as unknown as IssuerConfiguration;
-        let tomlAsset = new TomlAsset("TEST", "GGGTEST840512");
-        tomlAsset.name = "Test-o-coin";
-        tomlAsset.image = "google.com/test.svg";
-        issuerConfig.currencies.push(tomlAsset);
+  public getIssuerConfig(tomlFileUrl: string) : Observable<IssuerConfiguration> {
+    const issuerConfig = {
+      currencies: []
+    } as unknown as IssuerConfiguration;
+    let tomlAsset = new TomlAsset("TEST", "GGGTEST840512");
+    tomlAsset.name = "Test-o-coin";
+    tomlAsset.image = "google.com/test.svg";
+    issuerConfig.currencies.push(tomlAsset);
 
-        tomlAsset = new TomlAsset("TOK8", "GASDFtest");
-        tomlAsset.name = "Anemic token";
-        issuerConfig.currencies.push(tomlAsset);
+    tomlAsset = new TomlAsset("TOK8", "GASDFtest");
+    tomlAsset.name = "Anemic token";
+    issuerConfig.currencies.push(tomlAsset);
 
-        tomlAsset = new TomlAsset('cat', 'GCATHOUSE');
-        tomlAsset.name = 'catoken';
-        issuerConfig.currencies.push(tomlAsset);
+    tomlAsset = new TomlAsset('cat', 'GCATHOUSE');
+    tomlAsset.name = 'catoken';
+    issuerConfig.currencies.push(tomlAsset);
 
-        return of(issuerConfig);
-    }
+    return of(issuerConfig);
+  }
 } 

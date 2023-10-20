@@ -7,18 +7,18 @@ describe('CookieConsentComponent', () => {
 
   beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
-        providers: [
-            {
-                provide: NebularService,
-                useValue: { }
-            }
-        ]
+      providers: [
+        {
+          provide: NebularService,
+          useValue: { }
+        }
+      ]
     })
-    .compileComponents();
+      .compileComponents();
   }));
 
-    it('should create the component', inject([NebularService], (nebularService) => {
-        const component = new CookieConsentComponent(nebularService);
-        expect(component).toBeTruthy();
-    }));
+  it('should create the component', inject([NebularService], (nebularService) => {
+    const component = new CookieConsentComponent(nebularService);
+    expect(component).toBeTruthy();
+  }));
 });

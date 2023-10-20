@@ -30,34 +30,34 @@ import { CookieConsentComponent } from './cookie-consent/cookie-consent.componen
 
 
 @NgModule({
-    declarations: [
-        AppComponent,
-        OverviewComponent,
-        MyExchangesComponent,
-        ExchangeComponent,
-        ConfigurationComponent,
-        PageNotFoundComponent,
-        ExchangeThumbnailComponent,
-        TradeHistoryComponent,
-        OrderbookComponent,
-        CustomExchangeComponent,
-        CustomAssetListComponent,
-        ExchangeAnalyticsComponent,
-        LiveTradesComponent,
-        CustomAssetWizardComponent,
-        CookieConsentComponent
-    ],
-    imports: [
-        BrowserModule,
-        BrowserAnimationsModule,
-        FormsModule,
-        HttpClientModule,
-        MatSelectModule,
-        MatSortModule,
-        AppRoutingModule,
-        CookieModule.forRoot()
-    ],
-    providers: [Title, AssetService, HorizonRestService, NebularService, UiActionsService],
-    bootstrap: [AppComponent]
+  declarations: [
+    AppComponent,
+    OverviewComponent,
+    MyExchangesComponent,
+    ExchangeComponent,
+    ConfigurationComponent,
+    PageNotFoundComponent,
+    ExchangeThumbnailComponent,
+    TradeHistoryComponent,
+    OrderbookComponent,
+    CustomExchangeComponent,
+    CustomAssetListComponent,
+    ExchangeAnalyticsComponent,
+    LiveTradesComponent,
+    CustomAssetWizardComponent,
+    CookieConsentComponent
+  ],
+  imports: [
+    BrowserModule,
+    BrowserAnimationsModule,
+    FormsModule,
+    HttpClientModule,
+    MatSelectModule,
+    MatSortModule,
+    AppRoutingModule,
+    CookieModule.forRoot()
+  ],
+  providers: [Title, AssetService, HorizonRestService, NebularService, UiActionsService],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }
