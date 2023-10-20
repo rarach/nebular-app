@@ -16,7 +16,6 @@ import { ExchangeThumbnailComponent } from '../exchange-thumbnail/exchange-thumb
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { UiActionsService } from '../services/ui-actions.service';
 
-
 describe('CustomExchangeComponent', () => {
   let component: CustomExchangeComponent;
   let fixture: ComponentFixture<CustomExchangeComponent>;
@@ -58,7 +57,7 @@ describe('CustomExchangeComponent', () => {
 
   it("#updateExchange() calls service.UpdateCustomExchange with correct inputs", () => {
     expect(component.exchange.baseAsset.code).toBe("RRR");
-    expect(component.exchange.counterAsset.issuer!.address).toBe("G014");
+    expect(component.exchange.counterAsset.issuer?.address).toBe("G014");
 
     component.selectedBaseAsset = new DropdownOption(new Asset("ABC", "abc muney", null, new Account("GARGAMELLL", "rag.gar")),
       "ABC-GARGame.l", "tip");
@@ -66,7 +65,7 @@ describe('CustomExchangeComponent', () => {
       "CHF-GANything (swiss franck)", "good ol' frank");
     const assetService = TestBed.get(AssetService);
     expect(assetService.updateCalled).toBeFalsy();
-    component.updateExchange(null);
+    component.updateExchange();
     expect(assetService.updateCalled).toBeTruthy();
   });
 
@@ -92,7 +91,7 @@ describe('CustomExchangeComponent', () => {
     spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
 
     let stopPropagationCalled = false;
-    const eventSpy = { stopPropagation: () => stopPropagationCalled = true };
+    const eventSpy: Event = { stopPropagation: () => stopPropagationCalled = true } as unknown as Event;
 
     component.onClick(eventSpy);
 
@@ -107,10 +106,10 @@ describe('CustomExchangeComponent', () => {
       new Asset("TEST", "testCoin", null, new Account("GABRIELSSSSSS096", "test.org")),
       new Asset("NopE", "NoCoin", null, new Account("GDDD", "whet.ever")));
     spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
-    spyOn(uiService, "draggingStarted").and.callFake(() => {});
+    spyOn(uiService, "draggingStarted").and.callFake(() => { return; });
 
     let stopPropagationCalled = false;
-    const eventSpy = { stopPropagation: () => stopPropagationCalled = true };
+    const eventSpy: Event = { stopPropagation: () => stopPropagationCalled = true } as unknown as Event;
 
     component.startDrag(eventSpy);
 
@@ -144,8 +143,7 @@ describe("CustomExchangeComponent", () => {
         { provide: Router, useValue: {} },
         { provide: HorizonRestService, useClass: HorizonRestServiceStub }
       ]
-    })
-      .compileComponents();
+    }).compileComponents();
   }));
 
   it("loads available assets - unknown (custom) assets", () => {
@@ -190,8 +188,8 @@ class AssetServiceStub {
 
   updateCalled = false;
   UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset) {
-    if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer!.address &&
-            "CHF" === counterAsset.code && "GANything" === counterAsset.issuer!.address)
+    if ("cust_ex96984" === exchangeId && "ABC" === baseAsset.code && "GARGAMELLL" === baseAsset.issuer?.address &&
+            "CHF" === counterAsset.code && "GANything" === counterAsset.issuer?.address)
     {
       this.updateCalled = true;
       return null;
@@ -200,7 +198,7 @@ class AssetServiceStub {
       return null;
     }
 
-    throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer!.address} ...)`);
+    throw new Error(`No data ready for given inputs (exch id=${exchangeId}; base code=${baseAsset.code}; base issuer=${baseAsset.issuer?.address} ...)`);
   }
 
   removeCalled = false;
@@ -223,7 +221,7 @@ class AssetServiceStub {
 }
 
 class HorizonRestServiceStub {
-  getTradeAggregations(exchange: ExchangePair, interval: number): Observable<Object> {
-    return new Observable<Object>();
+  getTradeAggregations(exchange: ExchangePair, interval: number): Observable<unknown> {
+    return new Observable<unknown>();
   }
 }

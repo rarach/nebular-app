@@ -14,8 +14,8 @@ export class AssetStatistics {
   constructor(
     horizonService: HorizonRestService,
     configService: TomlConfigService,
-        public readonly assetCode: string,
-        private readonly issuer: string
+    public readonly assetCode: string,
+    private readonly issuer: string
   ) {
     horizonService.getIssuerConfigUrl(assetCode, issuer).subscribe(configUrl => {
       if (configUrl) {
@@ -23,7 +23,7 @@ export class AssetStatistics {
           next: (issuerConfig) => {
             this.loadAssetData(issuerConfig);
           },
-          error: (err) => {
+          error: () => {
             //Usually a request blocked by the browser or proxy
             this.assetIcon = Constants.UNKNOWN_ASSET_IMAGE;
           }
@@ -40,7 +40,7 @@ export class AssetStatistics {
     });
   }
 
-  public feedData(amount: number, lastPriceInXlm: number) {
+  public feedData(amount: number, lastPriceInXlm: number): void {
     this.numTrades++;
     this.volume += amount;
     this.volumeInNative = this.volume * lastPriceInXlm;

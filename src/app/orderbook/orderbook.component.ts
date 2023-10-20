@@ -52,15 +52,16 @@ export class OrderbookComponent implements OnInit, OnDestroy {
   private addCrossLinkedOffers1(originalOrderBook: any) {
     //Query XLM / baseAsset
     const xlmBaseExch = new ExchangePair("XLM-"+this._exchange.baseAsset.code, KnownAssets.XLM, this._exchange.baseAsset);
-    this.horizonService.getOrderbook(xlmBaseExch).subscribe(
-      success => {
-        const data = success as any;
-        this.addCrossLinkedOffers2(originalOrderBook, data);
-      },
-      () => {
-        this.renderOrderBook(originalOrderBook);
-      }
-    );
+    this.horizonService.getOrderbook(xlmBaseExch)
+      .subscribe({
+        next: (response) => {
+          const data = response as any;
+          this.addCrossLinkedOffers2(originalOrderBook, data);
+        },
+        error: () => {
+          this.renderOrderBook(originalOrderBook);
+        }
+      });
   }
 
   /** Fetch the XLM/counterAsset order book for cross-linked offers */
@@ -70,15 +71,16 @@ export class OrderbookComponent implements OnInit, OnDestroy {
     }
     //Query XLM / counterAsset
     const xlmCounterExch = new ExchangePair("XLM-"+this._exchange.counterAsset.code, KnownAssets.XLM, this._exchange.counterAsset);
-    this.horizonService.getOrderbook(xlmCounterExch).subscribe(
-      success => {
-        const data = success as any;
-        this.mergeOrderBooks(originalOrderBook, baseAssetOrderBook, data);
-      },
-      () =>  {
-        this.renderOrderBook(originalOrderBook);
-      }
-    );
+    this.horizonService.getOrderbook(xlmCounterExch)
+      .subscribe({
+        next: (response) => {
+          const data = response as any;
+          this.mergeOrderBooks(originalOrderBook, baseAssetOrderBook, data);
+        },
+        error: () =>  {
+          this.renderOrderBook(originalOrderBook);
+        }
+      });
   }
 
   /** Take original order book, ASSET1/XLM and ASSET2/XLM and merge them adding cross-linked items to the original book. */
@@ -191,25 +193,26 @@ export class OrderbookComponent implements OnInit, OnDestroy {
       this._dataStream.unsubscribe();
     }
 
-    this._dataStream = this.horizonService.streamOrderbook(this._exchange).subscribe(
-      success => {
-        const data = success as any;
+    this._dataStream = this.horizonService.streamOrderbook(this._exchange)
+      .subscribe({
+        next: (response) => {
+          const data = response as any;
 
-        if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
-          this.renderOrderBook(data);
+          if (this._exchange.baseAsset.IsNative() || this._exchange.counterAsset.IsNative()) {
+            this.renderOrderBook(data);
+          }
+          else {
+            this.addCrossLinkedOffers1(data);
+          }
+          this.dataStatus = DataStatus.OK;
+        },
+        error: (err) => {
+          const errorResponse = err as HttpErrorResponse;
+          this.dataStatus = DataStatus.Error;
+          this.message = "Error loading order book (server: " +
+                          errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
         }
-        else {
-          this.addCrossLinkedOffers1(data);
-        }
-        this.dataStatus = DataStatus.OK;
-      },
-      error => {
-        const errorResponse = error as HttpErrorResponse;
-        this.dataStatus = DataStatus.Error;
-        this.message = "Error loading order book (server: " +
-                        errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-      }
-    );
+      });
   }
 
   /** Set background of an offer item to visually indicate its volume (amount) relatively to cumulative volume of whole orderbook */

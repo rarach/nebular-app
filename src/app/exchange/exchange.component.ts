@@ -14,6 +14,7 @@ import { DataStatus } from '../model/data-status.enum';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
+import { OhlcData } from 'app/model/ohlc-data';
 import { Utils } from '../utils';
 
 @Component({
@@ -202,7 +203,13 @@ export class ExchangeComponent implements OnInit, OnDestroy {
           if (-1.0 == globalClose) {
             globalClose = close;
           }
-          const candle = [timestampAsNum, [open, high, low, close]];      //BUG: Horizon seems to have open and closed messed sometimes
+          const candle: OhlcData = {      //BUG: Horizon seems to have open and closed messed sometimes
+            timestamp: timestampAsNum,
+            open: open,
+            high: high,
+            low: low,
+            close: close
+          };
 
           //Collect data for bar chart with volume
           const volume = parseFloat(record.base_volume);
