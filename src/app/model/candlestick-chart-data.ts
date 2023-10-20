@@ -1,6 +1,6 @@
 import { Constants } from "./constants";
+import { OhlcData } from './ohlc-data';
 import { Utils } from "../utils";
-
 
 export class CandlestickChartData {
 
@@ -8,39 +8,38 @@ export class CandlestickChartData {
     this._configCandleSticks["scale-y"].label.text = "Price (" + counterAssetCode + ")";
   }
 
-
   /**
-     * Add data of one candle for the chart
-     * @param candle candle data in form [timestamp_as_millis, [open, high, low, close]]
-     * @param volume volume data in form [timestamp_as_millis, volume]
-     */
-  addCandleData(candle: Array<any>, volume: Array<number>) {
-    this._configCandleSticks.series[0].values.push(candle);
+   * Add data of one candle for the chart
+   * @param candle candle data
+   * @param volume volume data in form [timestamp_as_millis, volume]
+   */
+  public addCandleData(candle: OhlcData, volume: Array<number>): void {
+    this._configCandleSticks.series[0].values.push([candle.timestamp, [candle.open, candle.high, candle.low, candle.close]]);
     this._configCandleSticks.series[1].values.push(volume);
   }
 
   /**
-     * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
-     * @param timestamp timestamp of the first candle in ticks
-     */
-  setStartTime(timestamp: number) {
+   * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
+   * @param timestamp timestamp of the first candle in ticks
+   */
+  public setStartTime(timestamp: number): void {
     this._configCandleSticks["scale-x"]["min-value"] = timestamp;
   }
 
   /**
-     * Set resolution of X axis in milliseconds, i.e. how much time does one candle represent.
-     * @param millisInCandle number of miliseconds in one candle
-     */
-  setCandleSize(millisInCandle: number) {
+   * Set resolution of X axis in milliseconds, i.e. how much time does one candle represent.
+   * @param millisInCandle number of miliseconds in one candle
+   */
+  public setCandleSize(millisInCandle: number): void {
     this._configCandleSticks["scale-x"]["step"] = millisInCandle.toString();
   }
 
   /**
-     * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
-     * @param minPrice lower bound
-     * @param maxPrice upper bound
-     */
-  setPriceScale(minPrice: number, maxPrice: number) {
+   * Set scope of the Y axis, i.e. price. The axis will be divided into up to 7 equal segments for visual guidance.
+   * @param minPrice lower bound
+   * @param maxPrice upper bound
+   */
+  public setPriceScale(minPrice: number, maxPrice: number): void {
     let diff = maxPrice - minPrice;
     if (diff === 0.0) {
       //One price throughout the whole chart - stretch it a bit
@@ -61,21 +60,21 @@ export class CandlestickChartData {
   }
 
   /**
-     * Set precision of volume tooltips
-     * @param decimals number of digits to be shown after decimal separator
-     */
-  setVolumeDecimals(decimals: number) {
+   * Set precision of volume tooltips
+   * @param decimals number of digits to be shown after decimal separator
+   */
+  public setVolumeDecimals(decimals: number): void {
     this._configCandleSticks.series[1]["guide-label"].decimals = decimals;
   }
 
   /** Set range of lower part of X axis (i.e. volume) by giving upper bound. */
-  setVolumeScale(maxVolume: number) {
+  public setVolumeScale(maxVolume: number): void {
     const step = maxVolume / 3.0;
     this._configCandleSticks["scale-y-2"].values = "0:" + maxVolume.toFixed(3) + ":" + step.toFixed(3);
   }
 
   /** Get the chart data ready to be used by ZingChart */
-  getData() {
+  public getData(): { "scale-x", "scale-y", series } {
     return this._configCandleSticks;
   }
 
@@ -224,12 +223,13 @@ export class CandlestickChartData {
           "background-color": Constants.Style.RED
         },
         "values":[
-          /*e.g.                [1438592400000, [120.8800,	121.7300,	120.1700,	121.1200]], //08/03/15
-                     [1438678800000, [121.5000,	122.0800,	120.6100,	121.6900]], //08/04/15
-                     [1438765200000, [110.8300,	113.9500,	109.5000,	110.5300]], //08/05/15
-                     [1438851600000, [110.4000,	110.4000,	104.2400,	108.5500]], //08/06/15
-                     [1438938000000, [108.7500,	109.5598,	107.6600,	109.3500]], //08/07/15
-                     */
+          /* Candle data  in form [timestamp_as_millis, [open, high, low, close]], e.g.
+            [1438592400000, [120.8800,	121.7300,	120.1700,	121.1200]], //08/03/15
+            [1438678800000, [121.5000,	122.0800,	120.6100,	121.6900]], //08/04/15
+            [1438765200000, [110.8300,	113.9500,	109.5000,	110.5300]], //08/05/15
+            [1438851600000, [110.4000,	110.4000,	104.2400,	108.5500]], //08/06/15
+            [1438938000000, [108.7500,	109.5598,	107.6600,	109.3500]], //08/07/15
+          */
         ]
       },
       {
@@ -243,12 +243,12 @@ export class CandlestickChartData {
         },
         "background-color": Constants.Style.GRAY,
         "values":[
-          /*e.g.                [1438592400000, 8.43], //08/03/15
+          /*e.g.     [1438592400000, 8.43], //08/03/15
                      [1438678800000, 12.62], //08/04/15
                      [1438765200000, 61.01], //08/05/15
                      [1438851600000, 57.18], //08/06/15
                      [1438938000000, 15.79], //08/07/15
-                     */            ]
+          */]
       }
     ]
   };

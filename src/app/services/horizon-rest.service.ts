@@ -35,28 +35,28 @@ export class HorizonRestService {
 
 
   /**
-     * Retrieve trade history in form of OHLC candles for given exchange.
-     * @param exchange exchange pair to get the aggregation for
-     * @param interval candle size in milliseconds (e.g. 300000 for 5 minutes, 900000 for 15 minutes etc.)
-     * @param maxCandles max. records to return. Must not exceed 200 as that's current limit supported by Horizon
-     */
+   * Retrieve trade history in form of OHLC candles for given exchange.
+   * @param exchange exchange pair to get the aggregation for
+   * @param interval candle size in milliseconds (e.g. 300000 for 5 minutes, 900000 for 15 minutes etc.)
+   * @param maxCandles max. records to return. Must not exceed 200 as that's current limit supported by Horizon
+   */
   public getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles = 96) : Observable<unknown> {
     const url = this.getApiUrl() + "/trade_aggregations?" +
-                    exchange.baseAsset.ToUrlParameters("base") + "&" + exchange.counterAsset.ToUrlParameters("counter") +
-                    "&order=desc&resolution=" + interval + "&limit=" + maxCandles;
+                exchange.baseAsset.ToUrlParameters("base") + "&" + exchange.counterAsset.ToUrlParameters("counter") +
+                "&order=desc&resolution=" + interval + "&limit=" + maxCandles;
 
     const response = this.http.get(url);
     return response;
   }
 
   /**
-     * Retrieve trade history in descending order (most recent first)
-     * @param exchange exchange pair to get the past trades for
-     * @param maxItems maximum number of trades to get
-     */
+   * Retrieve trade history in descending order (most recent first)
+   * @param exchange exchange pair to get the past trades for
+   * @param maxItems maximum number of trades to get
+   */
   public getTradeHistory(exchange: ExchangePair, maxItems = 40): Observable<unknown> {
     const url = this.getApiUrl() + "/trades?" + exchange.baseAsset.ToUrlParameters("base") +
-                    "&" + exchange.counterAsset.ToUrlParameters("counter") + "&order=desc&limit=" + maxItems;
+                "&" + exchange.counterAsset.ToUrlParameters("counter") + "&order=desc&limit=" + maxItems;
 
     const response = this.http.get(url);
     return response;
@@ -101,7 +101,7 @@ export class HorizonRestService {
   /** Stream orderbook for given exchange pair. Fresh data are pushed on each update of the orderbook. */
   streamOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
     const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
-                    "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems + "&cursor=now";
+                "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems + "&cursor=now";
 
     return new Observable<unknown>(obs => {
       const es = new EventSource(url);
@@ -116,7 +116,7 @@ export class HorizonRestService {
   /** Get current orderbook for given exchange in one request. */
   getOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
     const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
-                    "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
+                "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
 
     const response = this.http.get(url);
     return response;
@@ -144,8 +144,8 @@ export class HorizonRestService {
   }
 
   /**
-     * Get URL of issuer configuration (usually a TOML file) containing given asset definition
-     */
+   * Get URL of issuer configuration (usually a TOML file) containing given asset definition
+   */
   getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string|null> {
     const horizonUrl = this.getApiUrl();
     const url = horizonUrl + `/assets?asset_code=${assetCode}&asset_issuer=${assetIssuer}`;

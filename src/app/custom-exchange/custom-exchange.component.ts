@@ -8,46 +8,47 @@ import { DropdownOption } from '../model/dropdown-option';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { UiActionsService } from '../services/ui-actions.service';
 
-
 @Component({
   selector: 'nebular-custom-exchange',
   templateUrl: './custom-exchange.component.html',
   styleUrls: ['./custom-exchange.component.css']
 })
 export class CustomExchangeComponent implements OnInit {
-    @Input() exchange: ExchangePair;
+    @Input() public exchange: ExchangePair;
 
-    assetOptions: DropdownOption<Asset>[] = [];
-    selectedBaseAsset: DropdownOption<Asset> = null;
-    selectedCounterAsset: DropdownOption<Asset> = null;
-    highlightDropTarget = false;
+    public assetOptions: DropdownOption<Asset>[] = [];
+    public selectedBaseAsset: DropdownOption<Asset> = null;
+    public selectedCounterAsset: DropdownOption<Asset> = null;
+    public highlightDropTarget = false;
 
 
-    constructor(private readonly assetService: AssetService, public readonly uiActions: UiActionsService) {
+    constructor(
+      private readonly assetService: AssetService,
+      public readonly uiActions: UiActionsService
+    ) {
       this.loadAssets();
     }
 
-    ngOnInit() {
+    public ngOnInit(): void {
       this.setupUi();
     }
 
-
-    updateExchange(event)
+    public updateExchange(): void
     {
       this.assetService.UpdateCustomExchange(this.exchange.id, this.selectedBaseAsset.value, this.selectedCounterAsset.value);
     }
 
-    removeExchange() {
+    public removeExchange(): void {
       this.assetService.RemoveCustomExchange(this.exchange.id);
     }
 
-    onMouseOver() {
+    public onMouseOver(): void {
       if (this.uiActions.DraggingExchange !== null && this.uiActions.DraggingExchange.id !== this.exchange.id) {
         this.highlightDropTarget = true;
       }
     }
 
-    onClick(event) {
+    public onClick(event: Event): void {
       event.stopPropagation();
 
       if (this.uiActions.DraggingExchange !== null) {
@@ -59,7 +60,7 @@ export class CustomExchangeComponent implements OnInit {
       }
     }
 
-    startDrag(event) {
+    public startDrag(event: Event): void {
       event.stopPropagation();    //Don't mess with onClick()
       this.uiActions.draggingStarted(this.exchange);
     }

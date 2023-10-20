@@ -61,87 +61,88 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
 
     private renderLineChart() {
       //We always request 15min candles because with smaller interval we couldn't get 1 day worth of data in single request
-      this.horizonService.getTradeAggregations(this.exchange, 900000).subscribe(
-        success => {
-          const data = success as any;
-          if (data._embedded.records.length == 0) {
-            this.dataStatus = DataStatus.NoData;
-            this.userMessage = "No trades in last 24 hours";
-            return;
-          }
-          //Check age of last trade
-          const minDate = new Date();
-          minDate.setDate(minDate.getDate() - 1);
-          const yesterday = minDate.getTime();
-          const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
-          if (firstTimestamp < yesterday) {
-            //Last trade is older than 24hrs => we have no data
-            this.dataStatus = DataStatus.NoData;
-            this.userMessage = "No trades in last 24 hours";
-            return;
-          }
-
-          this._lineChart.clearData();
-
-          $("#"+this.chartPlaceholderId).empty();     //TODO: Angular way?
-          this.dataStatus = DataStatus.OK;
-          let minPrice = Number.MAX_VALUE;
-          let maxPrice = -1.0;
-          let lastPrice = -999999;
-          let startPrice;
-
-          for(const record of data._embedded.records) {
-            const timestampAsNum = Number(record.timestamp);
-            if (timestampAsNum < yesterday) {
-              break;    //Break at first value older than 24hrs
+      this.horizonService.getTradeAggregations(this.exchange, 900000)
+        .subscribe({
+          next: (response) => {
+            const data = response as any;
+            if (data._embedded.records.length == 0) {
+              this.dataStatus = DataStatus.NoData;
+              this.userMessage = "No trades in last 24 hours";
+              return;
+            }
+            //Check age of last trade
+            const minDate = new Date();
+            minDate.setDate(minDate.getDate() - 1);
+            const yesterday = minDate.getTime();
+            const firstTimestamp = new Date(Number(data._embedded.records[0].timestamp)).getTime();
+            if (firstTimestamp < yesterday) {
+              //Last trade is older than 24hrs => we have no data
+              this.dataStatus = DataStatus.NoData;
+              this.userMessage = "No trades in last 24 hours";
+              return;
             }
 
-            //Collect value for a single point in the chart as average
-            const avgValue = parseFloat(record.avg);
-            if (lastPrice === -999999) {
-              lastPrice = avgValue;
+            this._lineChart.clearData();
+
+            $("#"+this.chartPlaceholderId).empty();     //TODO: Angular way?
+            this.dataStatus = DataStatus.OK;
+            let minPrice = Number.MAX_VALUE;
+            let maxPrice = -1.0;
+            let lastPrice = -999999;
+            let startPrice;
+
+            for(const record of data._embedded.records) {
+              const timestampAsNum = Number(record.timestamp);
+              if (timestampAsNum < yesterday) {
+                break;    //Break at first value older than 24hrs
+              }
+
+              //Collect value for a single point in the chart as average
+              const avgValue = parseFloat(record.avg);
+              if (lastPrice === -999999) {
+                lastPrice = avgValue;
+              }
+              startPrice = avgValue;
+
+              if (avgValue > maxPrice) {
+                maxPrice = avgValue;
+              }
+              if (avgValue < minPrice) {
+                minPrice = avgValue;
+              }
+
+              const point = [timestampAsNum, avgValue];
+              this._lineChart.addPointData(point);
+              this._lineChart.setStartTime(timestampAsNum);
             }
-            startPrice = avgValue;
 
-            if (avgValue > maxPrice) {
-              maxPrice = avgValue;
+            //Special case: if we have only one point in the chart, use trick and add artificial starting point
+            //              with value equal to the existing point
+            if (this._lineChart.DataPointCount() === 1) {
+              const artifPoint = [yesterday, startPrice];
+              this._lineChart.addPointData(artifPoint);
+              this._lineChart.setStartTime(yesterday);
             }
-            if (avgValue < minPrice) {
-              minPrice = avgValue;
-            }
 
-            const point = [timestampAsNum, avgValue];
-            this._lineChart.addPointData(point);
-            this._lineChart.setStartTime(timestampAsNum);
-          }
-
-          //Special case: if we have only one point in the chart, use trick and add artificial starting point
-          //              with value equal to the existing point
-          if (this._lineChart.DataPointCount() === 1) {
-            const artifPoint = [yesterday, startPrice];
-            this._lineChart.addPointData(artifPoint);
-            this._lineChart.setStartTime(yesterday);
-          }
-
-          this.setPriceStatistics(startPrice, lastPrice);
-          this._lineChart.setPriceScale(minPrice, maxPrice);
-          zingchart.THEME=null;
-          this.ngZone.runOutsideAngular(() => {
-            zingchart.render({
-              id : this.chartPlaceholderId,
-              data : this._lineChart.getData(),
-              height: "100%",
-              width: "100%"
+            this.setPriceStatistics(startPrice, lastPrice);
+            this._lineChart.setPriceScale(minPrice, maxPrice);
+            zingchart.THEME=null;
+            this.ngZone.runOutsideAngular(() => {
+              zingchart.render({
+                id : this.chartPlaceholderId,
+                data : this._lineChart.getData(),
+                height: "100%",
+                width: "100%"
+              });
             });
-          });
-        },
-        error => {
-          const errorResponse = error as HttpErrorResponse;
-          this.userMessage = "Couldn't load data for this exchange (server: " +
-                             errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
-          this.dataStatus = DataStatus.Error;
-        }
-      );
+          },
+          error: (err) => {
+            const errorResponse = err as HttpErrorResponse;
+            this.userMessage = "Couldn't load data for this exchange (server: " +
+                              errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+            this.dataStatus = DataStatus.Error;
+          }
+        });
     }
 
     /** Show some basic statistics in the header */

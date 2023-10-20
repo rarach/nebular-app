@@ -9,7 +9,7 @@
             <div class="assetDropDowns">
                 <mat-form-field style="width: 50%;">
                     <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange($event)" [title]="selectedBaseAsset.tooltip">
+                                (selectionChange)="updateExchange()" [title]="selectedBaseAsset.tooltip">
                         <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
                             <img src="{{asset.imageUrl}}" style="width: 24px; height: 24px;" /> {{asset.text}}
                         </mat-option>
@@ -17,7 +17,7 @@
                 </mat-form-field>
                 <mat-form-field style="width: 50%;">
                     <mat-select [(value)]="selectedCounterAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange($event)" [title]="selectedCounterAsset.tooltip">
+                                (selectionChange)="updateExchange()" [title]="selectedCounterAsset.tooltip">
                         <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
                             <img src="{{asset.imageUrl}}" style="width: 24px; height: 24px;" /> {{asset.text}}
                         </mat-option>

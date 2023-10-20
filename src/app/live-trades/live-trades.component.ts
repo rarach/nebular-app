@@ -14,7 +14,6 @@ import { TomlConfigService } from '../services/toml-config.service';
 import { Trade } from '../model/trade.model';
 import { Utils } from '../utils';
 
-
 @Component({
   selector: 'nebular-live-trades',
   templateUrl: './live-trades.component.html',
@@ -33,14 +32,16 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
   private currentSort: Sort = { active: "asset", direction: "asc" };
 
 
-  constructor(private readonly ngZone: NgZone,
+  constructor(
+    private readonly ngZone: NgZone,
     titleService: Title,
-                private readonly horizonService: HorizonRestService,
-                private readonly tomlService: TomlConfigService) {
+    private readonly horizonService: HorizonRestService,
+    private readonly tomlService: TomlConfigService)
+  {
     titleService.setTitle("Live Trades");
   }
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     let counter = 0;
     this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
       const newTrade = new LiveTradeItem(trade, counter++ % 2 == 0);
@@ -57,7 +58,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     if (this.tradesStream) {
       this.tradesStream.unsubscribe();
     }
@@ -117,7 +118,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     }
   }
 
-  public sortStatistics(sort: Sort) {
+  public sortStatistics(sort: Sort): void {
     this.currentSort = sort;
     const data = new Array<AssetStatistics>();
     //Slightly cumbersome way of converting hash-set values into array

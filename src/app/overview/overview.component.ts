@@ -5,7 +5,6 @@ import { Asset } from '../model/asset.model';
 import { ExchangePair } from "../model/exchange-pair.model";
 import { NebularService } from '../services/nebular.service';
 
-
 @Component({
   selector: 'nebular-overview',
   templateUrl: './overview.component.html',
@@ -18,7 +17,7 @@ export class OverviewComponent implements OnInit {
     titleService.setTitle("Nebular");
   }
 
-  ngOnInit() {
+  public ngOnInit(): void {
     this.nebularService.getTopVolumeExchanges().subscribe(data => {
       this.exchangeList = [];
       let i = 0;

@@ -9,7 +9,6 @@ import { HorizonRestService } from '../../services/horizon-rest.service';
 import { IssuerConfiguration } from '../../model/toml/issuer-configuration';
 import { TomlConfigService } from '../../services/toml-config.service';
 
-
 @Component({
   selector: 'nebular-custom-asset-wizard',
   templateUrl: './custom-asset-wizard.component.html',
@@ -29,7 +28,7 @@ export class CustomAssetWizardComponent {
     { }
 
 
-    public searchAssetCodes(theForm: NgForm) {
+    public searchAssetCodes(theForm: NgForm): void {
       const assetCode = theForm.value.newAssetCode;
       if (theForm.invalid || (assetCode || "").length <= 0)
       {
@@ -43,7 +42,7 @@ export class CustomAssetWizardComponent {
       });
     }
 
-    public addAsset(newAsset: AssetData) {
+    public addAsset(newAsset: AssetData): void {
       const asset = this.assetService.AddCustomAsset(newAsset.code, newAsset.issuerAddress, newAsset.domain, newAsset.iconUrl);
       if (asset !== null) {
         this.assetAdded.emit({newAssetCode: newAsset.code, newAssetIssuer: newAsset.issuerAddress});
@@ -81,7 +80,7 @@ export class CustomAssetWizardComponent {
             next: (issuerConfig) => {
               this.loadAssetData(asset, issuerConfig);
             },
-            error: (err) => {
+            error: () => {
               //Likely an unreachable stellar.toml
               asset.iconUrl = Constants.UNKNOWN_ASSET_IMAGE;
             }
