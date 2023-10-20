@@ -12,7 +12,6 @@ import { ExchangeThumbnailComponent } from './exchange-thumbnail.component';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { UiActionsService } from '../services/ui-actions.service';
 
-
 describe('ExchangeThumbnailComponent', () => {
     let component: ExchangeThumbnailComponent;
     const exchange = new ExchangePair("asdf123",
@@ -101,11 +100,11 @@ describe('ExchangeThumbnailComponent', () => {
 });
 
 class RouterStub {
-    navigateByUrl(url: string) { }
+    navigateByUrl(url: string) { return; }
 }
 
 class HorizonRestServiceStub {
-    getTradeAggregations(exchange: ExchangePair, interval: Number) : Observable<Object> {
+    getTradeAggregations(exchange: ExchangePair, interval: number) : Observable<unknown> {
         if (exchange.baseAsset.code === "ERROR") {
             return throwError(new HttpErrorResponse({
                 error: { detail: "Violets are blue" },

@@ -9,7 +9,6 @@ import { DelayingHttpClient } from './delaying-http-client';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { Trade } from '../model/trade.model';
 
-
 @Injectable({
     providedIn: 'root'
 })
@@ -41,7 +40,7 @@ export class HorizonRestService {
      * @param interval candle size in milliseconds (e.g. 300000 for 5 minutes, 900000 for 15 minutes etc.)
      * @param maxCandles max. records to return. Must not exceed 200 as that's current limit supported by Horizon
      */
-    getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number = 96) : Observable<Object> {
+    public getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles = 96) : Observable<unknown> {
         const url = this.getApiUrl() + "/trade_aggregations?" +
                     exchange.baseAsset.ToUrlParameters("base") + "&" + exchange.counterAsset.ToUrlParameters("counter") +
                     "&order=desc&resolution=" + interval + "&limit=" + maxCandles;
@@ -55,7 +54,7 @@ export class HorizonRestService {
      * @param exchange exchange pair to get the past trades for
      * @param maxItems maximum number of trades to get
      */
-    getTradeHistory(exchange: ExchangePair, maxItems: number = 40): Observable<Object> {
+    public getTradeHistory(exchange: ExchangePair, maxItems = 40): Observable<unknown> {
         const url = this.getApiUrl() + "/trades?" + exchange.baseAsset.ToUrlParameters("base") +
                     "&" + exchange.counterAsset.ToUrlParameters("counter") + "&order=desc&limit=" + maxItems;
 
@@ -100,14 +99,14 @@ export class HorizonRestService {
     }
 
     /** Stream orderbook for given exchange pair. Fresh data are pushed on each update of the orderbook. */
-    streamOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {
+    streamOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
         const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                     "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems + "&cursor=now";
 
-        return new Observable<Object>(obs => {
+        return new Observable<unknown>(obs => {
             const es = new EventSource(url);
             es.addEventListener('message', (evt: MessageEvent) => {
-                const bookData: Object = JSON.parse(evt.data);
+                const bookData = JSON.parse(evt.data);
                 obs.next(bookData);
             });
             return () => es.close();
@@ -115,7 +114,7 @@ export class HorizonRestService {
     }
 
     /** Get current orderbook for given exchange in one request. */
-    getOrderbook(exchange: ExchangePair, maxItems: number = 17): Observable<Object> {
+    getOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
         const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                     "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
 
@@ -137,7 +136,7 @@ export class HorizonRestService {
             }
 
             const assetData = new Array<AssetData>();
-            for(let record of data._embedded.records) {
+            for(const record of data._embedded.records) {
                 assetData.push(new AssetData(record._links.toml.href, record.asset_code, record.asset_issuer, record.num_accounts));
             }
             return assetData;
