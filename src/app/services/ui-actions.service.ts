@@ -3,7 +3,6 @@ import { Subject } from "rxjs";
 
 import { ExchangePair } from "../model/exchange-pair.model";
 
-
 @Injectable({
     providedIn: 'root'
 })
@@ -11,14 +10,11 @@ export class UiActionsService {
     private _draggingExch = new Subject<ExchangePair>();
     private _exchange: ExchangePair = null;
 
-    constructor() {}
-
-
     public get DraggingExchange() : ExchangePair {
         return this._exchange;
     }
 
-    public draggingStarted(exchPair: ExchangePair) {
+    public draggingStarted(exchPair: ExchangePair): void {
         if (exchPair) {
             this._draggingExch.next(exchPair);
             this._exchange = exchPair;
@@ -26,7 +22,7 @@ export class UiActionsService {
         }
     }
 
-    public draggingFinished() {
+    public draggingFinished(): void {
         this._exchange = null;
         this.getWindow().finishDragging();
     }
