@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router } from '@angular/router';
 import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
+import { MatOption } from '@angular/material/core';
 import { Subscription } from 'rxjs';
 import { Title } from '@angular/platform-browser';
 import zingchart from "zingchart";
@@ -14,7 +15,6 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
 import { HorizonRestService } from '../services/horizon-rest.service';
 import { Utils } from '../utils';
-
 
 @Component({
   selector: 'nebular-exchange',
@@ -40,13 +40,19 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   selectedCounterAsset: Asset = null;
 
 
-  constructor(private readonly ngZone: NgZone, private route: ActivatedRoute, private router: Router, private titleService: Title,
-                private assetService: AssetService, private horizonService: HorizonRestService) {
+  constructor(
+    private readonly ngZone: NgZone,
+    private route: ActivatedRoute,
+    private router: Router,
+    private titleService: Title,
+    private assetService: AssetService,
+    private horizonService: HorizonRestService
+  ) {
     this.assetOptions = assetService.availableAssets;
   }
 
 
-  public ngOnInit() {
+  public ngOnInit(): void {
     this._routeSubscriber = this.route.paramMap.subscribe(params => {
       //'Parse' the route
       const baseAssetString = params.get('baseAssetId');
@@ -78,7 +84,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     this.initChartStream();
   }
 
-  public ngOnDestroy() {
+  public ngOnDestroy(): void {
     this._isActive = false;
     this._routeSubscriber.unsubscribe();
   }
@@ -119,14 +125,14 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
 
   /** Switch base and couter asset */
-  public swapAssets() {
+  public swapAssets(): void {
     const url = "exchange/" + this.exchange.counterAsset.ToExchangeUrlParameter() + "/" +
-                    this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
+                this.exchange.baseAsset.ToExchangeUrlParameter() + "?"+GETParams.INTERVAL+"=" + this.chartInterval;
     this.router.navigateByUrl(url);
   }
 
   /** Set chart interval (i.e. 'size' of one candle) */
-  public setChartInterval(intervalDesc: string) {
+  public setChartInterval(intervalDesc: string): void {
     this.chartMessage = "Loading chart...";
     this.chartInterval = Utils.intervalAsMilliseconds(intervalDesc);
 
@@ -135,9 +141,9 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
 
   /**
-     * @param reinit true if old ZingChart object should be destroyed before new one is initialized. Useful for refreshing
-     * the same exchange if just new data arrived, so it doesn't "flicker" on the screen.
-     */
+   * @param reinit true if old ZingChart object should be destroyed before new one is initialized. Useful for refreshing
+   * the same exchange if just new data arrived, so it doesn't "flicker" on the screen.
+   */
   private renderCandlestickChart(reinit: boolean) {
     if (reinit) {
       this.chartMessage = "Loading chart...";
@@ -242,7 +248,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     $("text[id^='marketChart-graph-id0-label-lbl_4_']").find("tspan").text("volume: " + volume);
   }
 
-  public initChartStream() {
+  public initChartStream(): void {
     if (!this._isActive)
     {
       //Cancel the loop if user navigated away
@@ -357,7 +363,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   }
 
   /*********************************** Asset drop-downs ***********************************/
-  public assetChanged(event) {
+  public assetChanged(event: MatOption): void {
     if (null === event.value) {
       this.router.navigateByUrl(Constants.CONFIGURATION_URL);
     }

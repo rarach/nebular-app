@@ -4,7 +4,6 @@ import { CookieService } from 'ngx-cookie';
 
 import { NebularService } from './nebular.service';
 
-
 describe("NebularService", () => {
   let injector: TestBed;
   let service: NebularService;
@@ -19,7 +18,7 @@ describe("NebularService", () => {
           provide: CookieService,
           useValue: {
             get: (key) => "", 
-            put: (key, value, options) => { }
+            put: (key, value, options) => { return; }
           }
         }
       ]
@@ -55,7 +54,7 @@ describe("NebularService", () => {
 
   it("can save user's agreement with cookie usage", () => {
     const cookieService = TestBed.get(CookieService);
-    const cookieSpy = spyOn(cookieService, "put").and.callFake(() => {});
+    const cookieSpy = spyOn(cookieService, "put").and.callFake(() => { return; });
 
     service.CookieAgreement = true;
 

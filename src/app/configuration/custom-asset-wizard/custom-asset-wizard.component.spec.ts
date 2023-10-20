@@ -148,7 +148,7 @@ class HorizonRestServiceStub {
     }
     if ("TOML_ERROR" === assetCode) {
       return of([
-        new AssetData("THROW_ERROR", null!, null!, -1)
+        new AssetData("THROW_ERROR", 'xyz', '', -1)
       ]);
     }
     throw new Error("No test data ready for the input asset code " + assetCode);

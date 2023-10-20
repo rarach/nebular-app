@@ -1,6 +1,7 @@
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
+import { MatOption } from '@angular/material/core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
@@ -21,7 +22,7 @@ describe('ExchangeComponent', () => {
   let activRoute: ActivatedRouteStub;
 
   beforeEach(() => {
-    activRoute = new ActivatedRouteStub();
+    activRoute = new ActivatedRouteStub({});
     TestBed.configureTestingModule({
       providers: [
         { provide: ActivatedRoute, useValue: activRoute },
@@ -168,7 +169,7 @@ describe('ExchangeComponent', () => {
     const router = TestBed.inject(Router);
     spyOn(router, 'navigateByUrl');
 
-    exchComponent.assetChanged({ value: null });
+    exchComponent.assetChanged({ value: null } as MatOption);
 
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith(Constants.CONFIGURATION_URL);
   });
@@ -180,7 +181,7 @@ describe('ExchangeComponent', () => {
     exchComponent.selectedCounterAsset = KnownAssets.XLM;
     exchComponent.chartInterval = 123456;
 
-    exchComponent.assetChanged({ value: 1 });
+    exchComponent.assetChanged({ value: 1 } as MatOption);
 
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith('exchange/Pear-GBBBBPEEEEEEEAAAAAAR/XLM?interval=123456');
   });
@@ -192,7 +193,7 @@ describe('ExchangeComponent', () => {
     exchComponent.selectedCounterAsset = new Asset('SOY', 'soY Token', null, new Account('GCBHEYUTRE7878787'));
     exchComponent.chartInterval = 8;
 
-    exchComponent.assetChanged({ value: 1 });
+    exchComponent.assetChanged({ value: 1 } as MatOption);
 
     expect(router.navigateByUrl).toHaveBeenCalledOnceWith('exchange/XLM/SOY-GCBHEYUTRE7878787?interval=8');
   });
