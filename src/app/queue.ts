@@ -4,7 +4,7 @@ export class Queue<T> implements Iterable<T> {
 
   public constructor(private readonly capacity: number){}
 
-  public add(item: T) {
+  public add(item: T): void {
     this._items.splice(0, 0, item);
     if (this.size > this.capacity) {
       this._items = this._items.slice(0, this.capacity);

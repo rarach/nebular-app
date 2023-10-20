@@ -5,7 +5,6 @@ import { Asset } from '../../model/asset.model';
 import { AssetService } from '../../services/asset.service';
 import { CustomAssetListComponent } from './custom-asset-list.component';
 
-
 describe('CustomAssetListComponent', () => {
   let component: CustomAssetListComponent;
 

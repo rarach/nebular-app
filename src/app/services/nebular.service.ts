@@ -6,7 +6,6 @@ import { CookieService, CookieOptions } from 'ngx-cookie';
 
 import { OverviewData } from '../model/overview-data.model';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -15,13 +14,13 @@ export class NebularService {
   private readonly API_URL = "https://nebularapi.azurewebsites.net/api";
 
   constructor(private readonly http: HttpClient,
-                private readonly cookieService: CookieService) {
+              private readonly cookieService: CookieService) {
   }
 
 
   /**
-     * Retrieve list of exchanges with highest trade volume in past 24 hours.
-     */
+   * Retrieve list of exchanges with highest trade volume in past 24 hours.
+   */
   getTopVolumeExchanges() : Observable<OverviewData> {
     const url = this.API_URL + "/topExchanges";
 
@@ -34,8 +33,8 @@ export class NebularService {
   }
 
   /**
-     * Returns true if user has agreed with using cookies.
-     */
+   * Returns true if user has agreed with using cookies.
+   */
   get CookieAgreement(): boolean {
     const cookieText = this.cookieService.get(this.COOKIE_NAME);
 
@@ -43,8 +42,8 @@ export class NebularService {
   }
 
   /**
-     * The user agreed with using cookies. Save this info to... a cookie.
-     */
+   * The user agreed with using cookies. Save this info to... a cookie.
+   */
   set CookieAgreement(value: boolean) {
     //Make it expire in 200 days
     const expiration = new Date();

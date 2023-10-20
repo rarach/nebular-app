@@ -9,11 +9,9 @@ import * as $ from "jquery";
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
-  public constructor(private uiActions: UiActionsService) {
+  public constructor(private uiActions: UiActionsService) { }
 
-  }
-
-  onClick() {
+  public onClick(): void {
     if (this.uiActions.DraggingExchange) {
       //If we received the click event, it was outside a slot where the exchange thumbnail being dragged can
       //be dropped => cancel the reposition

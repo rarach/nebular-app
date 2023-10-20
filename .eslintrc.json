@@ -44,6 +44,14 @@
       }
     },
     {
+      //Relax the rules a bit for test files
+      "files": [ "*.spec.ts" ],
+      "rules": {
+        "@typescript-eslint/no-unused-vars": [ "off" ],
+        "@typescript-eslint/no-explicit-any": [ "off" ]
+      }
+    },
+    {
       "files": [
         "*.html"
       ],

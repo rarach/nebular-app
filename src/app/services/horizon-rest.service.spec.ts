@@ -7,7 +7,6 @@ import { AssetData } from '../model/asset-data.model';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from './horizon-rest.service';
 
-
 describe('HorizonRestService', () => {
   let injector: TestBed;
   let service: HorizonRestService;
@@ -217,15 +216,15 @@ describe('HorizonRestService', () => {
     const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=NOSUCH&limit=200"));
     expect(req.request.method).toBe("GET");
     req.flush(`{
-            "_embedded": {
-              "records": [ ]
-            }
-          }`);
+                  "_embedded": {
+                    "records": [ ]
+                  }
+                }`);
   }));
 
   it("#getAssetIssuers() returns correct AssetData array for existing asset code", fakeAsync(() => {
     service.getAssetIssuers("EURT").subscribe(data => {
-      expect(data!.length).toBe(1);
+      expect(data?.length).toBe(1);
       expect(data![0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
         "EURT",
         "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",

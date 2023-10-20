@@ -62,11 +62,12 @@ describe('Configuration page', () => {
     //Trick: go to invalid page to load the web without calling the dependent services
     cy.visit("/no-such-page");
     cy.setCookie("agr", "true");
-    cy.setCookie("ass",
-                 "RUB|GUBERNIA2929292929292929|noSuch.ru|https://noSuch.ru/rub.ico,"+
-                 "UHH|GBEDEDEDEDE|GBE...DEDEDE|,"+
-                 "BTC|GBSTRONGHODL455519K7YY|GBSTR...K7YY|null,"+
-                 "zzzzz|GCCP|example.org|./assets/images/asset_icons/unknown.png");
+    cy.setCookie(
+      "ass",
+      "RUB|GUBERNIA2929292929292929|noSuch.ru|https://noSuch.ru/rub.ico,"+
+      "UHH|GBEDEDEDEDE|GBE...DEDEDE|,"+
+      "BTC|GBSTRONGHODL455519K7YY|GBSTR...K7YY|null,"+
+      "zzzzz|GCCP|example.org|./assets/images/asset_icons/unknown.png");
     cy.visit("/configuration");
 
     cy.get('tr.asset-item').should('have.length', 4);

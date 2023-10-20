@@ -1,4 +1,4 @@
-import { TestBed, async, inject } from '@angular/core/testing';
+import { TestBed, waitForAsync, inject } from '@angular/core/testing';
 import { Account } from './model/account.model';
 import { AppComponent } from './app.component';
 import { Asset } from './model/asset.model';
@@ -9,7 +9,7 @@ import { UiActionsService } from './services/ui-actions.service';
 describe('AppComponent', () => {
   let component: AppComponent;
 
-  beforeEach(async(() => {
+  beforeEach(waitForAsync(() => {
     TestBed.configureTestingModule({
       imports: [ RouterTestingModule ],
       declarations: [
@@ -24,11 +24,11 @@ describe('AppComponent', () => {
 
   it('#onClick() should cancel custom exchange reposition', () => {
     const uiService : UiActionsService = TestBed.get(UiActionsService);
-    const dummyExch = new ExchangePair("test-exch",
-      new Asset("TEST", null, null, new Account("GABRIELSSSSSS096", "test.org")),
-      new Asset("NopE", null, null, new Account("GDDD", "whet.ever")));
-    spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(dummyExch);
-    spyOn(uiService, "draggingFinished").and.callFake(() => {});
+    const dummyExch = new ExchangePair('test-exch',
+      new Asset('TEST', 'tesomethin', null, new Account('GABRIELSSSSSS096', 'test.org')),
+      new Asset('NopE', '', null, new Account('GDDD', 'whet.ever')));
+    spyOnProperty(uiService, 'DraggingExchange', 'get').and.returnValue(dummyExch);
+    spyOn(uiService, 'draggingFinished').and.callFake(() => { return; });
 
     component.onClick();
 
