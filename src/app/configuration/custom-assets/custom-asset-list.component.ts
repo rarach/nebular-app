@@ -2,7 +2,6 @@ import { Component } from '@angular/core';
 
 import { Asset } from '../../model/asset.model';
 import { AssetService } from '../../services/asset.service';
-import { DropdownOption } from '../../model/dropdown-option';
 
 @Component({
   selector: 'nebular-custom-asset-list',
@@ -10,22 +9,19 @@ import { DropdownOption } from '../../model/dropdown-option';
   styleUrls: ['./custom-asset-list.component.css']
 })
 export class CustomAssetListComponent {
-  assetIssuers: DropdownOption<string>[] = null;
-  selectedIssuerAddress = "";
-  customAssets: Asset[];
-  lastAddedAsset: Asset|null = null;
-  duplicateAsset: string|null = null;
+  public customAssets: Asset[];
+  public lastAddedAsset: Asset|null = null;
+  public duplicateAsset: string|null = null;
 
-
-  constructor(private readonly assetService: AssetService) {
+  public constructor(private readonly assetService: AssetService) {
     this.customAssets = assetService.customAssets;
   }
 
-  removeAsset(assetCode, anchorAddress) {
+  public removeAsset(assetCode: string, anchorAddress: string): void {
     this.assetService.RemoveCustomAsset(assetCode, anchorAddress);
   }
 
-  highlightLastAddedAsset(eventData) {
+  public highlightLastAddedAsset(eventData: { newAssetCode: string, newAssetIssuer: string }): void {
     for (const asset of this.customAssets) {
       if (asset.code === eventData.newAssetCode && asset.issuer.address === eventData.newAssetIssuer)
       {
@@ -36,7 +32,7 @@ export class CustomAssetListComponent {
     }
   }
 
-  highlightDuplicateAsset(eventData) {
+  public highlightDuplicateAsset(eventData: { assetCode: string, assetIssuer: string }): void {
     this.duplicateAsset = eventData.assetCode + "-" + eventData.assetIssuer;
     this.lastAddedAsset = null;
   }

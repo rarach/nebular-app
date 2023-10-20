@@ -23,7 +23,7 @@ export class HorizonRestService {
   private readonly http: DelayingHttpClient;
   private reqCounter = 0;
 
-  constructor(http: HttpClient) {
+  public constructor(http: HttpClient) {
     this.http = new DelayingHttpClient(http);
   }
 
@@ -63,7 +63,7 @@ export class HorizonRestService {
   }
 
   /** Get latest price of given asset in XLM */
-  getLastPriceInNative(asset: Asset): Observable<number> {
+  public getLastPriceInNative(asset: Asset): Observable<number> {
     const dummyExchange = new ExchangePair("temp", asset, KnownAssets.XLM);
     return this.getTradeHistory(dummyExchange, 1).pipe(
       map<any, number>(data => {
@@ -86,7 +86,7 @@ export class HorizonRestService {
   }
 
   /** Stream current trades without limitations on assets */
-  streamTradeHistory(): Observable<Trade> {
+  public streamTradeHistory(): Observable<Trade> {
     const url = this.getApiUrl() + "/trades?cursor=now&order=asc";
     return new Observable<Trade>(obs => {
       const es = new EventSource(url);
@@ -99,7 +99,7 @@ export class HorizonRestService {
   }
 
   /** Stream orderbook for given exchange pair. Fresh data are pushed on each update of the orderbook. */
-  streamOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
+  public streamOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
     const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                 "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems + "&cursor=now";
 
@@ -114,7 +114,7 @@ export class HorizonRestService {
   }
 
   /** Get current orderbook for given exchange in one request. */
-  getOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
+  public getOrderbook(exchange: ExchangePair, maxItems = 17): Observable<unknown> {
     const url = this.getApiUrl() + "/order_book?" + exchange.baseAsset.ToUrlParameters("selling") +
                 "&" + exchange.counterAsset.ToUrlParameters("buying") + "&limit=" + maxItems;
 
@@ -123,7 +123,7 @@ export class HorizonRestService {
   }
 
   /** Get first 200 anchors issuing given asset */
-  getAssetIssuers(assetCode: string): Observable<AssetData[] | null> {
+  public getAssetIssuers(assetCode: string): Observable<AssetData[] | null> {
     const horizonUrl = this.getApiUrl();
     const url = horizonUrl + `/assets?asset_code=${assetCode}&limit=200`;
 
@@ -146,7 +146,7 @@ export class HorizonRestService {
   /**
    * Get URL of issuer configuration (usually a TOML file) containing given asset definition
    */
-  getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string|null> {
+  public getIssuerConfigUrl(assetCode: string, assetIssuer: string) : Observable<string|null> {
     const horizonUrl = this.getApiUrl();
     const url = horizonUrl + `/assets?asset_code=${assetCode}&asset_issuer=${assetIssuer}`;
 
