@@ -9,7 +9,6 @@ import { HorizonRestService } from './horizon-rest.service';
 import { TomlConfigService } from './toml-config.service';
 import { Utils } from '../utils';
 
-
 @Injectable({
   providedIn: 'root'
 })
@@ -70,12 +69,12 @@ export class AssetService {
   }
 
   /**
-     * Add new asset with given code and issuer's address
-     * @param assetCode - existing asset code
-     * @param issuerAddress - address of an anchor
-     * @param issuerDomain - anchor web domain
-     * @returns - returns newly created asset in case of success, otherwise null
-     */
+   * Add new asset with given code and issuer's address
+   * @param assetCode - existing asset code
+   * @param issuerAddress - address of an anchor
+   * @param issuerDomain - anchor web domain
+   * @returns - returns newly created asset in case of success, otherwise null
+   */
   public AddCustomAsset(assetCode: string, issuerAddress: string, issuerDomain: string = null, imageUrl: string = null): Asset | null {
     //Don't add if it's already there
     for (let i=0; i<this.customAssets.length; i++) {
@@ -93,11 +92,11 @@ export class AssetService {
   }
 
   /**
-     * Remove existing asset with given code and issuer's address
-     * @param assetCode - asset code of a known asset
-     * @param issuerAddress - address of an anchor
-     * @returns {boolean} - true on success, false if given asset is not registered here
-     */
+   * Remove existing asset with given code and issuer's address
+   * @param assetCode - asset code of a known asset
+   * @param issuerAddress - address of an anchor
+   * @returns {boolean} - true on success, false if given asset is not registered here
+   */
   public RemoveCustomAsset(assetCode: string, issuerAddress: string): boolean {
     for (let i=0; i<this.customAssets.length; i++) {
       if (this.customAssets[i].code === assetCode && this.customAssets[i].issuer.address === issuerAddress) {
@@ -121,9 +120,9 @@ export class AssetService {
   }
 
   /**
-     * Change custom exchange with given ID
-     * @returns {ExchangePair} updated instance
-     */
+   * Change custom exchange with given ID
+   * @returns {ExchangePair} updated instance
+   */
   public UpdateCustomExchange(exchangeId: string, baseAsset: Asset, counterAsset: Asset): ExchangePair {
     for (let i=0; i<this.customExchanges.length; i++) {
       if (this.customExchanges[i].id === exchangeId) {
@@ -150,9 +149,9 @@ export class AssetService {
   }
 
   /**
-     * Swap positions of saved custom exchanges.
-     */
-  public SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair) {
+   * Swap positions of saved custom exchanges.
+   */
+  public SwapCustomExchanges(exch1: ExchangePair, exch2: ExchangePair): void {
     let exch1Index: number;
     let exch2Index: number;
 
@@ -224,9 +223,9 @@ export class AssetService {
   }
 
   /**
-     * Load user's custom exchanges
-     * @returns {Array} array of ExchangePair instances
-     */
+   * Load user's custom exchanges
+   * @returns {Array} array of ExchangePair instances
+   */
   private loadExchanges() {
     const COOKIE_NAME = "exc";
     const userExchanges = new Array<ExchangePair>();

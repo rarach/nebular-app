@@ -11,7 +11,6 @@ import { LineChartData } from '../model/line-chart-data';
 import { UiActionsService } from '../services/ui-actions.service';
 import { Utils } from '../../app/utils';
 
-
 @Component({
   selector: 'nebular-exchange-thumbnail',
   templateUrl: './exchange-thumbnail.component.html',
@@ -41,7 +40,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     }
 
     /** Setup and render the exchange chart */
-    ngOnInit() {
+    public ngOnInit(): void {
       this.chartPlaceholderId = "exch_" + this.exchange.id;
       this._lineChart = new LineChartData();
 
@@ -50,11 +49,11 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
       this.initChartStream();
     }
 
-    ngOnDestroy() {
+    public ngOnDestroy(): void {
       this._isActive = false;
     }
 
-    onClick() {
+    public onClick(): void {
       if (!this.uiActions.DraggingExchange) {
         this.router.navigateByUrl(this.getUrl());
       }
@@ -139,7 +138,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
         error => {
           const errorResponse = error as HttpErrorResponse;
           this.userMessage = "Couldn't load data for this exchange (server: " +
-                            errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
+                             errorResponse.error.detail + " - " + errorResponse.statusText + " [" + errorResponse.status + "])";
           this.dataStatus = DataStatus.Error;
         }
       );

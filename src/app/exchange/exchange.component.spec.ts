@@ -56,6 +56,7 @@ describe('ExchangeComponent', () => {
     expect(exchComponent.chartMessage).toBe("Invalid URL: missing base asset");
     //How come we don't have to reset timer we started in ngOnInit?
   });
+
   it("should display error message when counter asset is missing in URL", () => {
     activRoute.setParamMap({ baseAssetId: "XLM" });
     exchComponent.exchange = new ExchangePair("test02", KnownAssets['BTC-Interstellar'], KnownAssets.XCN);
@@ -63,6 +64,7 @@ describe('ExchangeComponent', () => {
     expect(exchComponent.dataStatus).toBe(DataStatus.Error);
     expect(exchComponent.chartMessage).toBe("Invalid URL: missing counter asset");
   });
+
   it("should initialize exchange from URL parameters - known asset", () => {
     activRoute.setParamMap({ baseAssetId: "XLM", counterAssetId: "XYZ-GAGALADY", interval: "1hour" });
     expect(exchComponent.dataStatus).toBe(DataStatus.OK);
@@ -72,6 +74,7 @@ describe('ExchangeComponent', () => {
     //Code coverage...
     exchComponent.ngOnDestroy();
   });
+
   it("should initialize exchange from URL parameters - unknown asset", () => {
     activRoute.setParamMap({ baseAssetId: "BBQ-GRILLED", counterAssetId: "UUUUH-G0000AASFJGSFG56ADS", interval: "900000" });
     expect(exchComponent.dataStatus).toBe(DataStatus.OK);
@@ -196,8 +199,8 @@ describe('ExchangeComponent', () => {
 });
 
 class RouterStub {
-  navigateByUrl(url: string) { }
-  createUrlTree(a: any, b: any) { }
+  navigateByUrl(url: string) { return; }
+  createUrlTree(a: any, b: any) { return; }
 }
 
 class AssetServiceStub {
@@ -206,28 +209,28 @@ class AssetServiceStub {
       return KnownAssets.XLM;
     }
     if ('ASDF-GAAARGSAD0451' === assetId) {
-      return new Asset('ASDF', null!, null, null);
+      return new Asset('ASDF', 'a tocen', null, null);
     }
     if ('BBQ-GRILLED' === assetId) {
-      return new Asset('BBQ', null!, null, null);
+      return new Asset('BBQ', 'a tocen', null, null);
     }
     if ('CCCP-G0PYNUGNNNNN' === assetId) {
-      return new Asset('CCCP', null!, null, null);
+      return new Asset('CCCP', 'a tocen', null, null);
     }
     if ('CUS-GBDEV84512' === assetId) {
-      return new Asset('CUS', null!, null, null);
+      return new Asset('CUS', 'a tocen', null, null);
     }
     if ('ERROR-GOTOHELL' === assetId) {
-      return new Asset('ERROR', null!, null, null);
+      return new Asset('ERROR', 'a tocen', null, null);
     }
     if ('OLD-GCCFGS486G5ADFG51A' === assetId) {
-      return new Asset('OLD', null!, null, null);
+      return new Asset('OLD', 'a tocen', null, null);
     }
     if ('UUUUH-G0000AASFJGSFG56ADS' === assetId) {
-      return new Asset('UUUUH', null!, null, new Account('G0000AASFJGSFG56ADS'));
+      return new Asset('UUUUH', 'a tocen', null, new Account('G0000AASFJGSFG56ADS'));
     }
     if ('XYZ-GAGALADY' === assetId) {
-      return new Asset('XYZ', null!, null, null);
+      return new Asset('XYZ', 'a tocen', null, null);
     }
     throw new Error('No test asset data prepared for assetId=' + assetId);
   }
@@ -241,7 +244,7 @@ class AssetServiceStub {
 }
 
 class HorizonRestServiceStub {
-  getTradeHistory(exchange: ExchangePair, maxItems: number): Observable<Object> {
+  getTradeHistory(exchange: ExchangePair, maxItems: number): Observable<unknown> {
     if ("ASDF" === exchange.baseAsset.code) {       //Unknown asset
       return of({
         _embedded: {
@@ -301,10 +304,10 @@ class HorizonRestServiceStub {
       }));
     }
 
-    return new Observable<Object>();
+    return new Observable<unknown>();
   }
 
-  getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number): Observable<Object> {
+  getTradeAggregations(exchange: ExchangePair, interval: number, maxCandles: number): Observable<unknown> {
     if ("ASDF" === exchange.baseAsset.code) {       //Unknown asset
       return of({
         _embedded: {
@@ -346,10 +349,10 @@ class HorizonRestServiceStub {
       }));
     }
 
-    return new Observable<Object>();
+    return new Observable<unknown>();
   }
 
-  getOrderbook(): Observable<Object> {
-    return new Observable<Object>();
+  getOrderbook(): Observable<unknown> {
+    return new Observable<unknown>();
   }
 }

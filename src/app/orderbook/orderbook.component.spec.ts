@@ -9,7 +9,6 @@ import { KnownAssets, Asset } from '../model/asset.model';
 import { Offer, Orderbook } from '../model/orderbook.model';
 import { OrderbookComponent } from './orderbook.component';
 
-
 describe('OrderbookComponent', () => {
   let component: OrderbookComponent;
 
@@ -148,7 +147,7 @@ describe('OrderbookComponent', () => {
 
 
 class HorizonSericeStub {
-  getOrderbook(exchange: ExchangePair): Observable<Object> {
+  getOrderbook(exchange: ExchangePair): Observable<unknown> {
     if ("XLM-CNY" === exchange.id) {
       const data = {
         "bids": [
@@ -219,7 +218,7 @@ class HorizonSericeStub {
     throw `No testing data ready for input exchange ${exchange.baseAsset.code}/${exchange.counterAsset.code}`;
   }
 
-  streamOrderbook(exchange: ExchangePair): Observable<Object> {
+  streamOrderbook(exchange: ExchangePair): Observable<unknown> {
     if ("empty" === exchange.id) {
       return of({bids: [], asks: []});
     }

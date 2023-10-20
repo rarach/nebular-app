@@ -1,33 +1,30 @@
 import { Constants } from "./constants";
 
-
 /**
  * View-model to simple line chart of historical trades for past 24 hours. Uses ZingChart to draw SVG.
  */
 export class LineChartData {
-  constructor(){}
-
 
   /** @public Delete all data of this chart. Should be called before updating with new data. */
-  clearData() {
+  public clearData(): void {
     this._chartConfig.series[0].values = [];
   }
 
   /** Returns the object to be used as ZingChart configuration and data */
-  getData(): Object {
+  public getData(): unknown {
     return this._chartConfig;
   }
 
   /** @public Add data for one point in the chart, i.e. timestamp and price */
-  addPointData(point: Array<number>) {
+  public addPointData(point: Array<number>): void {
     this._chartConfig.series[0].values.push(point);
   }
 
   /**
-     * Returns number of points to be rendered in this chart
-     * @returns number of points in this chart
-     */
-  DataPointCount(): number {
+   * Returns number of points to be rendered in this chart
+   * @returns number of points in this chart
+   */
+  public DataPointCount(): number {
     return this._chartConfig.series[0].values.length;
   }
 
@@ -35,16 +32,16 @@ export class LineChartData {
      * Specify beginning of X axis of this chart by giving timestamp of oldest candle.
      * @param timestamp timestamp of the first candle in ticks
      */
-  setStartTime(timestamp: number) {
+  public setStartTime(timestamp: number): void {
     this._chartConfig["scale-x"]["min-value"] = timestamp;
   }
 
   /**
-     * Set scope of the Y axis, i.e. price. The axis will be divided into up to 5 equal segments for visual guidance.
-     * @param minPrice lower bound
-     * @param maxPrice upper bound
-     */
-  setPriceScale(minPrice: number, maxPrice: number) {
+   * Set scope of the Y axis, i.e. price. The axis will be divided into up to 5 equal segments for visual guidance.
+   * @param minPrice lower bound
+   * @param maxPrice upper bound
+   */
+  public setPriceScale(minPrice: number, maxPrice: number): void {
     const diff = maxPrice - minPrice;
     minPrice = minPrice - 0.1*diff;     //10% bottom offset so it doesn't sit on X axis
 
@@ -55,23 +52,23 @@ export class LineChartData {
   }
 
   /**
-     * Set background color of this chart. Usually used to indicate raising/falling market.
-     * @param color CSS style color name or color code
-     */
-  setBackgroundColor(color: string) {
+   * Set background color of this chart. Usually used to indicate raising/falling market.
+   * @param color CSS style color name or color code
+   */
+  public setBackgroundColor(color: string): void {
     this._chartConfig["background-color"] = color;
   }
 
   /**
-     * Set line color. Usually used to emphasize rising/falling trend.
-     * @param color CSS style color name of color code
-     */
-  setLineColor(color: string) {
+   * Set line color. Usually used to emphasize rising/falling trend.
+   * @param color CSS style color name of color code
+   */
+  public setLineColor(color: string): void {
     this._chartConfig.series[0]["line-color"] = color;
   }
 
   /** URL to be opened when user clicks the context menu item "Open in new tab" */
-  contextMenuLink(url: string) {
+  public contextMenuLink(url: string): void {
     this._chartConfig.gui.contextMenu.customItems[0]["function"] = "openChartInNewTab('" + url + "')";
   }
 

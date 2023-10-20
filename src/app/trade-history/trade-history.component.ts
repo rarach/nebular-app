@@ -3,7 +3,6 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { ExecutedTrade } from '../model/executed-trade.model';
 import { Utils } from '../utils';
 
-
 @Component({
   selector: 'nebular-trade-history',
   templateUrl: './trade-history.component.html',
@@ -13,6 +12,4 @@ export class TradeHistoryComponent {
     @Input() /*readonly TODO: how to test such?*/ exchange: ExchangePair;
     @Input() readonly recentTrades: ExecutedTrade[] = [];
     Utils = Utils;  //template accessibility
-
-    constructor(){}
 }

@@ -15,7 +15,9 @@ export class ActivatedRouteStub {
   readonly paramMap = this.subject.asObservable();
   
   /** Set the paramMap observables's next value */
-  setParamMap(params?: Params) {
-    this.subject.next(convertToParamMap(params));
+  setParamMap(params?: Params): void {
+    if (params) {
+      this.subject.next(convertToParamMap(params));
+    }
   }
 }
