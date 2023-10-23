@@ -6,7 +6,8 @@
         <div class="dropdownsWrapper">
             <mat-form-field style="width: 350px; float: left;">
                 <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
-                            [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }">
+                            [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }"
+                            hideSingleSelectionIndicator>
                     <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
                         <img src="{{asset.imageUrl}}" class="assetImage"/>
                         {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
@@ -24,18 +25,17 @@
 
 
         <div class="dropdownsWrapper">
-            <mat-form-field style="width: 350px; float: left;">
-                <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
-                            [title]="selectedCounterAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedCounterAsset?.imageUrl + ')' }">
-                    <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                        <img src="{{asset.imageUrl}}" class="assetImage"/>
-                        {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
-                    </mat-option>
-                    <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                        [+] Add to shortlist
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
+                        [title]="selectedCounterAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedCounterAsset?.imageUrl + ')' }"
+                        hideSingleSelectionIndicator>
+                <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
+                    <img src="{{asset.imageUrl}}" class="assetImage"/>
+                    {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
+                </mat-option>
+                <mat-option [value]="null" title="Add asset manually" class="ddOption">
+                    [+] Add to shortlist
+                </mat-option>
+            </mat-select>
         </div>
         <div class="chartButton intervalButtons">
             <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->

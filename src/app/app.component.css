@@ -103,6 +103,7 @@ div.headerLinks {
 }
 
 /* Asset drop-downs */
+/*TEMP
 :host ::ng-deep mat-form-field {
     margin-right: 5px;
     margin-bottom: 5px;
@@ -110,28 +111,41 @@ div.headerLinks {
     background-color: white;
     border: 1px solid black;
 }
-:host ::ng-deep .mat-select {
+:host ::ng-deep .mat-mdc-select {
     font-family: consolas,"Liberation Mono",courier,monospace;
     font-weight: bolder;
 }
 
-:host ::ng-deep .mat-option {
+
+
+:host ::ng-deep .mat-mdc-option {
     border-bottom: 1px solid #ddd;
     font-size: .92rem !important;
     font-family: consolas,"Liberation Mono",courier,monospace;
 }
+*/
 
+/*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+/*TEMP
 :host ::ng-deep label.mat-form-field-label {
     margin-top: 5px;
     font-family: consolas,"Liberation Mono",courier,monospace;
     font-style: italic;
     padding-left: 5px;
 }
+*/
+/*TODO(mdc-migration): The following rule targets internal classes of form-field that may no longer apply for the MDC version.*/
+/*TEMP
 :host ::ng-deep label.mat-form-field-label:not(.mat-empty) {
     display: none;
 }
+*/
 
+/*TODO: move?
 :host ::ng-deep .ddOption {
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    border-bottom: 1px solid #ddd;
+    font-size: .92rem;
     height: 40px;
     padding: 3px;
 }
@@ -139,14 +153,19 @@ div.headerLinks {
     font-weight: bolder;
     background-color: #FDFDFD;
 }
+*/
 
-:host ::ng-deep .selectedAssetOption {
+
+:host ::ng-deep .selectedAssetOption {      /*TODO: move to its (only) component */
     height: 38px;
     line-height: 38px;
     padding-left: 15px;
 }
 
+
+
 :host ::ng-deep #draggedExchangeClone {
     margin: 0;
     padding: 0;
 }
+

@@ -18,8 +18,10 @@
 
 .dropdownsWrapper {
     width:355px;
-    height: 45px;
+    height: 40px;
     float: left;
+    background-color: white;
+    border: 1px solid #ccc;
 }
 
 #swapAssetsLink {
@@ -65,6 +67,9 @@ div.chartWarning {
 }
 
 .selectedAsset {
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    font-weight: bold;
+    color: black;
     height: 38px;
     line-height: 38px;
     padding-left: 40px;
@@ -75,12 +80,19 @@ div.chartWarning {
 
 
 /** Material drop-downs */
+.mat-mdc-option-active {
+  font-weight: bold;
+  color: black;
+  background:rgba(0,0,0,.04);
+}
+/*TEMP
 mat-form-field {
     border: 1px solid #ccc;
 }
 
-.mat-option {
+.mat-mdc-option {
     border-bottom: 1px solid #ddd;
     font-size: .92rem !important;
     font-family: consolas,"Liberation Mono",courier,monospace;
 }
+*/

@@ -60,7 +60,7 @@ mat-form-field {
     border: 1px solid #ccc;
 }
 
-.mat-option {
+.mat-mdc-option {
     border-bottom: 1px solid #ddd;
     font-size: .92rem !important;
     font-family: consolas,"Liberation Mono",courier,monospace;

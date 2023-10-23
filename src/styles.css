@@ -94,6 +94,18 @@ div.exchange-link-chart {
 /**************************************/
 
 /** This is sad but the only way we can affect the Material SELECT styling being baked in deeply in the component */
-div.mat-select-panel {
+/*TEMP
+div.mat-mdc-select-panel {
     max-height: 400px;
+}
+*/
+.ddOption {
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    border-bottom: 1px solid #ddd;
+    font-size: .92rem;
+    height: 40px;
+    padding: 3px;
+}
+.ddOption:hover {
+    background-color: #FDFDFD;
 }
