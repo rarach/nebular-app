@@ -4,25 +4,22 @@
     </div>
     <div class="col-lg-10 col-md-12 col-sm-12">
         <div class="dropdownsWrapper">
-            <mat-form-field style="width: 350px; float: left;">
-                <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
-                            [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }"
-                            hideSingleSelectionIndicator>
-                    <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                        <img src="{{asset.imageUrl}}" class="assetImage"/>
-                        {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
-                    </mat-option>
-                    <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                        [+] Add to shortlist
-                    </mat-option>
-                </mat-select>
-            </mat-form-field>
+            <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
+                        [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }"
+                        hideSingleSelectionIndicator>
+                <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
+                    <img src="{{asset.imageUrl}}" class="assetImage"/>
+                    {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
+                </mat-option>
+                <mat-option class="ddOption" [value]="null" title="Add asset manually">
+                    [+] Add to shortlist
+                </mat-option>
+            </mat-select>
         </div>
 
         <div class="chartButton swapButton">
             <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
         </div>
-
 
         <div class="dropdownsWrapper">
             <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
@@ -32,18 +29,18 @@
                     <img src="{{asset.imageUrl}}" class="assetImage"/>
                     {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
                 </mat-option>
-                <mat-option [value]="null" title="Add asset manually" class="ddOption">
+                <mat-option class="ddOption" [value]="null" title="Add asset manually">
                     [+] Add to shortlist
                 </mat-option>
             </mat-select>
         </div>
-        <div class="chartButton intervalButtons">
-            <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
-            <a class="link" [class.selected]="chartInterval === 900000" (click)="setChartInterval('15min');">15min</a>&nbsp;
-            <a class="link" [class.selected]="chartInterval === 3600000" (click)="setChartInterval('1h');">hour</a>&nbsp;
-            <a class="link" [class.selected]="chartInterval === 86400000" (click)="setChartInterval('1day');">day</a>&nbsp;
-            <a class="link" [class.selected]="chartInterval === 604800000" (click)="setChartInterval('1week');">week</a>
-        </div>
+    <div class="chartButton intervalButtons">
+      <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
+      <a class="link" [class.selected]="chartInterval === 900000" (click)="setChartInterval('15min');">15min</a>&nbsp;
+      <a class="link" [class.selected]="chartInterval === 3600000" (click)="setChartInterval('1h');">hour</a>&nbsp;
+      <a class="link" [class.selected]="chartInterval === 86400000" (click)="setChartInterval('1day');">day</a>&nbsp;
+      <a class="link" [class.selected]="chartInterval === 604800000" (click)="setChartInterval('1week');">week</a>
+    </div>
   </div>
 
 </div>

@@ -156,11 +156,7 @@ div.headerLinks {
 */
 
 
-:host ::ng-deep .selectedAssetOption {      /*TODO: move to its (only) component */
-    height: 38px;
-    line-height: 38px;
-    padding-left: 15px;
-}
+
 
 
 

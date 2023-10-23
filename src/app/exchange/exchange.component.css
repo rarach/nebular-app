@@ -16,14 +16,6 @@
     border-bottom: 1px solid #5B6A72;
 }
 
-.dropdownsWrapper {
-    width:355px;
-    height: 40px;
-    float: left;
-    background-color: white;
-    border: 1px solid #ccc;
-}
-
 #swapAssetsLink {
     cursor: pointer;
 }
@@ -78,21 +70,10 @@ div.chartWarning {
     background-size: 32px 32px;
 }
 
-
-/** Material drop-downs */
-.mat-mdc-option-active {
-  font-weight: bold;
-  color: black;
-  background:rgba(0,0,0,.04);
-}
-/*TEMP
-mat-form-field {
+.dropdownsWrapper {
+    width:355px;
+    height: 40px;
+    float: left;
+    background-color: white;
     border: 1px solid #ccc;
 }
-
-.mat-mdc-option {
-    border-bottom: 1px solid #ddd;
-    font-size: .92rem !important;
-    font-family: consolas,"Liberation Mono",courier,monospace;
-}
-*/

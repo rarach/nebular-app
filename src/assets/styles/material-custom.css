@@ -444,8 +444,9 @@ input.mat-mdc-input-element{
     font-weight:500
 }
 .mat-mdc-option{
-    font-family:Roboto,"Helvetica Neue",sans-serif;
-    font-size:16px
+    font-family: consolas,"Liberation Mono",courier,monospace;
+    border-bottom: 1px solid #ddd;
+    font-size: .92rem;
 }
 /*DEL?
 .mat-optgroup-label{
@@ -527,7 +528,8 @@ input.mat-mdc-input-element{
     display:flex;
     max-width:100%;
     max-height: 60%;/*Disappointing but fixes the unreachable drop-downs with many items*/
-    margin-left: -40px; /*Ugly fix to displacement*/
+    min-width: 300px;
+    margin-left: -30px; /*Ugly fix to displacement of DD options list*/
 }
 .cdk-overlay-backdrop{
     position:absolute;
@@ -2096,10 +2098,16 @@ mat-footer-row,mat-header-row,mat-row,td.mat-mdc-cell,td.mat-mdc-footer-cell,th.
 }
 
 
+.mat-mdc-option-active {
+  font-weight: bold;
+  color: black;
+  background:rgba(0,0,0,.04);
+}
+
 .mat-mdc-select-arrow-wrapper {
     width: 24px;
 }
 
-#mat-select-2-panel {
-    padding: 0;
+div.mdc-menu-surface.mat-mdc-select-panel {
+  padding: 0;
 }
