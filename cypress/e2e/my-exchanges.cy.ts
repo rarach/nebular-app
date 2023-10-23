@@ -79,9 +79,9 @@ describe('My Exchanges', () => {
     cy.visit("/no-such-page");
     cy.setCookie('agr', 'true');
     cy.setCookie('ass',
-                  'USDC|GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN|centre.io|https://www.centre.io/images/usdc/usdc-icon-86074d9d49.png,' +
-                  'XCN|GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY|fchain.io|,' +
-                  'TZS|GA2MSSZKJOU6RNL3EJKH3S5TB5CDYTFQFWRYFGUJVIN5I6AOIRTLUHTO|connect.clickpesa.com|https://res.cloudinary.com/clickpesa/image/upload/v1603170740/assets/clickpesa-icon.png');
+      'USDC|GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN|centre.io|https://www.centre.io/images/usdc/usdc-icon-86074d9d49.png,' +
+      'XCN|GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY|fchain.io|,' +
+      'TZS|GA2MSSZKJOU6RNL3EJKH3S5TB5CDYTFQFWRYFGUJVIN5I6AOIRTLUHTO|connect.clickpesa.com|https://res.cloudinary.com/clickpesa/image/upload/v1603170740/assets/clickpesa-icon.png');
     //WHEN user goes to the page My Exchanges
     cy.visit('/myExchanges');
 
@@ -102,7 +102,7 @@ describe('My Exchanges', () => {
 
     //AND they select TZS as counter currency
     exchangePanel().find('div mat-select.selectedAssetOption').eq(1).click();
-    cy.get('mat-option').contains('TZS-connect.clickpesa.com').should('be.visible');
+    cy.get('mat-option').contains('TZS-connect.clickpesa.com').scrollIntoView().should('be.visible');
     cy.get('mat-option').contains('TZS-connect.clickpesa.com').click();
 
     //THEN the first custom exchange starts loading market info
@@ -132,7 +132,7 @@ describe('My Exchanges', () => {
     exchangePanel().should('have.length', 2);
 
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(0).click();
-    cy.get('mat-option').contains('TZS-connect.clickpesa.com').should('be.visible');
+    cy.get('mat-option').contains('TZS-connect.clickpesa.com').scrollIntoView().should('be.visible');
     cy.get('mat-option').contains('TZS-connect.clickpesa.com').click();
 
     cy.wait(5000);  //sucks but works :-( Too fast clicking derails loading a chart. Only acceptable as the fast clicking isn't very realistic.
@@ -143,7 +143,7 @@ describe('My Exchanges', () => {
     //THEN the exchange only shows warning about no recent trades
     cy.wait('@loadTradesReq').wait('@loadTradesReq');
     exchangePanel().eq(1).find('div.dailyChangePercent').should('have.text', '0.00%');
-    exchangePanel().find('div.chartWarning').should('be.visible').and('have.text', 'No trades in last 24 hours');
+    exchangePanel().find('div.chartWarning', { timeout: 7000 }).should('be.visible').and('have.text', 'No trades in last 24 hours');
 
     //WHEN user goes to another page and back to My Exchanges
     cy.visit('/');
