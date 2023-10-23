@@ -1,7 +1,7 @@
 import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
-import { MatOption } from '@angular/material/core';
+import { MatLegacyOption as MatOption } from '@angular/material/legacy-core';
 import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
