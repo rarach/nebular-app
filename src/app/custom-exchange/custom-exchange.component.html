@@ -7,22 +7,24 @@
             <div *ngIf="!this.uiActions.DraggingExchange" class="hoverButton moveExchButton" (click)="startDrag($event)" title="Move this tile">&harr;</div>
             <div *ngIf="!this.uiActions.DraggingExchange" class="hoverButton removeExchButton" (click)="removeExchange()" title="Remove this exchange">X</div>
             <div class="assetDropDowns">
-                <mat-form-field style="width: 50%;">
+                <div class="smallAssetDdWrapper">
                     <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange()" [title]="selectedBaseAsset.tooltip">
+                                (selectionChange)="updateExchange()" [title]="selectedBaseAsset.tooltip"
+                                hideSingleSelectionIndicator>
                         <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
-                            <img src="{{asset.imageUrl}}" style="width: 24px; height: 24px;" /> {{asset.text}}
+                            <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>
-                <mat-form-field style="width: 50%;">
+                </div>
+                <div class="smallAssetDdWrapper">
                     <mat-select [(value)]="selectedCounterAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange()" [title]="selectedCounterAsset.tooltip">
+                                (selectionChange)="updateExchange()" [title]="selectedCounterAsset.tooltip"
+                                hideSingleSelectionIndicator>
                         <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
-                            <img src="{{asset.imageUrl}}" style="width: 24px; height: 24px;" /> {{asset.text}}
+                            <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
                         </mat-option>
                     </mat-select>
-                </mat-form-field>
+                </div>
             </div>
         </div>
         <div id="customExchangeChart{{exchange.id}}" class="exchange-link-chart">

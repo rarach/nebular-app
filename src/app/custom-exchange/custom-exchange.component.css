@@ -49,19 +49,22 @@ div.assetsSelection > div.assetDropDowns {
     flex-direction: row;
 }
 
-/** Material drop-downs */
-.selectedAssetCode {
-    width: 92px;
-    padding-left: 5px;
+.smallAssetDdWrapper {
+  width: 50%; height: 40px;
+  background-color: white;
+  border: 1px solid #ccc;
 }
 
-mat-form-field {
-    margin: 0;
-    border: 1px solid #ccc;
-}
-
-.mat-option {
-    border-bottom: 1px solid #ddd;
-    font-size: .92rem !important;
+.selectedAssetOption {
+    height: 38px;
+    line-height: 38px;
+    padding-left: 15px;
     font-family: consolas,"Liberation Mono",courier,monospace;
+    font-weight: bold;
+    color: black;
+}
+
+img.assetImage {
+  width: 24px;
+  height: 24px;
 }
