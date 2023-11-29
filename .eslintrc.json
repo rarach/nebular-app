@@ -9,7 +9,9 @@
         "*.ts",
         "*.js"
       ],
-      "env": { "es6": true },
+      "env": {
+        "es6": true
+      },
       "parserOptions": {
         "ecmaVersion": "latest",
         "project": [
@@ -40,15 +42,23 @@
           }
         ],
         "@typescript-eslint/explicit-module-boundary-types": "error",
-        "indent": ["error", 2]    //Indentation of 2 spaces
+        "indent": [
+          "error",
+          2
+        ]
       }
     },
     {
-      //Relax the rules a bit for test files
-      "files": [ "*.spec.ts" ],
+      "files": [
+        "*.spec.ts"
+      ],
       "rules": {
-        "@typescript-eslint/no-unused-vars": [ "off" ],
-        "@typescript-eslint/no-explicit-any": [ "off" ]
+        "@typescript-eslint/no-unused-vars": [
+          "off"
+        ],
+        "@typescript-eslint/no-explicit-any": [
+          "off"
+        ]
       }
     },
     {

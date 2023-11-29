@@ -101,6 +101,11 @@ div.exchange-link-chart {
     height: 40px;
     padding: 3px;
 }
-.ddOption:hover {
-    background-color: #FDFDFD;
+mat-option.mat-mdc-option.ddOption:hover {
+    background-color: #f6f6f6;
+}
+mat-option.ddOption.mat-mdc-option-active {
+    font-weight: bold;
+    color: black;
+    background:rgba(0,0,0,.04);
 }

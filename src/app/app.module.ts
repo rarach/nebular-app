@@ -55,7 +55,7 @@ import { CookieConsentComponent } from './cookie-consent/cookie-consent.componen
     MatSelectModule,
     MatSortModule,
     AppRoutingModule,
-    CookieModule.forRoot()
+    CookieModule.withOptions()
   ],
   providers: [Title, AssetService, HorizonRestService, NebularService, UiActionsService],
   bootstrap: [AppComponent]
