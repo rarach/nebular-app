@@ -107,6 +107,7 @@
     max-height: 60%;/*Disappointing but fixes the unreachable drop-downs with many items*/
     min-width: 300px;
     margin-left: -30px; /*Ugly fix to displacement of DD options list*/
+    background-color: white;
 }
 .cdk-overlay-backdrop{
     position:absolute;
@@ -881,13 +882,6 @@ mat-footer-row,mat-header-row,mat-row,td.mat-mdc-cell,td.mat-mdc-footer-cell,th.
 }
 .mat-mdc-snack-bar-action{
     color:#ff4081
-}
-
-
-.mat-mdc-option-active {
-  font-weight: bold;
-  color: black;
-  background:rgba(0,0,0,.04);
 }
 
 .mat-mdc-select-arrow-wrapper {
