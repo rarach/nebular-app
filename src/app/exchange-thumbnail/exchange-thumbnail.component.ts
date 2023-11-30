@@ -1,6 +1,7 @@
 import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
+import { Subscription } from 'rxjs';
 import zingchart from "zingchart";
 
 import { Constants } from "../model/constants";
@@ -28,6 +29,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     userMessage = "Loading data...";
 
     private _isActive = false;
+    private _tradeSubscription: Subscription;
     private _lineChart: LineChartData = null;
 
     constructor(private readonly ngZone: NgZone,
@@ -51,6 +53,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
 
     public ngOnDestroy(): void {
       this._isActive = false;
+      this._tradeSubscription?.unsubscribe();
     }
 
     public onClick(): void {
@@ -61,7 +64,7 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
 
     private renderLineChart() {
       //We always request 15min candles because with smaller interval we couldn't get 1 day worth of data in single request
-      this.horizonService.getTradeAggregations(this.exchange, 900000)
+      this._tradeSubscription = this.horizonService.getTradeAggregations(this.exchange, 900000)
         .subscribe({
           next: (response) => {
             const data = response as any;
