@@ -1,6 +1,7 @@
-import { Component, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, OnInit, OnDestroy, NgZone, inject, DestroyRef } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
+import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
 import { Title } from '@angular/platform-browser';
 
 import { Account } from '../model/account.model';
@@ -20,6 +21,7 @@ import { Utils } from '../utils';
   styleUrls: ['./live-trades.component.css']
 })
 export class LiveTradesComponent implements OnInit, OnDestroy {
+  private readonly _destroyRef = inject(DestroyRef);
   private tradesStream: Subscription;
   private streamStart: Date;
   private readonly TIMER_INTERVAL = 5000;
@@ -62,6 +64,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     if (this.tradesStream) {
       this.tradesStream.unsubscribe();
     }
+    this.stats.forEach(stat => stat.destroy());
   }
 
 
@@ -95,12 +98,14 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
       const stat = this.stats.get(key);
       const amount = parseFloat(trade.base_amount);
       const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null));
-      this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
-        stat.feedData(amount, xlmPrice);
-        if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {  //No need to do it twice
-          this.sortStatistics(this.currentSort);
-        }
-      });
+      this.horizonService.getLastPriceInNative(dummyAsset)
+        .pipe(takeUntilDestroyed(this._destroyRef))
+        .subscribe(xlmPrice => {
+          stat.feedData(amount, xlmPrice);
+          if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {  //No need to do it twice
+            this.sortStatistics(this.currentSort);
+          }
+        });
     }
     if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
       const key = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
@@ -111,10 +116,12 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
       const stat = this.stats.get(key);
       const amount = parseFloat(trade.counter_amount);
       const dummyAsset = new Asset(trade.counter_asset_code, null, null, new Account(trade.counter_asset_issuer, null));
-      this.horizonService.getLastPriceInNative(dummyAsset).subscribe(xlmPrice => {
-        stat.feedData(amount, xlmPrice);
-        this.sortStatistics(this.currentSort);
-      });
+      this.horizonService.getLastPriceInNative(dummyAsset)
+        .pipe(takeUntilDestroyed(this._destroyRef))
+        .subscribe(xlmPrice => {
+          stat.feedData(amount, xlmPrice);
+          this.sortStatistics(this.currentSort);
+        });
     }
   }
 
