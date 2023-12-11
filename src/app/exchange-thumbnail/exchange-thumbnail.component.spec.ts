@@ -1,6 +1,5 @@
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
-import { NgZone } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable, of, throwError } from 'rxjs';
 
@@ -28,8 +27,8 @@ describe('ExchangeThumbnailComponent', () => {
       .compileComponents();
   });
 
-  beforeEach(inject([NgZone, Router, HorizonRestService, UiActionsService], (zone, router, horizonService, uiService) => {
-    component = new ExchangeThumbnailComponent(zone, router, horizonService, uiService);
+  beforeEach(inject([Router, HorizonRestService, UiActionsService], (router, horizonService, uiService) => {
+    component = new ExchangeThumbnailComponent(router, horizonService, uiService);
     component.exchange = exchange;
   }));
 
