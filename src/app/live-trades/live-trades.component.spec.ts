@@ -1,5 +1,5 @@
 import { TestBed, inject, waitForAsync } from '@angular/core/testing';
-import { NgZone } from '@angular/core';
+import { DestroyRef } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 
@@ -20,6 +20,7 @@ describe('LiveTradesComponent', () => {
       declarations: [ LiveTradesComponent ],
       providers: [
         { provide: Title, useClass: TitleStub },
+        { provide: DestroyRef },
         { provide: HorizonRestService, useClass: HorizonRestServiceStub },
         { provide: TomlConfigService, useValue: new TomlConfigServiceStub(`[[CURRENCIES]]
 code = "zero-coin"
@@ -44,8 +45,8 @@ name = "glance token (or something)"`) }
       .compileComponents();
   }));
 
-  beforeEach(inject([NgZone, Title, HorizonRestService, TomlConfigService], (zone, titleService, horizonService, configService) => {
-    component = new LiveTradesComponent(zone, titleService, horizonService, configService);
+  beforeEach(inject([Title, DestroyRef, HorizonRestService, TomlConfigService], (titleService, destroyRef, horizonService, configService) => {
+    component = new LiveTradesComponent(titleService, destroyRef, horizonService, configService);
   }));
 
   it('should have window title "Live Trades"', inject([Title], (titleService) => {

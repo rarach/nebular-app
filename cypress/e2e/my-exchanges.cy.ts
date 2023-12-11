@@ -109,7 +109,7 @@ describe('My Exchanges', () => {
     exchangePanel().find('div.chartWarning').should('be.visible');
 
     //WHEN the market data is retrieved
-    cy.wait('@loadTradesReq').wait('@loadTradesReq');   //wait twice to skip over USDC/XLM too
+    cy.wait('@loadTradesReq');
 
     //THEN the exchange shows trade history for market USDC/TZS
     exchangePanel().find('div.lastPrice').invoke('text').then(parseFloat).should('be.gte', 0.0);

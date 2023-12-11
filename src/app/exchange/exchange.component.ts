@@ -1,5 +1,5 @@
 import { ActivatedRoute, Router } from '@angular/router';
-import { Component, NgZone, OnInit, OnDestroy } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { MatOption } from '@angular/material/core';
 import { Subscription } from 'rxjs';
@@ -41,8 +41,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
   selectedCounterAsset: Asset = null;
 
 
-  constructor(
-    private readonly ngZone: NgZone,
+  public constructor(
     private route: ActivatedRoute,
     private router: Router,
     private titleService: Title,
@@ -263,12 +262,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
     this.renderCandlestickChart(false);
 
-    //NOTE: Angular zones trick to prevent Protractor timeouts
-    this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.ngZone.run(() => { this.initChartStream(); });
-      }, Constants.CHART_INTERVAL);
-    });
+    setTimeout(() => this.initChartStream(), Constants.CHART_INTERVAL);
   }
 
   /****************************** Trade history (right side panel) ******************************/
@@ -336,12 +330,7 @@ export class ExchangeComponent implements OnInit, OnDestroy {
     }
     this.updateTradeHistory();
 
-    //NOTE: Angular zones trick to prevent Protractor timeouts
-    this.ngZone.runOutsideAngular(() => {
-      setTimeout(() => {
-        this.ngZone.run(() => { this.initPastTradesStream(); });
-      }, ExchangeComponent.PAST_TRADES_INTERVAL);
-    });
+    setTimeout(() => this.initPastTradesStream(), ExchangeComponent.PAST_TRADES_INTERVAL);
   }
   /**********************************************************************************************/
 

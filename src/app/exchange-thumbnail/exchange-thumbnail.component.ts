@@ -171,11 +171,6 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
       }
       this.renderLineChart();
 
-      //NOTE: Angular zones trick to prevent Protractor timeouts
-      this.ngZone.runOutsideAngular(() => {
-        setTimeout(() => {
-          this.ngZone.run(() => { this.initChartStream(); });
-        }, Constants.CHART_INTERVAL);
-      });
+      setTimeout(() => this.initChartStream(), Constants.CHART_INTERVAL);
     }
 }
