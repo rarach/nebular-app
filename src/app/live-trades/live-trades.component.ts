@@ -1,4 +1,4 @@
-import { Component, OnInit, OnDestroy, NgZone, inject, DestroyRef } from '@angular/core';
+import { Component, DestroyRef, OnInit, OnDestroy } from '@angular/core';
 import { Sort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -21,7 +21,6 @@ import { Utils } from '../utils';
   styleUrls: ['./live-trades.component.css']
 })
 export class LiveTradesComponent implements OnInit, OnDestroy {
-  private readonly _destroyRef = inject(DestroyRef);
   private tradesStream: Subscription;
   private streamStart: Date;
   private readonly TIMER_INTERVAL = 5000;
@@ -35,8 +34,8 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
 
 
   constructor(
-    private readonly ngZone: NgZone,
     titleService: Title,
+    private readonly _destroyRef: DestroyRef,
     private readonly horizonService: HorizonRestService,
     private readonly tomlService: TomlConfigService)
   {
@@ -52,12 +51,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     });
     this.streamStart = new Date();
 
-    //NOTE: Angular zones trick to prevent Protractor timeouts
-    this.ngZone.runOutsideAngular(() => {
-      setInterval(() => {
-        this.ngZone.run(() => { this.updateTime(); });
-      }, this.TIMER_INTERVAL);
-    });
+    setInterval(() => this.updateTime(), this.TIMER_INTERVAL);
   }
 
   public ngOnDestroy(): void {

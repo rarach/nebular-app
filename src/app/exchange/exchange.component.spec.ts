@@ -2,7 +2,6 @@ import { ActivatedRoute, Router, UrlTree } from '@angular/router';
 import { HttpErrorResponse } from '@angular/common/http';
 import { inject, TestBed } from '@angular/core/testing';
 import { MatOption } from '@angular/material/core';
-import { NgZone } from '@angular/core';
 import { Title } from '@angular/platform-browser';
 import { Observable, of, throwError } from 'rxjs';
 
@@ -34,9 +33,9 @@ describe('ExchangeComponent', () => {
     })
       .compileComponents();
   });
-  beforeEach(inject([NgZone, ActivatedRoute, Router, Title, AssetService, HorizonRestService],
-    (zone, route, router, titleService, assetService, horizonRestService) => {
-      exchComponent = new ExchangeComponent(zone, route, router, titleService, assetService, horizonRestService);
+  beforeEach(inject([ActivatedRoute, Router, Title, AssetService, HorizonRestService],
+    (route, router, titleService, assetService, horizonRestService) => {
+      exchComponent = new ExchangeComponent(route, router, titleService, assetService, horizonRestService);
     }));
 
   it('should have a default chart message "Loading chart..."', () => {

@@ -2,8 +2,8 @@ import { Observable, of, throwError } from "rxjs";
 import { IssuerConfiguration } from "../model/toml/issuer-configuration";
 
 export class TitleStub {
-  title: string|null = null;
-  setTitle(value: string): void { this.title = value; }
+  public title: string|null = null;
+  public setTitle(value: string): void { this.title = value; }
 }
 
 export class TomlConfigServiceStub {
