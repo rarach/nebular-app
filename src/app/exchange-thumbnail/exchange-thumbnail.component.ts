@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnDestroy, NgZone } from '@angular/core';
+import { Component, Input, OnInit, OnDestroy } from '@angular/core';
 import { HttpErrorResponse } from '@angular/common/http';
 import { Router } from "@angular/router";
 import { Subscription } from 'rxjs';
@@ -32,12 +32,11 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     private _tradeSubscription: Subscription;
     private _lineChart: LineChartData = null;
 
-    constructor(private readonly ngZone: NgZone,
-                private readonly router: Router,
+    public constructor(private readonly router: Router,
                 private readonly horizonService: HorizonRestService,
                 private readonly uiActions: UiActionsService) { }
 
-    getUrl(): string {
+    public getUrl(): string {
       return "exchange/" + this.exchange.baseAsset.ToExchangeUrlParameter() + "/" + this.exchange.counterAsset.ToExchangeUrlParameter();
     }
 
@@ -130,13 +129,11 @@ export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
             this.setPriceStatistics(startPrice, lastPrice);
             this._lineChart.setPriceScale(minPrice, maxPrice);
             zingchart.THEME=null;
-            this.ngZone.runOutsideAngular(() => {
-              zingchart.render({
-                id : this.chartPlaceholderId,
-                data : this._lineChart.getData(),
-                height: "100%",
-                width: "100%"
-              });
+            zingchart.render({
+              id : this.chartPlaceholderId,
+              data : this._lineChart.getData(),
+              height: "100%",
+              width: "100%"
             });
           },
           error: (err) => {
