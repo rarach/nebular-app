@@ -17,7 +17,7 @@ export class HorizonRestService {
     //Semi-maintained list of some public Horizon instances is at https://stellarbeat.io (section Horizon APIs)
     "https://horizon.stellar.org",
     "https://horizon.stellar.lobstr.co",
-    "https://h.fchain.io",
+    //TODO: find out if dead for good   "https://h.fchain.io",
     "https://horizon.publicnode.org"
   ];
   private readonly http: DelayingHttpClient;

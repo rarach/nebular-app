@@ -4,7 +4,7 @@ import { Observable, of } from 'rxjs';
 
 export class DelayingHttpClient {
   private nextExecutionTime = (new Date()).getTime();
-  private readonly MIN_GAP_BETWEEN_CALLS = 2000;
+  private readonly MIN_GAP_BETWEEN_CALLS = 500;
 
   constructor(private readonly http: HttpClient) { }
 
