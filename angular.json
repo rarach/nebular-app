@@ -16,7 +16,7 @@
             "outputPath": "dist",
             "index": "src/index.html",
             "main": "src/main.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "src/tsconfig.app.json",
             "sourceMap": true,
             "assets": [
@@ -57,37 +57,37 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "nebular:build"
+            "buildTarget": "nebular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "nebular:build:production"
+              "buildTarget": "nebular:build:production"
             }
           }
         },
         "serve4255": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "nebular:build",
-            "port": 4255
+            "port": 4255,
+            "buildTarget": "nebular:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "nebular:build:production"
+              "buildTarget": "nebular:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "nebular:build"
+            "buildTarget": "nebular:build"
           }
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
           "options": {
             "main": "src/test.ts",
-            "polyfills": "src/polyfills.ts",
+            "polyfills": ["zone.js"],
             "tsConfig": "src/tsconfig.spec.json",
             "karmaConfig": "src/karma.conf.js",
             "styles": [
