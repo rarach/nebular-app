@@ -1,11 +1,12 @@
 import { fakeAsync, tick, TestBed, getTestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 
 import { Account } from '../model/account.model';
 import { Asset, KnownAssets } from '../model/asset.model';
 import { AssetData } from '../model/asset-data.model';
 import { ExchangePair } from '../model/exchange-pair.model';
 import { HorizonRestService } from './horizon-rest.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe('HorizonRestService', () => {
   let injector: TestBed;
@@ -17,9 +18,9 @@ describe('HorizonRestService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [HorizonRestService]
-    });
+    imports: [],
+    providers: [HorizonRestService, provideHttpClient(withInterceptorsFromDi()), provideHttpClientTesting()]
+});
     injector = getTestBed();
     service = injector.inject(HorizonRestService);
     httpMock = injector.inject(HttpTestingController);

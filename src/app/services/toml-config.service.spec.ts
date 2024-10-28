@@ -1,7 +1,8 @@
-import { HttpTestingController, HttpClientTestingModule } from "@angular/common/http/testing";
+import { HttpTestingController, provideHttpClientTesting } from "@angular/common/http/testing";
 import { TestBed, getTestBed } from "@angular/core/testing";
 import { HorizonRestService } from "./horizon-rest.service";
 import { TomlConfigService } from "./toml-config.service";
+import { provideHttpClient, withInterceptorsFromDi } from "@angular/common/http";
 
 
 describe('TomlConfigService', () => {
@@ -11,12 +12,14 @@ describe('TomlConfigService', () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         { provide: TomlConfigService, useClass: TomlConfigService },
-        { provide: HorizonRestService, useClass: HorizonRestServiceStub }
-      ]
-    });
+        { provide: HorizonRestService, useClass: HorizonRestServiceStub },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     injector = getTestBed();
     service = injector.get(TomlConfigService);
     httpMock = injector.get(HttpTestingController);
