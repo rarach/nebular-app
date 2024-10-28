@@ -2,7 +2,7 @@
   "name": "nebular",
   "version": "24.10.28",
   "engines": {
-    "node": ">=16.14.2"
+    "node": ">=20.0.0"
   },
   "scripts": {
     "ng": "ng",
