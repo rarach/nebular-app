@@ -1,7 +1,7 @@
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { CookieModule } from 'ngx-cookie';
 import { FormsModule } from '@angular/forms';
-import { HttpClientModule } from '@angular/common/http';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { MatSelectModule } from '@angular/material/select';
@@ -30,34 +30,40 @@ import { CookieConsentComponent } from './cookie-consent/cookie-consent.componen
 
 
 @NgModule({
-  declarations: [
-    AppComponent,
-    OverviewComponent,
-    MyExchangesComponent,
-    ExchangeComponent,
-    ConfigurationComponent,
-    PageNotFoundComponent,
-    ExchangeThumbnailComponent,
-    TradeHistoryComponent,
-    OrderbookComponent,
-    CustomExchangeComponent,
-    CustomAssetListComponent,
-    ExchangeAnalyticsComponent,
-    LiveTradesComponent,
-    CustomAssetWizardComponent,
-    CookieConsentComponent
-  ],
-  imports: [
-    BrowserModule,
-    BrowserAnimationsModule,
-    FormsModule,
-    HttpClientModule,
-    MatSelectModule,
-    MatSortModule,
-    AppRoutingModule,
-    CookieModule.withOptions()
-  ],
-  providers: [Title, AssetService, HorizonRestService, NebularService, UiActionsService],
-  bootstrap: [AppComponent]
+    declarations: [
+        AppComponent,
+        OverviewComponent,
+        MyExchangesComponent,
+        ExchangeComponent,
+        ConfigurationComponent,
+        PageNotFoundComponent,
+        ExchangeThumbnailComponent,
+        TradeHistoryComponent,
+        OrderbookComponent,
+        CustomExchangeComponent,
+        CustomAssetListComponent,
+        ExchangeAnalyticsComponent,
+        LiveTradesComponent,
+        CustomAssetWizardComponent,
+        CookieConsentComponent
+    ],
+    imports: [
+        BrowserModule,
+        BrowserAnimationsModule,
+        FormsModule,
+        MatSelectModule,
+        MatSortModule,
+        AppRoutingModule,
+        CookieModule.withOptions()
+    ],
+    providers: [
+        Title,
+        AssetService,
+        HorizonRestService,
+        NebularService,
+        UiActionsService,
+        provideHttpClient(withInterceptorsFromDi())
+    ],
+    bootstrap: [AppComponent]
 })
 export class AppModule { }

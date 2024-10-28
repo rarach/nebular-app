@@ -1,8 +1,9 @@
 import { TestBed, getTestBed } from '@angular/core/testing';
-import { HttpClientTestingModule, HttpTestingController } from '@angular/common/http/testing';
+import { HttpTestingController, provideHttpClientTesting } from '@angular/common/http/testing';
 import { CookieService } from 'ngx-cookie';
 
 import { NebularService } from './nebular.service';
+import { provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 
 describe("NebularService", () => {
   let injector: TestBed;
@@ -11,18 +12,20 @@ describe("NebularService", () => {
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      imports: [HttpClientTestingModule],
-      providers: [
+    imports: [],
+    providers: [
         NebularService,
         {
-          provide: CookieService,
-          useValue: {
-            get: (key) => "", 
-            put: (key, value, options) => { return; }
-          }
-        }
-      ]
-    });
+            provide: CookieService,
+            useValue: {
+                get: (key) => "",
+                put: (key, value, options) => { return; }
+            }
+        },
+        provideHttpClient(withInterceptorsFromDi()),
+        provideHttpClientTesting()
+    ]
+});
     injector = getTestBed();
     service = injector.get(NebularService);
     httpMock = injector.get(HttpTestingController);
