@@ -53,3 +53,7 @@ div.assets-stats-panel {
     width: 32px;
     height: 32px;
 }
+
+#assetStatisticsTable a.blacklist-link {
+    font-size: 1.2rem;
+}

@@ -26,7 +26,10 @@
           
             <tr *ngFor="let stat of sortedStatistics">
               <td><img class="asset-icon" src="{{stat.assetIcon}}" title="{{stat.assetCode}}"/></td>
-              <td>{{stat.assetTitle}}</td>
+              <td>
+                <a class="link inline-link blacklist-link" (click)="addToBlacklist(stat)">&#9762;</a>
+                {{stat.assetTitle}}
+              </td>
               <td>{{stat.numTrades}}</td>
               <td>
                   {{Utils.formatAmount(stat.volume)}} {{stat.assetCode}}
@@ -34,5 +37,13 @@
               </td>
             </tr>
         </table>
+    </div>
+</div>
+<div class="row" *ngIf="assetBlacklist.size > 0" style="border-top: 1px solid #AAAAAA;">
+    Blacklist:
+    <div *ngFor="let blackAsset of assetBlacklist.values()"
+          style="display: inline-block; border: 1px solid #ED8117; padding: 2px; margin-right: 1px; border-radius: 7px;">
+          {{ blackAsset.assetTitle ?? blackAsset.assetCode }}
+          <a class="link inline-link" style="font-weight: bolder;" (click)="removeFromBlacklist(blackAsset)">&#9746;</a>
     </div>
 </div>

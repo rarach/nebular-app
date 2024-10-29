@@ -2,7 +2,7 @@ import { Account, KnownAccounts } from "./account.model";
 import { Constants } from "./constants";
 
 export class Asset {
-  constructor(public readonly code: string|null,
+  public constructor(public readonly code: string|null,
                 public fullName: string,
                 public readonly type: string|null,
                 public readonly issuer: Account|null,
@@ -20,12 +20,13 @@ export class Asset {
     }
   }
 
+
   /** @public Return true for Lumens (XLM) */
-  IsNative(): boolean {
+  public IsNative(): boolean {
     return this.code === Constants.NATIVE_ASSET_CODE && this.type === Constants.NATIVE_ASSET_TYPE;
   }
 
-  ToUrlParameters(prefix: string): string {
+  public ToUrlParameters(prefix: string): string {
     let getParams = prefix + "_asset_code=" + this.code + "&" + prefix + "_asset_type=" + this.type;
     if (this.issuer?.address) {
       getParams += "&" + prefix + "_asset_issuer=" + this.issuer.address;
@@ -34,7 +35,7 @@ export class Asset {
     return getParams;
   }
 
-  ToExchangeUrlParameter(): string {
+  public ToExchangeUrlParameter(): string {
     return this.code + (this.type == Constants.NATIVE_ASSET_TYPE ? "" : "-" + this.issuer.address);
   }
 }

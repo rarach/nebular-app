@@ -11,6 +11,8 @@ export class AssetStatistics {
   public numTrades = 0;
   public volume = 0.0;
   public volumeInNative = 0.0;
+  public hidden = false;
+  public readonly id: string;
   private readonly _subscription: Subscription;
 
   constructor(
@@ -19,6 +21,7 @@ export class AssetStatistics {
     public readonly assetCode: string,
     private readonly issuer: string
   ) {
+    this.id = assetCode + '-' + issuer;
     this._subscription = horizonService.getIssuerConfigUrl(assetCode, issuer)
       .subscribe(configUrl => {
         if (configUrl) {
