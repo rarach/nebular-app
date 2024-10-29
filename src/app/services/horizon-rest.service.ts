@@ -18,7 +18,7 @@ export class HorizonRestService {
     "https://horizon.stellar.org",
     "https://horizon.stellar.lobstr.co",
     //TODO: find out if dead for good   "https://h.fchain.io",
-    "https://horizon.publicnode.org"
+    //"https://horizon.publicnode.org"
   ];
   private readonly http: DelayingHttpClient;
   private reqCounter = 0;

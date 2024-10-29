@@ -26,14 +26,15 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
   private readonly TIMER_INTERVAL = 5000;
   private stats = new Map<string, AssetStatistics>();
 
-  Utils = Utils;          // Template access
-  public duration = "5s";    // TODO: No! Do it as template pipe that gets the timespan as number
+  Utils = Utils;            // Template access
+  public duration = "5s";   // TODO: No! Do it as template pipe that gets the timespan as number
   public readonly trades = new Queue<LiveTradeItem>(500);
   public sortedStatistics: AssetStatistics[] = null;
+  public assetBlacklist = new Map<string, AssetStatistics>();
   private currentSort: Sort = { active: "asset", direction: "asc" };
 
 
-  constructor(
+  public constructor(
     titleService: Title,
     private readonly _destroyRef: DestroyRef,
     private readonly horizonService: HorizonRestService,
@@ -45,8 +46,14 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     let counter = 0;
     this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
-      const newTrade = new LiveTradeItem(trade, counter++ % 2 == 0);
-      this.trades.add(newTrade);
+      //Only show in the stream feed in not in the blacklist
+      const baseAssetKey = trade.base_asset_code + "-" + trade.base_asset_issuer;
+      const counterAssetKey = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
+      if (!this.assetBlacklist.has(baseAssetKey) && !this.assetBlacklist.has(counterAssetKey)) {
+        const newTrade = new LiveTradeItem(trade, counter++ % 2 == 0);
+        this.trades.add(newTrade);
+      }
+
       this.updateStatistics(trade);
     });
     this.streamStart = new Date();
@@ -92,6 +99,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
       const stat = this.stats.get(key);
       const amount = parseFloat(trade.base_amount);
       const dummyAsset = new Asset(trade.base_asset_code, null, null, new Account(trade.base_asset_issuer, null));
+
       this.horizonService.getLastPriceInNative(dummyAsset)
         .pipe(takeUntilDestroyed(this._destroyRef))
         .subscribe(xlmPrice => {
@@ -129,15 +137,27 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
       return;
     }
 
-    this.sortedStatistics = data.sort((a, b) => {
+    this.sortedStatistics = data
+      .filter((stat) => !stat.hidden)
+      .sort((a, b) => {
       const isAsc = sort.direction === 'asc';
       switch (sort.active) {
-      case 'asset': return this.compare(a.assetTitle, b.assetTitle, isAsc);
-      case 'trades': return this.compare(a.numTrades, b.numTrades, isAsc);
-      case 'volume': return this.compare(a.volumeInNative, b.volumeInNative, isAsc);
-      default: return 0;
+        case 'asset': return this.compare(a.assetTitle, b.assetTitle, isAsc);
+        case 'trades': return this.compare(a.numTrades, b.numTrades, isAsc);
+        case 'volume': return this.compare(a.volumeInNative, b.volumeInNative, isAsc);
+        default: return 0;
       }
     });
+  }
+
+  public addToBlacklist(assetStats: AssetStatistics): void {
+    assetStats.hidden = true;
+    this.assetBlacklist.set(assetStats.id, assetStats);
+  } 
+
+  public removeFromBlacklist(asset: AssetStatistics): void {
+    asset.hidden = false;
+    this.assetBlacklist.delete(asset.id);
   }
 
   private compare(a: number | string, b: number | string, isAsc: boolean): number {
