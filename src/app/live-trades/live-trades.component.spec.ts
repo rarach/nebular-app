@@ -10,6 +10,7 @@ import { LiveTradesComponent } from './live-trades.component';
 import { TitleStub, TomlConfigServiceStub } from '../testing/stubs';
 import { TomlConfigService } from '../services/toml-config.service';
 import { Trade } from '../model/trade.model';
+import { AssetStatistics } from '../model/asset-statistics';
 
 
 describe('LiveTradesComponent', () => {
@@ -121,6 +122,46 @@ name = "glance token (or something)"`) }
     expect(component.sortedStatistics[2].numTrades).toBe(4);
     expect(component.sortedStatistics[2].volume).toBe(17.0);
     expect(component.sortedStatistics[2].volumeInNative).toBe(-1 * 858585.8585);
+  });
+
+  it("addAssetToBlacklist should add specific asset to black-list", () => {
+    //arrange
+    const assetToBlacklist = { id: "KRW-GENIUS55555", hidden: false } as AssetStatistics;
+    expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeFalse();
+
+    //act
+    component.addAssetToBlacklist(assetToBlacklist);
+
+    //assert
+    expect(assetToBlacklist.hidden).toBeTrue();
+    expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeTrue();
+  });
+  
+  it("removeAssetFromBlacklist should remove specific asset from black-list and un-hide it", () => {
+    //arrange
+    const assetToBlacklist = { id: "KRW-GENIUS55555", hidden: false } as AssetStatistics;
+    component.directAssetBlacklist.set(assetToBlacklist.id, assetToBlacklist);
+
+    //act
+    component.removeAssetFromBlacklist(assetToBlacklist);
+
+    //assert
+    expect(assetToBlacklist.hidden).toBeFalse();
+    expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeFalse();
+  });
+  
+  it("removeAssetFromBlacklist should keep asset hidden if it's also filtered out by text", () => {
+    //arrange
+    const assetToBlacklist = { id: "KRW-GENIUS55555", hidden: true } as AssetStatistics;
+    component.directAssetBlacklist.set(assetToBlacklist.id, assetToBlacklist);
+    component.impliedAssetBlacklist.set(assetToBlacklist.id, assetToBlacklist);
+
+    //act
+    component.removeAssetFromBlacklist(assetToBlacklist);
+
+    //assert
+    expect(assetToBlacklist.hidden).toBeTrue();
+    expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeFalse();
   });
 });
 
