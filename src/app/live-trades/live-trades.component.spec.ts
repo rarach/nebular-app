@@ -1,5 +1,6 @@
 import { TestBed, inject, waitForAsync } from '@angular/core/testing';
 import { DestroyRef } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Title } from '@angular/platform-browser';
 import { Observable, of } from 'rxjs';
 
@@ -150,7 +151,7 @@ name = "glance token (or something)"`) }
     expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeFalse();
   });
   
-  it("removeAssetFromBlacklist should keep asset hidden if it's also filtered out by text", () => {
+  it("removeAssetFromBlacklist should keep asset hidden if it's also filtered-out by text", () => {
     //arrange
     const assetToBlacklist = { id: "KRW-GENIUS55555", hidden: true } as AssetStatistics;
     component.directAssetBlacklist.set(assetToBlacklist.id, assetToBlacklist);
@@ -162,6 +163,38 @@ name = "glance token (or something)"`) }
     //assert
     expect(assetToBlacklist.hidden).toBeTrue();
     expect(component.directAssetBlacklist.has(assetToBlacklist.id)).toBeFalse();
+  });
+
+  it("addFullnameFilter should filter out asset statistics matching given phrase", () => {
+    //arrange
+    component.ngOnInit();
+    const testForm = {
+      value: { newFilterText: 'GTN' },
+      reset: () => {}
+    } as NgForm;
+    expect(component.fullnameFilters.size).toBe(0);
+
+    //act
+    component.addFullnameFilter(testForm);
+
+    //assert
+    expect(component.fullnameFilters).toContain('GTN');
+    expect(component.impliedAssetBlacklist.has('GTN-GBETLEHEM')).toBeTrue();
+  });
+
+  it("removeFullnameFilter should include back previously filtered out asset statistics", () => {
+    //arrange
+    component.ngOnInit();
+    component.fullnameFilters.add('zero-co');
+    component.fullnameFilters.add('GTN');
+
+    //act
+    component.removeFullnameFilter('GTN');
+
+    //assert
+    expect(component.fullnameFilters).not.toContain('GTN');
+    expect(component.impliedAssetBlacklist.size).toBe(1);
+    expect(component.impliedAssetBlacklist.has('zero-coin-GAZERO')).toBeTrue();
   });
 });
 
