@@ -18,6 +18,7 @@ export class AssetStatistics {
   constructor(
     horizonService: HorizonRestService,
     configService: TomlConfigService,
+    fullnameFilters: Set<string>,
     public readonly assetCode: string,
     private readonly issuer: string
   ) {
@@ -43,6 +44,8 @@ export class AssetStatistics {
           this.assetTitle = this.assetCode + "-" + this.issuer.substring(0, 8) + "..." + this.issuer.substring(48);
           this.assetIcon = `./assets/images/asset_icons/${this.assetCode}.png`;
         }
+
+        this.checkFilter(fullnameFilters);
       });
   }
 
@@ -62,5 +65,14 @@ export class AssetStatistics {
       return asset.code === this.assetCode && asset.issuer === this.issuer;
     });
     this.assetIcon = theAsset ? theAsset.image : './assets/images/asset_icons/unknown.png';
+  }
+
+  private checkFilter(fullnameFilters: Set<string>): void {
+    for (const filter of fullnameFilters) {
+      if (this.assetTitle.includes(filter)) {
+        this.hidden = true;
+        return;
+      }
+    }
   }
 }

@@ -1,4 +1,5 @@
 import { Component, DestroyRef, OnInit, OnDestroy } from '@angular/core';
+import { NgForm } from '@angular/forms';
 import { Sort } from '@angular/material/sort';
 import { Subscription } from 'rxjs';
 import { takeUntilDestroyed } from '@angular/core/rxjs-interop';
@@ -30,7 +31,10 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
   public duration = "5s";   // TODO: No! Do it as template pipe that gets the timespan as number
   public readonly trades = new Queue<LiveTradeItem>(500);
   public sortedStatistics: AssetStatistics[] = null;
-  public assetBlacklist = new Map<string, AssetStatistics>();
+  public directAssetBlacklist = new Map<string, AssetStatistics>();
+  public inputFilterText = "";
+  public fullnameFilters = new Set<string>();
+  public impliedAssetBlacklist = new Map<string, AssetStatistics>();  //Blacklist constructed by current filter texts
   private currentSort: Sort = { active: "asset", direction: "asc" };
 
 
@@ -46,11 +50,14 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
   public ngOnInit(): void {
     let counter = 0;
     this.tradesStream = this.horizonService.streamTradeHistory().subscribe(trade => {
-      //Only show in the stream feed in not in the blacklist
+      //Only show in the stream feed if not in the blacklist
       const baseAssetKey = trade.base_asset_code + "-" + trade.base_asset_issuer;
       const counterAssetKey = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
-      if (!this.assetBlacklist.has(baseAssetKey) && !this.assetBlacklist.has(counterAssetKey)) {
+      if (!this.directAssetBlacklist.has(baseAssetKey) && !this.directAssetBlacklist.has(counterAssetKey) &&
+          !this.impliedAssetBlacklist.has(baseAssetKey) && !this.impliedAssetBlacklist.has(counterAssetKey))
+      {
         const newTrade = new LiveTradeItem(trade, counter++ % 2 == 0);
+        //BUG: we also show trades of newly appeared assets that will be filtered after their domain is determined
         this.trades.add(newTrade);
       }
 
@@ -93,8 +100,11 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     if (trade.base_asset_type != Constants.NATIVE_ASSET_TYPE) {
       const key = trade.base_asset_code + "-" + trade.base_asset_issuer;
       if (!this.stats.has(key)) {
-        const stat = new AssetStatistics(this.horizonService, this.tomlService, trade.base_asset_code, trade.base_asset_issuer);
+        const stat = new AssetStatistics(this.horizonService, this.tomlService, this.fullnameFilters, trade.base_asset_code, trade.base_asset_issuer);
         this.stats.set(key, stat);
+        if (stat.hidden) {
+          this.impliedAssetBlacklist.set(stat.id, stat);
+        }
       }
       const stat = this.stats.get(key);
       const amount = parseFloat(trade.base_amount);
@@ -112,7 +122,7 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     if (trade.counter_asset_type != Constants.NATIVE_ASSET_TYPE) {
       const key = trade.counter_asset_code + "-" + trade.counter_asset_issuer;
       if (!this.stats.has(key)) {
-        const stat = new AssetStatistics(this.horizonService, this.tomlService, trade.counter_asset_code, trade.counter_asset_issuer);
+        const stat = new AssetStatistics(this.horizonService, this.tomlService, this.fullnameFilters, trade.counter_asset_code, trade.counter_asset_issuer);
         this.stats.set(key, stat);
       }
       const stat = this.stats.get(key);
@@ -150,14 +160,53 @@ export class LiveTradesComponent implements OnInit, OnDestroy {
     });
   }
 
-  public addToBlacklist(assetStats: AssetStatistics): void {
+  public addAssetToBlacklist(assetStats: AssetStatistics): void {
     assetStats.hidden = true;
-    this.assetBlacklist.set(assetStats.id, assetStats);
+    this.directAssetBlacklist.set(assetStats.id, assetStats);
   } 
 
-  public removeFromBlacklist(asset: AssetStatistics): void {
-    asset.hidden = false;
-    this.assetBlacklist.delete(asset.id);
+  public removeAssetFromBlacklist(asset: AssetStatistics): void {
+    if (!this.impliedAssetBlacklist.has(asset.id)) {
+      asset.hidden = false;
+    }
+    this.directAssetBlacklist.delete(asset.id);
+  }
+
+  public addFullnameFilter(theForm: NgForm): void {
+    const filterText: string = theForm.value.newFilterText;
+    if (filterText && filterText.trim() != '') {
+      this.fullnameFilters.add(filterText);
+
+      this.stats.forEach(assetStat => {
+        if (assetStat.assetTitle?.includes(filterText))   //BUG: newly added assests that don't have their domain resolved yet will sneak in
+        {
+          this.impliedAssetBlacklist.set(assetStat.id, assetStat);
+          assetStat.hidden = true;
+        }
+      });
+    }
+    theForm.reset();
+  }
+
+  public removeFullnameFilter(filterText: string): void {
+    this.fullnameFilters.delete(filterText);
+
+    //Reconstruct the implied black-list completely. This is to keep there the tokens that
+    //matched the filter just removed, but also match some filter(s) still valid.
+    for (const currentAsset of this.stats.values())  {
+      let filteredByText = false;
+      for (const filter of this.fullnameFilters) {
+        if (currentAsset.assetTitle?.includes(filter)) {
+          this.impliedAssetBlacklist.set(currentAsset.id, currentAsset);
+          currentAsset.hidden = true;
+          filteredByText = true;
+          break;
+        }
+      }
+      if (!filteredByText && !this.directAssetBlacklist.has(currentAsset.id) && currentAsset.hidden) {
+        currentAsset.hidden = false;
+      }
+    }
   }
 
   private compare(a: number | string, b: number | string, isAsc: boolean): number {

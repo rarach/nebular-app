@@ -27,7 +27,7 @@
             <tr *ngFor="let stat of sortedStatistics">
               <td><img class="asset-icon" src="{{stat.assetIcon}}" title="{{stat.assetCode}}"/></td>
               <td>
-                <a class="link inline-link blacklist-link" (click)="addToBlacklist(stat)">&#9762;</a>
+                <a class="link inline-link blacklist-link" (click)="addAssetToBlacklist(stat)">&#9762;</a>
                 {{stat.assetTitle}}
               </td>
               <td>{{stat.numTrades}}</td>
@@ -39,11 +39,21 @@
         </table>
     </div>
 </div>
-<div class="row" *ngIf="assetBlacklist.size > 0" style="border-top: 1px solid #AAAAAA;">
-    Blacklist:
-    <div *ngFor="let blackAsset of assetBlacklist.values()"
-          style="display: inline-block; border: 1px solid #ED8117; padding: 2px; margin-right: 1px; border-radius: 7px;">
-          {{ blackAsset.assetTitle ?? blackAsset.assetCode }}
-          <a class="link inline-link" style="font-weight: bolder;" (click)="removeFromBlacklist(blackAsset)">&#9746;</a>
+<div class="row" class="filter-panel">
+    <form (submit)="addFullnameFilter(filterTextForm)" #filterTextForm="ngForm">
+        <input type="text" [(ngModel)]="inputFilterText" #newFilterText="ngModel" name="newFilterText" placeholder="-ste11ar.org"/>
+        <button type="submit" class="nebularBtn add-filter-button">Add filter</button>
+    </form>
+    Full-name filters:
+    <div *ngFor="let filterText of fullnameFilters" class="chip gray-border">
+          {{ filterText }}
+          <a class="link inline-link remove-icon" (click)="removeFullnameFilter(filterText)">&#9746;</a>
+    </div>
+    <div *ngIf="directAssetBlacklist.size > 0" id="currencyBlackList">
+        Currency blacklist:
+        <div *ngFor="let blackAsset of directAssetBlacklist.values()" class="chip orange-border">
+            {{ blackAsset.assetTitle ?? blackAsset.assetCode }}
+            <a class="link inline-link remove-icon" (click)="removeAssetFromBlacklist(blackAsset)">&#9746;</a>
+        </div>
     </div>
 </div>
