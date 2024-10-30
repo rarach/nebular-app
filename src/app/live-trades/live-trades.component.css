@@ -57,3 +57,47 @@ div.assets-stats-panel {
 #assetStatisticsTable a.blacklist-link {
     font-size: 1.2rem;
 }
+
+.filter-panel {
+    border-top: 1px solid #AAAAAA;
+    padding: 2px;
+}
+
+form {
+    margin-bottom: 6px;
+}
+
+input[type=text] {
+    height: 22px;
+    margin-right: 5px;
+    border: 1px solid black;
+    color: black;
+}
+
+button.add-filter-button {
+    height: 22px;
+    background-color: #ED8117;
+}
+
+div#currencyBlackList {
+    border-top: 1px solid #AAAAAA;
+}
+
+.chip {
+    display: inline-block;
+    padding: 2px;
+    margin: 1px;
+    border-radius: 7px;
+}
+
+.orange-border {
+    border: 1px solid #ED8117;
+}
+
+.gray-border {
+    border: 1px solid #5B6A72; 
+}
+
+.remove-icon {
+    font-weight: bolder;
+}
