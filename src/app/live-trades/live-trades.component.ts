@@ -17,9 +17,10 @@ import { Trade } from '../model/trade.model';
 import { Utils } from '../utils';
 
 @Component({
-  selector: 'nebular-live-trades',
-  templateUrl: './live-trades.component.html',
-  styleUrls: ['./live-trades.component.css']
+    selector: 'nebular-live-trades',
+    templateUrl: './live-trades.component.html',
+    styleUrls: ['./live-trades.component.css'],
+    standalone: false
 })
 export class LiveTradesComponent implements OnInit, OnDestroy {
   private tradesStream: Subscription;

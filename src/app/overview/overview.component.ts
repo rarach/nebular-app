@@ -6,9 +6,10 @@ import { ExchangePair } from "../model/exchange-pair.model";
 import { NebularService } from '../services/nebular.service';
 
 @Component({
-  selector: 'nebular-overview',
-  templateUrl: './overview.component.html',
-  styleUrls: ['./overview.component.css']
+    selector: 'nebular-overview',
+    templateUrl: './overview.component.html',
+    styleUrls: ['./overview.component.css'],
+    standalone: false
 })
 export class OverviewComponent implements OnInit {
   exchangeList: ExchangePair[] = null;

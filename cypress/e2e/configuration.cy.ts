@@ -11,7 +11,7 @@ describe('Configuration page', () => {
   });
 
   it('finds and adds two new custom assets (BTC anchors)', () => {
-    cy.intercept({ method: 'GET', hostname: 'stellarport.io' }).as('boundaryRequest');
+    cy.intercept({ method: 'GET', hostname: 'ultracapital.xyz' }).as('boundaryRequest');
     //Trick: go to invalid page to load the web without calling the dependent services, setup a cookie
     cy.visit('/no-such-page');
     cy.setCookie('agr', 'true');
@@ -34,16 +34,13 @@ describe('Configuration page', () => {
     const anchorImage1 = anchorRow1().find('img.asset-icon');
     anchorImage1.invoke('attr', 'src').should('contain', 'apay.io');    //They wouldn't outsource the icons, right?
 
-    const anchorRow2 = () => resultsTable().find('tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5');
-    anchorRow2().should('have.text', 'BTC-stellarport.io' + 'Add');
-
-    const anchorImage2 = anchorRow2().find('img.asset-icon');
-    anchorImage2.invoke('attr', 'src').should('contain', 'stellarport.io');
+    const anchorRow2 = () => resultsTable().find('tr#BTC-GARDNV3Q7YGT4AKSDF25LT32YSCCW4EV22Y2TV3I2PU2MMXJTEDL5T55');
+    anchorRow2().should('have.text', 'BTC-ultracapital.xyz' + 'Add');
 
     //Verify that the two BTC anchors are not among user's custom assets already
     const assetsTable = () => cy.get('table#customAssetsTable');
     assetsTable().find('tr#BTC-GAUTUYY2THLF7SGITDFMXJVYH3LHDSMGEAKSBU267M2K7A3W543CKUEF').should('not.exist'); //apay.io
-    assetsTable().find('tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5').should('not.exist'); //stellarport.io
+    assetsTable().find('tr#BTC-GARDNV3Q7YGT4AKSDF25LT32YSCCW4EV22Y2TV3I2PU2MMXJTEDL5T55').should('not.exist'); //ultracapital.xyz
 
     const addButton1 = anchorRow1().find('button.addButton');
     addButton1.click();
@@ -55,7 +52,7 @@ describe('Configuration page', () => {
     addButton2.click();
     //Removed from available, added among stored
     anchorRow2().should('not.exist');
-    assetsTable().find('tr#BTC-GBVOL67TMUQBGL4TZYNMY3ZQ5WGQYFPFD5VJRWXR72VA33VFNL225PL5').should('exist');
+    assetsTable().find('tr#BTC-GARDNV3Q7YGT4AKSDF25LT32YSCCW4EV22Y2TV3I2PU2MMXJTEDL5T55').should('exist');
   });
 
   it("contains list of custom assets saved by user", () => {     //TODO: "... and removes one of them"

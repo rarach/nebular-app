@@ -4,9 +4,10 @@ import { ExecutedTrade } from '../model/executed-trade.model';
 import { Utils } from '../utils';
 
 @Component({
-  selector: 'nebular-trade-history',
-  templateUrl: './trade-history.component.html',
-  styleUrls: ['./trade-history.component.css']
+    selector: 'nebular-trade-history',
+    templateUrl: './trade-history.component.html',
+    styleUrls: ['./trade-history.component.css'],
+    standalone: false
 })
 export class TradeHistoryComponent {
     @Input() /*readonly TODO: how to test such?*/ exchange: ExchangePair;

@@ -224,17 +224,17 @@ describe('HorizonRestService', () => {
   }));
 
   it("#getAssetIssuers() returns correct AssetData array for existing asset code", fakeAsync(() => {
-    service.getAssetIssuers("EURT").subscribe(data => {
+    service.getAssetIssuers("USDC").subscribe(data => {
       expect(data?.length).toBe(1);
-      expect(data![0]).toEqual(new AssetData("https://tempo.eu.com/.well-known/stellar.toml",
-        "EURT",
-        "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
+      expect(data![0]).toEqual(new AssetData("https://circle.com/.well-known/stellar.toml",
+        "USDC",
+        "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
         10815));
     });
 
     tick(10);
 
-    const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=EURT&limit=200"));
+    const req = httpMock.expectOne(req => req.url.endsWith("/assets?asset_code=USDC&limit=200"));
     expect(req.request.method).toBe("GET");
     req.flush(`{
             "_embedded": {
@@ -242,12 +242,12 @@ describe('HorizonRestService', () => {
                 {
                   "_links": {
                     "toml": {
-                      "href": "https://tempo.eu.com/.well-known/stellar.toml"
+                      "href": "https://circle.com/.well-known/stellar.toml"
                     }
                   },
                   "asset_type": "credit_alphanum4",
-                  "asset_code": "EURT",
-                  "asset_issuer": "GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S",
+                  "asset_code": "USDC",
+                  "asset_issuer": "GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN",
                   "num_accounts": 10815
                 }
               ]

@@ -9,9 +9,10 @@ import { ExchangePair } from '../model/exchange-pair.model';
 import { UiActionsService } from '../services/ui-actions.service';
 
 @Component({
-  selector: 'nebular-custom-exchange',
-  templateUrl: './custom-exchange.component.html',
-  styleUrls: ['./custom-exchange.component.css']
+    selector: 'nebular-custom-exchange',
+    templateUrl: './custom-exchange.component.html',
+    styleUrls: ['./custom-exchange.component.css'],
+    standalone: false
 })
 export class CustomExchangeComponent implements OnInit {
     @Input() public exchange: ExchangePair;

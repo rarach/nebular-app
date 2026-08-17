@@ -7,9 +7,10 @@ import { NebularService } from '../services/nebular.service';
 import { UiActionsService } from '../services/ui-actions.service';
 
 @Component({
-  selector: 'nebular-my-exchanges',
-  templateUrl: './my-exchanges.component.html',
-  styleUrls: ['./my-exchanges.component.css']
+    selector: 'nebular-my-exchanges',
+    templateUrl: './my-exchanges.component.html',
+    styleUrls: ['./my-exchanges.component.css'],
+    standalone: false
 })
 export class MyExchangesComponent {
   public readonly exchanges = new Array<ExchangePair>();
