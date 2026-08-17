@@ -5,8 +5,8 @@ on:
     branches: [ master ]
 env:
   AZURE_WEBAPP_NAME: nebular2
-  AZURE_WEBAPP_PACKAGE_PATH: './dist'
-  NODE_VERSION: '20.x'
+  AZURE_WEBAPP_PACKAGE_PATH: './dist/browser'
+  NODE_VERSION: '24.x'
 
 jobs:
   build-and-deploy:
@@ -14,10 +14,10 @@ jobs:
 
     steps:
     - name: Checkout
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
     - name: Use Node.js ${{ env.NODE_VERSION }}
-      uses: actions/setup-node@v1
+      uses: actions/setup-node@v4
       with:
         node-version: ${{ env.NODE_VERSION }}
     - name: Install dependencies
