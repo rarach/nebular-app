@@ -10,9 +10,10 @@ import { IssuerConfiguration } from '../../model/toml/issuer-configuration';
 import { TomlConfigService } from '../../services/toml-config.service';
 
 @Component({
-  selector: 'nebular-custom-asset-wizard',
-  templateUrl: './custom-asset-wizard.component.html',
-  styleUrls: ['./custom-asset-wizard.component.css']
+    selector: 'nebular-custom-asset-wizard',
+    templateUrl: './custom-asset-wizard.component.html',
+    styleUrls: ['./custom-asset-wizard.component.css'],
+    standalone: false
 })
 export class CustomAssetWizardComponent {
     @Output() public assetAdded = new EventEmitter();

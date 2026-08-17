@@ -44,10 +44,10 @@ export class Asset {
 /** "Database" of currently knwon assets on the Stellar network. TODO: load this from backend! */
 export const KnownAssets = {
   "XLM" : new Asset("XLM", "Lumen", "native", new Account(null, null), Constants.NATIVE_ASSET_IMAGE),
-  "BTC-Interstellar" : new Asset("BTC", "Bitcoin", null, KnownAccounts.Interstellar),
+  "AQUA-Aquarius" : new Asset("AQUA", "Aquarius", null, KnownAccounts.Aquarius, 'https://aqua.network/assets/img/aqua-logo.png'),
   "CNY-RippleFox" : new Asset("CNY", "Chinese Yuan", "credit_alphanum4", KnownAccounts.RippleFox),
   "ETH-fchain" : new Asset("ETH", "Ethereum", null, new Account("GBETHKBL5TCUTQ3JPDIYOZ5RDARTMHMEKIO2QZQ7IOZ4YC5XV3C2IKYU", "fchain.io")),
-  "EURT" : new Asset("EURT", "Euro", "credit_alphanum4", KnownAccounts.Tempo),
+  "USDC" : new Asset("USDC", "US Dollar", "credit_alphanum4", KnownAccounts.Circle, 'https://www.centre.io/images/usdc/usdc-icon-86074d9d49.png'),
   "MOBI" : new Asset("MOBI", "Mobius", "credit_alphanum4", KnownAccounts.Mobius, 'https://mobius.network/mobi.png'),
   "SLT" : new Asset("SLT", "Smartlands token", "credit_alphanum4", KnownAccounts.SmartLands, 'https://smartlands.io/.well-known/KPUeW1N1.jpg'),
   "TERN" : new Asset("TERN", "Ternio.io TERN", "credit_alphanum4", KnownAccounts.Ternio),

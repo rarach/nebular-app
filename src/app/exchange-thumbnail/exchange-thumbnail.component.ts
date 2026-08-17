@@ -13,9 +13,10 @@ import { UiActionsService } from '../services/ui-actions.service';
 import { Utils } from '../../app/utils';
 
 @Component({
-  selector: 'nebular-exchange-thumbnail',
-  templateUrl: './exchange-thumbnail.component.html',
-  styleUrls: ['./exchange-thumbnail.component.css']
+    selector: 'nebular-exchange-thumbnail',
+    templateUrl: './exchange-thumbnail.component.html',
+    styleUrls: ['./exchange-thumbnail.component.css'],
+    standalone: false
 })
 export class ExchangeThumbnailComponent implements OnInit, OnDestroy {
     @Input() exchange: ExchangePair;

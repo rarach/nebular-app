@@ -4,9 +4,10 @@ import { Asset } from '../../model/asset.model';
 import { AssetService } from '../../services/asset.service';
 
 @Component({
-  selector: 'nebular-custom-asset-list',
-  templateUrl: './custom-asset-list.component.html',
-  styleUrls: ['./custom-asset-list.component.css']
+    selector: 'nebular-custom-asset-list',
+    templateUrl: './custom-asset-list.component.html',
+    styleUrls: ['./custom-asset-list.component.css'],
+    standalone: false
 })
 export class CustomAssetListComponent {
   public customAssets: Asset[];

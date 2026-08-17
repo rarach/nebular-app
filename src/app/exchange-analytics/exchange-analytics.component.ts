@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 
 @Component({
-  selector: 'nebular-exchange-analytics',
-  templateUrl: './exchange-analytics.component.html',
-  styleUrls: ['./exchange-analytics.component.css']
+    selector: 'nebular-exchange-analytics',
+    templateUrl: './exchange-analytics.component.html',
+    styleUrls: ['./exchange-analytics.component.css'],
+    standalone: false
 })
 export class ExchangeAnalyticsComponent implements OnInit {
 

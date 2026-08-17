@@ -15,9 +15,9 @@ import { Utils } from '../utils';
 export class AssetService {
   private readonly _commonAssets: Asset[] = [         //TODO: load from backend, just very short basic list
     KnownAssets.XLM,
-    KnownAssets['BTC-Interstellar'],
+    KnownAssets['AQUA-Aquarius'],
     KnownAssets["CNY-RippleFox"],
-    KnownAssets.EURT
+    KnownAssets.USDC
   ];
 
   /** User's custom defined assets */

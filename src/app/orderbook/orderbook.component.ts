@@ -11,9 +11,10 @@ import { Orderbook, Offer } from '../model/orderbook.model';
 import { Utils } from '../utils';
 
 @Component({
-  selector: 'nebular-orderbook',
-  templateUrl: './orderbook.component.html',
-  styleUrls: ['./orderbook.component.css']
+    selector: 'nebular-orderbook',
+    templateUrl: './orderbook.component.html',
+    styleUrls: ['./orderbook.component.css'],
+    standalone: false
 })
 export class OrderbookComponent implements OnInit, OnDestroy {
 

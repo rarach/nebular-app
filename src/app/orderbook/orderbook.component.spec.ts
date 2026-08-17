@@ -41,7 +41,7 @@ describe('OrderbookComponent', () => {
   });
 
   it("sets error message if orderbook stream fails", () => {
-    component.exchange = new ExchangePair("stream-error", KnownAssets.XLM, KnownAssets.EURT);
+    component.exchange = new ExchangePair("stream-error", KnownAssets.XLM, KnownAssets.USDC);
 
     component.ngOnInit();
 

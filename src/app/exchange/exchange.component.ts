@@ -18,9 +18,10 @@ import { OhlcData } from 'app/model/ohlc-data';
 import { Utils } from '../utils';
 
 @Component({
-  selector: 'nebular-exchange',
-  templateUrl: './exchange.component.html',
-  styleUrls: ['./exchange.component.css']
+    selector: 'nebular-exchange',
+    templateUrl: './exchange.component.html',
+    styleUrls: ['./exchange.component.css'],
+    standalone: false
 })
 export class ExchangeComponent implements OnInit, OnDestroy {
   private static readonly PAST_TRADES_INTERVAL: number = 8000;

@@ -20,13 +20,13 @@ describe('My Exchanges', () => {
     cy.setCookie('ass',
       'XCN|GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY|fchain.io|,' +
       'HKDT|GABSZVZBYEO5F4V5LZKV7GR4SAJ5IKJGGOF43BIN42FNDUG7QPH6IMRQ|mover.scam|null');
-    //GIVEN three custom exchanges were previously set up: BTC/BTC, XLM/EURT, XCN/HKDT
+    //GIVEN three custom exchanges were previously set up: BTC/BTC, XLM/USDC, XCN/HKDT
     cy.setCookie('exc',
       "1234567#" +
       "BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH/" +        //BTC-NaoBTC
       "BTC-GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P" +         //BTC-interstellar.exchange
       ",333000444#" +
-      "XLM/EURT-GAP5LETOV6YIE62YAM56STDANPRDO7ZFDBGSNHJQIYGGKSMOZAHOOS2S" +    //Euro
+      "XLM/USDC-GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN" +    //USDC-circle.com
       ",88888888#" +
       "XCN-GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY/" +        //CNY by fchain.io
       "HKDT-GABSZVZBYEO5F4V5LZKV7GR4SAJ5IKJGGOF43BIN42FNDUG7QPH6IMRQ");
@@ -36,19 +36,19 @@ describe('My Exchanges', () => {
     //THEN 3 custom exchanges and a placeholder for new one are shown
     cy.get('div.exchange-link').should('have.length', 3 + 1);   //+1 for the trailing (add) button
 
-    //xchange 1
+    //Exchange 1
     let dropDowns = () => cy.get("div#customExchange1234567 mat-select.selectedAssetOption");
     dropDowns().eq(0).invoke('attr', 'title').should('eq', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
     dropDowns().eq(0).should('have.text', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
-    dropDowns().eq(1).invoke('attr', 'title').should('eq', 'Bitcoin');
-    dropDowns().eq(1).should('have.text', 'BTC-interstellar.exchange');
+    dropDowns().eq(1).invoke('attr', 'title').should('eq', 'BTC-GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P');
+    dropDowns().eq(1).should('have.text', 'BTC-GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P');
 
     //Exchange 2
     dropDowns = () => cy.get("div#customExchange333000444 mat-select.selectedAssetOption");
     dropDowns().eq(0).invoke('attr', 'title').should('eq', 'Lumen');
     dropDowns().eq(0).should('have.text', 'XLM');
-    dropDowns().eq(1).invoke('attr', 'title').should('eq', 'Euro');
-    dropDowns().eq(1).should('have.text', 'EURT-tempo.eu.com');
+    dropDowns().eq(1).invoke('attr', 'title').should('eq', 'US Dollar');
+    dropDowns().eq(1).should('have.text', 'USDC-circle.com');
 
     //Exchange 3
     dropDowns = () => cy.get("div#customExchange88888888 mat-select.selectedAssetOption");
@@ -68,7 +68,7 @@ describe('My Exchanges', () => {
     const exchangePanel = () => cy.get('div.customExchange');
     exchangePanel().should('have.length', 2);
     exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'BTC-GATEMHCCKCY67ZUCKTROYN24ZYT5GK4EQZ65JJLDHKHRUZI3EUEKMTCH');
-    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'BTC-interstellar.exchange');
+    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'BTC-GCNSGHUCG5VMGLT5RIYYZSO7VQULQKAJ62QA33DBC5PPBSO57LFWVV6P');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'XCN-fchain.io');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'HKDT-mover.scam');
   });
@@ -79,7 +79,7 @@ describe('My Exchanges', () => {
     cy.visit("/no-such-page");
     cy.setCookie('agr', 'true');
     cy.setCookie('ass',
-      'USDC|GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN|centre.io|https://www.centre.io/images/usdc/usdc-icon-86074d9d49.png,' +
+      'USDC|GA5ZSEJYB37JRC5AVCIA5MOP4RHTM335X2KGX3IHOJAPP5RE34K4KZVN|circle.com|https://www.centre.io/images/usdc/usdc-icon-86074d9d49.png,' +
       'XCN|GCNY5OXYSY4FKHOPT2SPOQZAOEIGXB5LBYW3HVU3OWSTQITS65M5RCNY|fchain.io|,' +
       'TZS|GA2MSSZKJOU6RNL3EJKH3S5TB5CDYTFQFWRYFGUJVIN5I6AOIRTLUHTO|connect.clickpesa.com|https://res.cloudinary.com/clickpesa/image/upload/v1603170740/assets/clickpesa-icon.png');
     //WHEN user goes to the page My Exchanges
@@ -97,8 +97,8 @@ describe('My Exchanges', () => {
 
     //WHEN user selects USDC as base currency
     exchangePanel().find('div mat-select.selectedAssetOption').eq(0).click();
-    cy.get('mat-option').contains('USDC-centre.io').should('be.visible');
-    cy.get('mat-option').contains('USDC-centre.io').click();
+    cy.get('mat-option').contains('USDC-circle.com').should('be.visible');
+    cy.get('mat-option').contains('USDC-circle.com').click();
 
     //AND they select TZS as counter currency
     exchangePanel().find('div mat-select.selectedAssetOption').eq(1).click();
@@ -151,7 +151,7 @@ describe('My Exchanges', () => {
 
     //THEN the page shows the 2 previously configured custom exchanges
     cy.get('div.exchange-link').should('have.length', 2 + 1);
-    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'USDC-centre.io');
+    exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'USDC-circle.com');
     exchangePanel().eq(0).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'TZS-connect.clickpesa.com');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(0).should('have.text', 'TZS-connect.clickpesa.com');
     exchangePanel().eq(1).find('div mat-select.selectedAssetOption').eq(1).should('have.text', 'XCN-fchain.io');
