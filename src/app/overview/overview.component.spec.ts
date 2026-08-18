@@ -27,7 +27,7 @@ describe('OverviewComponent', () => {
 
   it("should have the title 'Nebular'", () => {
     expect(component).toBeTruthy();
-    const titleService = TestBed.get(Title);
+    const titleService = TestBed.inject(Title);
     expect(titleService.getTitle()).toBe("Nebular");
   });
 

@@ -42,7 +42,7 @@ describe('MyExchangesComponent', () => {
   });
     
   it('Page title Should be "My Exchanges"', () => {
-    const userService = TestBed.get(Title);
+    const userService = TestBed.inject(Title);
     expect(userService.getTitle()).toBe("My Exchanges");
   });
 

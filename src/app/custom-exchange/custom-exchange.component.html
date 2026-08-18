@@ -1,34 +1,42 @@
 <div id="customExchange{{exchange.id}}" class="col-xl-3 col-lg-4 col-md-6 col-sm-12 customExchange" [class.dropTarget]="highlightDropTarget"
-     (click)="onClick($event)">
-    <div [ngStyle]="{ 'display' : this.isDragged ? 'block' : 'none' }" class="draggedExchOverlay"></div>
-    <div onmouseover="$(this).find('div.hoverButton').show();" (mouseover)="onMouseOver()"
-         onmouseout="$(this).find('div.hoverButton').hide();" (mouseout)="highlightDropTarget = false;">
-        <div class="assetsSelection" onclick="return false;">
-            <div *ngIf="!this.uiActions.DraggingExchange" class="hoverButton moveExchButton" (click)="startDrag($event)" title="Move this tile">&harr;</div>
-            <div *ngIf="!this.uiActions.DraggingExchange" class="hoverButton removeExchButton" (click)="removeExchange()" title="Remove this exchange">X</div>
-            <div class="assetDropDowns">
-                <div class="smallAssetDdWrapper">
-                    <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange()" [title]="selectedBaseAsset.tooltip"
-                                hideSingleSelectionIndicator>
-                        <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
-                            <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
-                        </mat-option>
-                    </mat-select>
-                </div>
-                <div class="smallAssetDdWrapper">
-                    <mat-select [(value)]="selectedCounterAsset" class="selectedAssetOption"
-                                (selectionChange)="updateExchange()" [title]="selectedCounterAsset.tooltip"
-                                hideSingleSelectionIndicator>
-                        <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.tooltip}}">
-                            <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
-                        </mat-option>
-                    </mat-select>
-                </div>
-            </div>
+  (click)="onClick($event)">
+  <div [ngStyle]="{ 'display' : this.isDragged ? 'block' : 'none' }" class="draggedExchOverlay"></div>
+  <div onmouseover="$(this).find('div.hoverButton').show();" (mouseover)="onMouseOver()"
+    onmouseout="$(this).find('div.hoverButton').hide();" (mouseout)="highlightDropTarget = false;">
+    <div class="assetsSelection" onclick="return false;">
+      @if (!this.uiActions.DraggingExchange) {
+        <div class="hoverButton moveExchButton" (click)="startDrag($event)" title="Move this tile">&harr;</div>
+      }
+      @if (!this.uiActions.DraggingExchange) {
+        <div class="hoverButton removeExchButton" (click)="removeExchange()" title="Remove this exchange">X</div>
+      }
+      <div class="assetDropDowns">
+        <div class="smallAssetDdWrapper">
+          <mat-select [(value)]="selectedBaseAsset" class="selectedAssetOption"
+            (selectionChange)="updateExchange()" [title]="selectedBaseAsset.tooltip"
+            hideSingleSelectionIndicator>
+            @for (asset of assetOptions; track asset) {
+              <mat-option class="ddOption" [value]="asset" title="{{asset.tooltip}}">
+                <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
+              </mat-option>
+            }
+          </mat-select>
         </div>
-        <div id="customExchangeChart{{exchange.id}}" class="exchange-link-chart">
-            <nebular-exchange-thumbnail [exchange]="exchange" [showAssetNames]="false"></nebular-exchange-thumbnail>
+        <div class="smallAssetDdWrapper">
+          <mat-select [(value)]="selectedCounterAsset" class="selectedAssetOption"
+            (selectionChange)="updateExchange()" [title]="selectedCounterAsset.tooltip"
+            hideSingleSelectionIndicator>
+            @for (asset of assetOptions; track asset) {
+              <mat-option class="ddOption" [value]="asset" title="{{asset.tooltip}}">
+                <img src="{{asset.imageUrl}}" class="assetImage" /> {{asset.text}}
+              </mat-option>
+            }
+          </mat-select>
         </div>
+      </div>
     </div>
+    <div id="customExchangeChart{{exchange.id}}" class="exchange-link-chart">
+      <nebular-exchange-thumbnail [exchange]="exchange" [showAssetNames]="false"></nebular-exchange-thumbnail>
+    </div>
+  </div>
 </div>

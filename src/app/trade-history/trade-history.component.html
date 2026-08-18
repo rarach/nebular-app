@@ -1,34 +1,35 @@
 <table id="tradeHistoryTable">
-    <thead>
-        <tr>
-            <th>Time</th>
-            <th>Price</th>
-            <th>Amount ({{exchange.baseAsset.code}})</th>
-        </tr>
-    </thead>
-    <tbody id="tradeHistoryData">
-        <tr></tr>
-        <ng-container *ngIf="this.recentTrades.length === 0; else tradeItems">
-            <tr>
-            <td colspan='3'></td>
-            </tr>
-            <tr>
-            <td colspan='3'>No recent trades in this market</td>
-            </tr>
-        </ng-container>
-
-        <ng-template #tradeItems>
-            <tr *ngFor="let trade of recentTrades"
-                [class.lastInDay]="trade.isLastOfDay"
-                [class.poolTrade]="trade.isPoolTrade"
+  <thead>
+    <tr>
+      <th>Time</th>
+      <th>Price</th>
+      <th>Amount ({{exchange.baseAsset.code}})</th>
+    </tr>
+  </thead>
+  <tbody id="tradeHistoryData">
+    <tr></tr>
+    @if (this.recentTrades.length === 0) {
+      <tr>
+        <td colspan='3'></td>
+      </tr>
+      <tr>
+        <td colspan='3'>No recent trades in this market</td>
+      </tr>
+    } @else {
+      @for (trade of recentTrades; track trade) {
+        <tr
+          [class.lastInDay]="trade.isLastOfDay"
+          [class.poolTrade]="trade.isPoolTrade"
                 title="date: {{trade.time | date:'d MMM'}}
 price: {{trade.price}}
 seller: {{trade.seller}}
 buyer: {{trade.buyer}}">
-                <td>{{trade.time | date:'HH:mm:ss'}}</td> 
-                <td class="{{trade.tradeType}}">{{Utils.formatPrice(trade.price)}}</td>         
-                <td>{{Utils.formatAmount(trade.amount)}}</td>
-            </tr>
-        </ng-template>
-    </tbody>
+          <td>{{trade.time | date:'HH:mm:ss'}}</td>
+          <td class="{{trade.tradeType}}">{{Utils.formatPrice(trade.price)}}</td>
+          <td>{{Utils.formatAmount(trade.amount)}}</td>
+        </tr>
+      }
+    }
+
+  </tbody>
 </table>

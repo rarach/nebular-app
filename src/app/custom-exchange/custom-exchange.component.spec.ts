@@ -49,7 +49,7 @@ describe('CustomExchangeComponent', () => {
   });
 
   it("#removeExchange() deletes the exchange from repository", () => {
-    const assetService = TestBed.get(AssetService);
+    const assetService = TestBed.inject(AssetService) as any;
     expect(assetService.removeCalled).toBe(false);
     component.removeExchange();
     expect(assetService.removeCalled).toBe(true);
@@ -63,14 +63,14 @@ describe('CustomExchangeComponent', () => {
       "ABC-GARGame.l", "tip");
     component.selectedCounterAsset = new DropdownOption(new Asset("CHF", "Swiss Frank", null, new Account("GANything", null)),
       "CHF-GANything (swiss franck)", "good ol' frank");
-    const assetService = TestBed.get(AssetService);
+    const assetService = TestBed.inject(AssetService) as any;
     expect(assetService.updateCalled).toBeFalsy();
     component.updateExchange();
     expect(assetService.updateCalled).toBeTruthy();
   });
 
   it("#onMouseOver() should highlight border if another exchange pair is being dragged", () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     const dummyExch = new ExchangePair("test-exch",
       new Asset("TEST", "TesToken", null, new Account("GABRIELSSSSSS096", "test.org")),
       new Asset("NopE", "NopeKoin", null, new Account("GDDD", "whet.ever")));
@@ -84,7 +84,7 @@ describe('CustomExchangeComponent', () => {
   });
 
   it("#onClick() should swap exchanges with right IDs if another exchange is being dragged", () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     const dummyExch = new ExchangePair("ex_to_swap",
       new Asset("TEST", "TestCoin", null, new Account("GABRIELSSSSSS096", "test.org")),
       new Asset("NopE", "NoToken", null, new Account("GDDD", "whet.ever")));
@@ -96,12 +96,12 @@ describe('CustomExchangeComponent', () => {
     component.onClick(eventSpy);
 
     expect(stopPropagationCalled).toBe(true);
-    const assetService = TestBed.get(AssetService);
+    const assetService = TestBed.inject(AssetService) as any;
     expect(assetService.swapCalled).toBe(true);
   });
 
   it("#startDrag() calls UiActions.draggingStarted with current exchange", () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     const dummyExch = new ExchangePair("test-exch",
       new Asset("TEST", "testCoin", null, new Account("GABRIELSSSSSS096", "test.org")),
       new Asset("NopE", "NoCoin", null, new Account("GDDD", "whet.ever")));
@@ -118,7 +118,7 @@ describe('CustomExchangeComponent', () => {
   });
 
   it("#isDragged() should return true if current exchange pair is being dragged", () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     const dummyExch = new ExchangePair("cust_ex96984",
       new Asset("DOESN'T", "", null, null),
       new Asset("MATTER", "matt", null, new Account("GAAASGHASFGGDH4561", "HERE")));

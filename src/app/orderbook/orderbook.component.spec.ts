@@ -32,7 +32,7 @@ describe('OrderbookComponent', () => {
 
   it("starts orderbook stream with ngInit, stops it with ngDestroy", () => {
     component.exchange = new ExchangePair("empty", KnownAssets.XLM, KnownAssets.TERN);
-    const horizonStub = TestBed.get(HorizonRestService);
+    const horizonStub = TestBed.inject(HorizonRestService);
 
     spyOn(horizonStub, "streamOrderbook").and.callThrough();
     component.ngOnInit();

@@ -41,9 +41,9 @@ describe('ExchangeThumbnailComponent', () => {
     expect(url).toBe("exchange/ABC-GCCCP/ETH-GETH841062WESTHDF");
   });
   it("onClick() navigates to exchange URL", () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     spyOnProperty(uiService, "DraggingExchange", "get").and.returnValue(null);
-    const router = TestBed.get(Router);
+    const router = TestBed.inject(Router);
     const routerSpy = spyOn(router, "navigateByUrl");
 
     component.onClick();

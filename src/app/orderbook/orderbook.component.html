@@ -1,52 +1,66 @@
 <table>
-    <thead>
-        <tr>
-            <th>Price</th>
-            <th>Amount {{_exchange.baseAsset.code}}</th>
+  <thead>
+    <tr>
+      <th>Price</th>
+      <th>Amount {{_exchange.baseAsset.code}}</th>
+    </tr>
+  </thead>
+  <tbody id="orderBookAsks">
+    @if (this.orderbook.asks.length === 0) {
+      <tr></tr>
+      <tr>
+        @if (this.dataStatus === DataStatus.OK;) {
+          <td>Loading data...</td>
+        }
+        @if (this.dataStatus === DataStatus.Error;) {
+          <td colspan="2" class="error">{{this.message}}</td>
+        }
+        @if (this.dataStatus === DataStatus.NoData;) {
+          <td colspan="2" class="noOrders">(no asks in this market)</td>
+        }
+      </tr>
+    } @else {
+      @for (ask of orderbook.asks.slice().reverse(); track ask) {
+        <tr
+          [class.linked]="ask.isCrossLinked"
+          [attr.title]="ask.isCrossLinked ? (ask.price + ' - linked thru XLM') : ask.price"
+          [ngStyle]="getRowStyle(ask, 'ask')">
+          <td>{{Utils.formatPrice(ask.price)}}</td>
+          <td>{{Utils.formatAmount(ask.amount)}}</td>
         </tr>
-    </thead>
-    <tbody id="orderBookAsks">
-        <ng-container *ngIf="this.orderbook.asks.length === 0; else askRows">
-            <tr></tr>
-            <tr>
-                <td *ngIf="this.dataStatus === DataStatus.OK;">Loading data...</td>
-                <td colspan="2" class="error" *ngIf="this.dataStatus === DataStatus.Error;">{{this.message}}</td>
-                <td colspan="2" class="noOrders" *ngIf="this.dataStatus === DataStatus.NoData;">(no asks in this market)</td>
-            </tr>
-        </ng-container>
-        <ng-template #askRows>
-            <tr *ngFor="let ask of orderbook.asks.slice().reverse()"
-                [class.linked]="ask.isCrossLinked"
-                [attr.title]="ask.isCrossLinked ? (ask.price + ' - linked thru XLM') : ask.price"
-                [ngStyle]="getRowStyle(ask, 'ask')">
-                <td>{{Utils.formatPrice(ask.price)}}</td>
-                <td>{{Utils.formatAmount(ask.amount)}}</td>
-            </tr>
-        </ng-template>
-    </tbody>
+      }
+    }
+  </tbody>
 </table>
 <div id="currentPrice">
     <span class="{{lastTradeType}}" title="Last price: {{lastPrice}} {{_exchange.counterAsset.code}}
 Date: {{lastTradeTime | date:'d MMM'}}">{{Utils.formatPrice(lastPrice)}}</span>
 </div>
 <table>
-    <tbody id="orderBookBids">
-        <ng-container *ngIf="this.orderbook.bids.length === 0; else bidRows">
-            <tr></tr>
-            <tr>
-                <td *ngIf="this.dataStatus === DataStatus.OK;">Loading data...</td>
-                <td colspan="2" class="error" *ngIf="this.dataStatus === DataStatus.Error;">{{this.message}}</td>
-                <td colspan="2" class="noOrders" *ngIf="this.dataStatus === DataStatus.NoData;">(no bids in this market)</td>
-            </tr>
-        </ng-container>
-        <ng-template #bidRows>
-            <tr *ngFor="let bid of orderbook.bids"
-                [class.linked]="bid.isCrossLinked"
-                [attr.title]="bid.isCrossLinked ? (bid.price + ' - linked thru XLM') : bid.price"
-                [ngStyle]="getRowStyle(bid, 'bid')">
-                <td>{{Utils.formatPrice(bid.price)}}</td>
-                <td>{{Utils.formatAmount(bid.amount)}}</td>
-            </tr>
-        </ng-template>
-    </tbody>
+  <tbody id="orderBookBids">
+    @if (this.orderbook.bids.length === 0) {
+      <tr></tr>
+      <tr>
+        @if (this.dataStatus === DataStatus.OK;) {
+          <td>Loading data...</td>
+        }
+        @if (this.dataStatus === DataStatus.Error;) {
+          <td colspan="2" class="error">{{this.message}}</td>
+        }
+        @if (this.dataStatus === DataStatus.NoData;) {
+          <td colspan="2" class="noOrders">(no bids in this market)</td>
+        }
+      </tr>
+    } @else {
+      @for (bid of orderbook.bids; track bid) {
+        <tr
+          [class.linked]="bid.isCrossLinked"
+          [attr.title]="bid.isCrossLinked ? (bid.price + ' - linked thru XLM') : bid.price"
+          [ngStyle]="getRowStyle(bid, 'bid')">
+          <td>{{Utils.formatPrice(bid.price)}}</td>
+          <td>{{Utils.formatAmount(bid.amount)}}</td>
+        </tr>
+      }
+    }
+  </tbody>
 </table>

@@ -58,7 +58,7 @@ image = "ab.cd/ef.jpg"`) },
   }));
 
   it("#searchAssetCodes() exits immediately if the input form is invalid", () => {
-    const horizonSpy = spyOn(TestBed.get(HorizonRestService), "getAssetIssuers");
+    const horizonSpy = spyOn(TestBed.inject(HorizonRestService), "getAssetIssuers");
     const formStub: NgForm = {
       invalid: true,
       value: { newAssetCode: "QWERT" }
@@ -67,7 +67,7 @@ image = "ab.cd/ef.jpg"`) },
     expect(horizonSpy).not.toHaveBeenCalled();
   });
   it("#searchAssetCodes() exits immediately if the input asset code is empty", () => {
-    const horizonSpy = spyOn(TestBed.get(HorizonRestService), "getAssetIssuers");
+    const horizonSpy = spyOn(TestBed.inject(HorizonRestService), "getAssetIssuers");
     const formStub: NgForm = {
       invalid: false,
       value: { newAssetCode: "" }

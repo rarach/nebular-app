@@ -23,7 +23,7 @@ describe('AppComponent', () => {
   }));
 
   it('#onClick() should cancel custom exchange reposition', () => {
-    const uiService : UiActionsService = TestBed.get(UiActionsService);
+    const uiService : UiActionsService = TestBed.inject(UiActionsService);
     const dummyExch = new ExchangePair('test-exch',
       new Asset('TEST', 'tesomethin', null, new Account('GABRIELSSSSSS096', 'test.org')),
       new Asset('NopE', '', null, new Account('GDDD', 'whet.ever')));

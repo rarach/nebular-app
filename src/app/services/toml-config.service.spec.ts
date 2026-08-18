@@ -21,8 +21,8 @@ describe('TomlConfigService', () => {
     ]
 });
     injector = getTestBed();
-    service = injector.get(TomlConfigService);
-    httpMock = injector.get(HttpTestingController);
+    service = TestBed.inject(TomlConfigService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
   it("#getIssuerConfig() should retrieve and parse TOML data of an anchor", () => {

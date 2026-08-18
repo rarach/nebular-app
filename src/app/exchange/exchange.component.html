@@ -1,39 +1,43 @@
 <div class="row">
-    <div class="col-lg-2 col-md-12 col-sm-12">
-        <!--TODO: maybe some content here? -->
+  <div class="col-lg-2 col-md-12 col-sm-12">
+    <!--TODO: maybe some content here? -->
+  </div>
+  <div class="col-lg-10 col-md-12 col-sm-12">
+    <div class="dropdownsWrapper">
+      <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
+        [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }"
+        hideSingleSelectionIndicator>
+        @for (asset of assetOptions; track asset) {
+          <mat-option class="ddOption" [value]="asset" title="{{asset.fullName}}">
+            <img src="{{asset.imageUrl}}" class="assetImage"/>
+            {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
+          </mat-option>
+        }
+        <mat-option class="ddOption" [value]="null" title="Add asset manually">
+          [+] Add to shortlist
+        </mat-option>
+      </mat-select>
     </div>
-    <div class="col-lg-10 col-md-12 col-sm-12">
-        <div class="dropdownsWrapper">
-            <mat-select [(value)]="selectedBaseAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
-                        [title]="selectedBaseAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedBaseAsset?.imageUrl + ')' }"
-                        hideSingleSelectionIndicator>
-                <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                    <img src="{{asset.imageUrl}}" class="assetImage"/>
-                    {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
-                </mat-option>
-                <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                    [+] Add to shortlist
-                </mat-option>
-            </mat-select>
-        </div>
 
-        <div class="chartButton swapButton">
-            <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
-        </div>
+    <div class="chartButton swapButton">
+      <a id="swapAssetsLink" (click)="swapAssets()" title="Switch assets">&hArr;</a>
+    </div>
 
-        <div class="dropdownsWrapper">
-            <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
-                        [title]="selectedCounterAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedCounterAsset?.imageUrl + ')' }"
-                        hideSingleSelectionIndicator>
-                <mat-option class="ddOption" *ngFor="let asset of assetOptions" [value]="asset" title="{{asset.fullName}}">
-                    <img src="{{asset.imageUrl}}" class="assetImage"/>
-                    {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
-                </mat-option>
-                <mat-option class="ddOption" [value]="null" title="Add asset manually">
-                    [+] Add to shortlist
-                </mat-option>
-            </mat-select>
-        </div>
+    <div class="dropdownsWrapper">
+      <mat-select [(value)]="selectedCounterAsset" class="selectedAsset" (selectionChange)="assetChanged($event)"
+        [title]="selectedCounterAsset?.fullName" [ngStyle]="{'background-image': 'url(' + selectedCounterAsset?.imageUrl + ')' }"
+        hideSingleSelectionIndicator>
+        @for (asset of assetOptions; track asset) {
+          <mat-option class="ddOption" [value]="asset" title="{{asset.fullName}}">
+            <img src="{{asset.imageUrl}}" class="assetImage"/>
+            {{asset.code}}{{asset.IsNative() ? '' : ('-' + asset.issuer?.domain)}}
+          </mat-option>
+        }
+        <mat-option class="ddOption" [value]="null" title="Add asset manually">
+          [+] Add to shortlist
+        </mat-option>
+      </mat-select>
+    </div>
     <div class="chartButton intervalButtons">
       <!-- TODO: rework these to standard GET links if possible. JS should not be necessary. -->
       <a class="link" [class.selected]="chartInterval === 900000" (click)="setChartInterval('15min');">15min</a>&nbsp;
@@ -47,24 +51,24 @@
 
 <div class="row">
 
-    <div class="col-xs-12 col-md-7 col-md-push-2" id="candleChartPanel" style="height: 800px;">
-        <div class="chartWarning" [class.error]="dataStatus === DataStatus.Error">{{chartMessage}}</div>
-        <div id="marketChart" style="min-height: 500px; height: 100%;">
-        </div>
+  <div class="col-xs-12 col-md-7 col-md-push-2" id="candleChartPanel" style="height: 800px;">
+    <div class="chartWarning" [class.error]="dataStatus === DataStatus.Error">{{chartMessage}}</div>
+    <div id="marketChart" style="min-height: 500px; height: 100%;">
     </div>
+  </div>
 
-    <div class="col-xs-5 col-md-pull-7 col-md-2">
-        <br/>
-        <nebular-orderbook
-            [exchange]="exchange"
-            [lastPrice]="lastPrice"
-            [lastTradeType]="lastTradeType"
-            [lastTradeTime]="lastTradeTime">
-        </nebular-orderbook>
-    </div>
+  <div class="col-xs-5 col-md-pull-7 col-md-2">
+    <br/>
+    <nebular-orderbook
+      [exchange]="exchange"
+      [lastPrice]="lastPrice"
+      [lastTradeType]="lastTradeType"
+      [lastTradeTime]="lastTradeTime">
+    </nebular-orderbook>
+  </div>
 
-    <div class="col-xs-7 col-md-3">
-        <br/>
-        <nebular-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></nebular-trade-history>
-    </div>
+  <div class="col-xs-7 col-md-3">
+    <br/>
+    <nebular-trade-history [exchange]="exchange" [recentTrades]="tradeHistory"></nebular-trade-history>
+  </div>
 </div>

@@ -28,7 +28,7 @@ describe('CustomAssetListComponent', () => {
 
   it("#removeAsset", () => {
     component.removeAsset("GOE", "GEEEERDY74747474");
-    const assetService = TestBed.get(AssetService);
+    const assetService = TestBed.inject(AssetService) as any;
     expect(assetService.removeCalled).toBe(true);
   });
 

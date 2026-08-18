@@ -27,8 +27,8 @@ describe("NebularService", () => {
     ]
 });
     injector = getTestBed();
-    service = injector.get(NebularService);
-    httpMock = injector.get(HttpTestingController);
+    service = TestBed.inject(NebularService);
+    httpMock = TestBed.inject(HttpTestingController);
   });
 
     
@@ -46,7 +46,7 @@ describe("NebularService", () => {
   });
 
   it("gets user's agreement with cookie usage", () => {
-    const cookieService = TestBed.get(CookieService);
+    const cookieService = TestBed.inject(CookieService);
     const cookieSpy = spyOn(cookieService, "get").and.returnValue("true");
 
     const agreed = service.CookieAgreement;
@@ -56,7 +56,7 @@ describe("NebularService", () => {
   });
 
   it("can save user's agreement with cookie usage", () => {
-    const cookieService = TestBed.get(CookieService);
+    const cookieService = TestBed.inject(CookieService);
     const cookieSpy = spyOn(cookieService, "put").and.callFake(() => { return; });
 
     service.CookieAgreement = true;
